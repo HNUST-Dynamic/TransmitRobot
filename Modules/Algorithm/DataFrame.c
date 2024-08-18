@@ -31,13 +31,13 @@ StepMotorDataFrame_s GenerateDataFrame(StepMotorInstance *motor_instance)
     frame.subdivision = motor_instance->subdivision;
 
     // 将数据值和转速值转换为高低八位
-    frame.data_high = (motor_instance->data_value * 10) >> 8;
-    frame.data_low = (motor_instance->data_value * 10) & 0xFF;
-    frame.speed_high = (motor_instance->speed_value * 10) >> 8;
-    frame.speed_low = (motor_instance->speed_value * 10) & 0xFF;
+    frame.data_high = (motor_instance->data * 10) >> 8;
+    frame.data_low = (motor_instance->data * 10) & 0xFF;
+    frame.speed_high = (motor_instance->speed * 10) >> 8;
+    frame.speed_low = (motor_instance->speed * 10) & 0xFF;
 
     // 计算 BCC 校验位
-    frame.bcc_checksum = CalculateRcc(&frame);
+    frame.rcc_checksum = CalculateRcc(&frame);
 
     // 设置固定的帧尾
     frame.frame_tail = 0x7D;
