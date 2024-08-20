@@ -18,5 +18,6 @@ typedef struct {
     uint8_t rcc_checksum;    // 校验位: 前9个字节的异或和
     uint8_t frame_tail;      // 帧尾: 0x7D
 } StepMotorDataFrame_s;
+StepMotorDataFrame_s GenerateDataFrame(StepMotorInstance *motor_instance); 
 
 #endif // !DATAFRAME_H_

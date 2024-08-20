@@ -11,6 +11,8 @@
 #include "StepMotor.h"
 #include "bsp_usart.h"
 #include "memory.h"
+#include "usart.h"
+#include "DataFrame.h"
 
 static StepMotorInstance *step_motor_instance[STEP_MOTOR_CNT] = {NULL};
 static uint8_t step_motor_idx = 0; // register step_motor_idx,是该文件的全局舵机索引,在注册时使用
@@ -28,9 +30,22 @@ void StepMotorControl(StepMotorInstance* motor)
 
     // 创建一个数据帧
     StepMotorDataFrame_s DataFrame = GenerateDataFrame(motor);
-
+    // 将数据帧存到send_buf中
+    static uint8_t send_buf[11];
+    send_buf[0] = DataFrame.frame_header;
+    send_buf[1] = DataFrame.control_id;
+    send_buf[2] = DataFrame.control_mode;
+    send_buf[3] = DataFrame.motor_direction;
+    send_buf[4] = DataFrame.subdivision;
+    send_buf[5] = DataFrame.data_high;
+    send_buf[6] = DataFrame.data_low;
+    send_buf[7] = DataFrame.speed_high;
+    send_buf[8] = DataFrame.speed_low;
+    send_buf[9] = DataFrame.rcc_checksum;
+    send_buf[10] = DataFrame.frame_tail;
     // 发送数据帧
-    USARTSend(motor->usart_instance, DataFrame, sizeof(DataFrame), USART_TRANSFER_DMA);}
+    USARTSend(motor->usart_instance, send_buf, sizeof(send_buf), USART_TRANSFER_DMA);
+}
 
 // 串口回调函数实现
 void MyUSARTCallback() 
@@ -123,19 +138,18 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
     motor->data = StepMotor_Init_Config->data;
     motor->speed = StepMotor_Init_Config->speed;
     motor->usart_handle = StepMotor_Init_Config->usart_handle;
-    motor->usart_instance = StepMotor_Init_Config->usart_instance;
-
+    motor->control = StepMotor_Init_Config->control;
     //为这个步进电机实例化一个USART
 
     //串口初始化配置
     USART_Init_Config_s usart_config;
     usart_config.recv_buff_size = USART_RXBUFF_LIMIT; // 设置接收缓冲区大小
-    usart_config.usart_handle = &huart1; // 使用具体的 UART_HandleTypeDef 实例
+    usart_config.usart_handle = motor->usart_handle; // 使用具体的 UART_HandleTypeDef 实例
     usart_config.module_callback = MyUSARTCallback; // 设置解析数据的回调函数
 
     //注册串口实例
-    USARTInstance *usart_instance = USARTRegister(&usart_config);
-    if (usart_instance == NULL) {
+    motor->usart_instance = USARTRegister(&usart_config);
+    if ( motor->usart_instance == NULL) {
         // 处理串口注册失败的情况
         return;
     }

@@ -12,6 +12,27 @@
 #include "stdlib.h"
 
 /**
+ * @brief RCC校验位计算
+ * 
+ * @param frame 
+ * @return uint8_t 
+ */
+uint8_t CalculateRcc(StepMotorDataFrame_s *frame) 
+{
+    uint8_t rcc = 0;
+    rcc ^= frame->frame_header;
+    rcc ^= frame->control_id;
+    rcc ^= frame->control_mode;
+    rcc ^= frame->motor_direction;
+    rcc ^= frame->subdivision;
+    rcc ^= frame->data_high;
+    rcc ^= frame->data_low;
+    rcc ^= frame->speed_high;
+    rcc ^= frame->speed_low;
+    return rcc;
+}
+
+/**
  * @brief 生成数据帧
  * 
  * @param motor_instance 
@@ -45,23 +66,3 @@ StepMotorDataFrame_s GenerateDataFrame(StepMotorInstance *motor_instance)
     return frame;
 }
 
-/**
- * @brief RCC校验位计算
- * 
- * @param frame 
- * @return uint8_t 
- */
-uint8_t CalculateRcc(DataFrame *frame) 
-{
-    uint8_t rcc = 0;
-    rcc ^= frame->frame_header;
-    rcc ^= frame->control_id;
-    rcc ^= frame->control_mode;
-    rcc ^= frame->motor_direction;
-    rcc ^= frame->subdivision;
-    rcc ^= frame->data_high;
-    rcc ^= frame->data_low;
-    rcc ^= frame->speed_high;
-    rcc ^= frame->speed_low;
-    return rcc;
-}
