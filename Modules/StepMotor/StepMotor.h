@@ -58,7 +58,6 @@ typedef struct
                              // 位置控制模式下的角度数据，单位为角度;
                              // 力矩控制模式下的电流大小数据，单位为毫安
     uint8_t speed;           // 速度,单位为 rad/s
-
     UART_HandleTypeDef* usart_handle; // 使用具体的 UART_HandleTypeDef 实例
     USARTInstance* usart_instance; // 添加指向 USART 实例的指针
     MotorControlFunction control;  // 电机控制函数句柄

@@ -101,6 +101,9 @@ int main(void)
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
   ChassisInit();
+  HAL_Delay(1000);
+  ChassisTransiation(Forward,0.55,0.2);
+  //ChassisTransiation(Forward,1,4);
 
   /* USER CODE END 2 */
 
