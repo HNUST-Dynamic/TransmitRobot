@@ -72,6 +72,11 @@ void USARTSend(USARTInstance *_instance, uint8_t *send_buf, uint16_t send_size, 
         break;
     case USART_TRANSFER_DMA:
         HAL_UART_Transmit_DMA(_instance->usart_handle, send_buf, send_size);
+        // if(__HAL_DMA_GET_FLAG(&hdma_usart1_tx,DMA_FLAG_TCIF3_7))
+        // {
+        //     __HAL_DMA_CLEAR_FLAG(&hdma_usart1_tx, DMA_FLAG_TCIF3_7); /* 清除 DMA2_Stream7 传输完成标志 */ 
+        //     HAL_UART_DMAStop(&huart1); /* 传输完成以后关闭串口 DMA */
+        // }
         break;
     default:
         while (1)

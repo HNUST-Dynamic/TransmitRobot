@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "Chassis.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -101,9 +101,7 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  ChassisInit();
-  HAL_Delay(2000);
-  ChassisTransiation(Forward,1,4);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
