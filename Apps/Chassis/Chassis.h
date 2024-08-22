@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 // 底盘参数
-#define WHEEL_RADIUS 0.0375 // 轮子半径（米）
-#define ROBOT_RADIUS 0.15   // 中心到轮子的距离（米）
-#define PI           3.1415926
+#define WHEEL_RADIUS 0.0375f // 轮子半径（米）
+#define ROBOT_RADIUS 0.15f   // 中心到轮子的距离（米）
+#define PI           3.1415926f
 typedef enum
 {
     Forward,

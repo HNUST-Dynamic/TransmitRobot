@@ -62,10 +62,10 @@ void ChassisInit()
 void MecanumKinematics(float vx, float vy, float omega) 
 {
     // 计算每个轮子的转速
-    LeftForwardMotorInstance->speed = (uint8_t)(abs((vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左前轮 单位rad/s
-    RightForwardMotorInstance->speed = (uint8_t)(abs((-vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右前轮
-    RightBackMotorInstance->speed = (uint8_t)(abs((vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右后轮
-    LeftBackMotorInstance->speed = (uint8_t)(abs((-vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左后轮
+    LeftForwardMotorInstance->speed = (uint16_t)(fabs((vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左前轮 单位rad/s
+    RightForwardMotorInstance->speed = (uint16_t)(fabs((-vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右前轮
+    RightBackMotorInstance->speed = (uint16_t)(fabs((vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右后轮
+    LeftBackMotorInstance->speed = (uint16_t)(fabs((-vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左后轮
     // speed[0] = (uint8_t)(abs((vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左前轮 单位rad/s
     // speed[1] = (uint8_t)(abs((-vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右前轮
     // speed[2] = (uint8_t)(abs((vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右后轮
@@ -80,10 +80,10 @@ void MecanumKinematics(float vx, float vy, float omega)
  */
 void MecanumInverseKinematics(float distance_x,float distance_y)
 {
-    LeftForwardMotorInstance->data = (uint8_t)(abs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
-    RightForwardMotorInstance->data = (uint8_t)(abs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
-    RightBackMotorInstance->data = (uint8_t)(abs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右后轮
-    LeftBackMotorInstance->data = (uint8_t)(abs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左后轮
+    LeftForwardMotorInstance->data = (uint16_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
+    RightForwardMotorInstance->data = (uint16_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
+    RightBackMotorInstance->data = (uint16_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右后轮
+    LeftBackMotorInstance->data = (uint16_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左后轮
     // data[0] = (uint8_t)(abs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
     // data[1] = (uint8_t)(abs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
     // data[2] = (uint8_t)(abs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右后轮
