@@ -15,38 +15,7 @@
 #include "DataFrame.h"
 
 static StepMotorInstance *step_motor_instance[STEP_MOTOR_CNT] = {NULL};
-static uint8_t step_motor_idx = 0; // register step_motor_idx,是该文件的全局舵机索引,在注册时使用
-
-/**
- * @brief 电机控制函数
- * 
- */
-void StepMotorControl(StepMotorInstance* motor)
-{
-    if (motor == NULL || motor->usart_instance == NULL) {
-        // 检查输入参数是否有效
-        return;
-    }
-
-    // 创建一个数据帧
-    StepMotorDataFrame_s DataFrame = GenerateDataFrame(motor);
-    // 将数据帧存到send_buf中
-    static uint8_t send_buf[11];
-    send_buf[0] = DataFrame.frame_header;
-    send_buf[1] = DataFrame.control_id;
-    send_buf[2] = DataFrame.control_mode;
-    send_buf[3] = DataFrame.motor_direction;
-    send_buf[4] = DataFrame.subdivision;
-    send_buf[5] = DataFrame.data_high;
-    send_buf[6] = DataFrame.data_low;
-    send_buf[7] = DataFrame.speed_high;
-    send_buf[8] = DataFrame.speed_low;
-    send_buf[9] = DataFrame.rcc_checksum;
-    send_buf[10] = DataFrame.frame_tail;
-    // 发送数据帧
-    USARTSend(motor->usart_instance, send_buf, sizeof(send_buf), USART_TRANSFER_DMA);
-}
-
+static uint8_t step_motor_idx = 0; 
 // 串口回调函数实现
 void MyUSARTCallback() 
 {
@@ -119,12 +88,6 @@ void MyUSARTCallback()
 
     // 其他处理逻辑
 }
-/**
- * @brief 步进电机实例注册函数
- * 
- * @param StepMotor_Init_Config_s 
- * @return StepMotorInstance* 
- */
 StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Config)
 {
     StepMotorInstance *motor = (StepMotorInstance *)malloc(sizeof(StepMotorInstance));
@@ -138,7 +101,7 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
     motor->data = StepMotor_Init_Config->data;
     motor->speed = StepMotor_Init_Config->speed;
     motor->usart_handle = StepMotor_Init_Config->usart_handle;
-    motor->control = StepMotor_Init_Config->control;
+
     //为这个步进电机实例化一个USART
 
     //串口初始化配置
@@ -159,3 +122,170 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
     return motor;
 
 }
+
+void StepMotorResetZero(StepMotorInstance* motor)
+{
+    uint8_t cmd[16] = {0};
+    
+    // 装载命令
+    cmd[0] =  0x01;                       // 地址
+    cmd[1] =  0x0A;                       // 功能码
+    cmd[2] =  0x6D;                       // 辅助码
+    cmd[3] =  0x6B;                       // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, 4,USART_TRANSFER_DMA);
+}
+
+void StepMotorResetClogPro(StepMotorInstance* motor)
+{
+    uint8_t cmd[16] = {0};
+    
+    // 装载命令
+    cmd[0] =  0x01;                       // 地址
+    cmd[1] =  0x0E;                       // 功能码
+    cmd[2] =  0x52;                       // 辅助码
+    cmd[3] =  0x6B;                       // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, 4,USART_TRANSFER_DMA);
+}
+
+void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s)
+{
+    uint8_t i = 0;
+    uint8_t cmd[16] = {0};
+    
+    // 装载命令
+    cmd[i] = 0x01; ++i;                   // 地址
+
+    switch(s)                             // 功能码
+    {
+        case S_VER  : cmd[i] = 0x1F; ++i; break;
+        case S_RL   : cmd[i] = 0x20; ++i; break;
+        case S_PID  : cmd[i] = 0x21; ++i; break;
+        case S_VBUS : cmd[i] = 0x24; ++i; break;
+        case S_CPHA : cmd[i] = 0x27; ++i; break;
+        case S_ENCL : cmd[i] = 0x31; ++i; break;
+        case S_TPOS : cmd[i] = 0x33; ++i; break;
+        case S_VEL  : cmd[i] = 0x35; ++i; break;
+        case S_CPOS : cmd[i] = 0x36; ++i; break;
+        case S_PERR : cmd[i] = 0x37; ++i; break;
+        case S_FLAG : cmd[i] = 0x3A; ++i; break;
+        case S_ORG  : cmd[i] = 0x3B; ++i; break;
+        case S_Conf : cmd[i] = 0x42; ++i; cmd[i] = 0x6C; ++i; break;
+        case S_State: cmd[i] = 0x43; ++i; cmd[i] = 0x7A; ++i; break;
+        default: break;
+    }
+
+    cmd[i] = 0x6B; ++i;                   // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, sizeof(cmd),USART_TRANSFER_DMA);
+}
+
+void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF, uint8_t ctrl_mode)
+{
+  uint8_t cmd[16] = {0};
+  
+  // 装载命令
+  cmd[0] =  0x01;                       // 地址
+  cmd[1] =  0x46;                       // 功能码
+  cmd[2] =  0x69;                       // 辅助码
+  cmd[3] =  svF;                        // 是否存储标志，false为不存储，true为存储
+  cmd[4] =  ctrl_mode;                  // 控制模式（对应屏幕上的P_Pul菜单），0是关闭脉冲输入引脚，1是开环模式，2是闭环模式，3是让En端口复用为多圈限位开关输入引脚，Dir端口复用为到位输出高电平功能
+  cmd[5] =  0x6B;                       // 校验字节
+  
+  // 发送命令
+    USARTSend(motor->usart_instance,cmd, 6,USART_TRANSFER_DMA);
+}
+
+void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF)
+{
+    uint8_t cmd[16] = {0};
+    
+    // 装载命令
+    cmd[0] =  0x01;                       // 地址
+    cmd[1] =  0xF3;                       // 功能码
+    cmd[2] =  0xAB;                       // 辅助码
+    cmd[3] =  (uint8_t)state;             // 使能状态
+    cmd[4] =  snF;                        // 多机同步运动标志
+    cmd[5] =  0x6B;                       // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, 6,USART_TRANSFER_DMA);
+}
+
+void StepMotorVelControl(StepMotorInstance* motor, uint8_t dir, uint16_t vel, uint8_t acc, bool snF)
+{
+    uint8_t cmd[16] = {0};
+
+    // 装载命令
+    cmd[0] =  0x01;                       // 地址
+    cmd[1] =  0xF6;                       // 功能码
+    cmd[2] =  dir;                        // 方向
+    cmd[3] =  (uint8_t)(vel >> 8);        // 速度(RPM)高8位字节
+    cmd[4] =  (uint8_t)(vel >> 0);        // 速度(RPM)低8位字节
+    cmd[5] =  acc;                        // 加速度，注意：0是直接启动
+    cmd[6] =  snF;                        // 多机同步运动标志
+    cmd[7] =  0x6B;                       // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, 8,USART_TRANSFER_DMA);
+}
+
+void StepMotorPosControl(StepMotorInstance* motor, uint8_t dir, uint16_t vel, uint8_t acc, uint32_t clk, bool raF, bool snF)
+{
+    uint8_t cmd[16] = {0};
+
+    // 装载命令
+    cmd[0]  =  0x01;                      // 地址
+    cmd[1]  =  0xFD;                      // 功能码
+    cmd[2]  =  dir;                       // 方向
+    cmd[3]  =  (uint8_t)(vel >> 8);       // 速度(RPM)高8位字节
+    cmd[4]  =  (uint8_t)(vel >> 0);       // 速度(RPM)低8位字节 
+    cmd[5]  =  acc;                       // 加速度，注意：0是直接启动
+    cmd[6]  =  (uint8_t)(clk >> 24);      // 脉冲数(bit24 - bit31)
+    cmd[7]  =  (uint8_t)(clk >> 16);      // 脉冲数(bit16 - bit23)
+    cmd[8]  =  (uint8_t)(clk >> 8);       // 脉冲数(bit8  - bit15)
+    cmd[9]  =  (uint8_t)(clk >> 0);       // 脉冲数(bit0  - bit7 )
+    cmd[10] =  raF;                       // 相位/绝对标志，false为相对运动，true为绝对值运动
+    cmd[11] =  snF;                       // 多机同步运动标志，false为不启用，true为启用
+    cmd[12] =  0x6B;                      // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, 13,USART_TRANSFER_DMA);
+
+}
+
+void StepMotorStop(StepMotorInstance* motor, bool snF)
+{
+    uint8_t cmd[16] = {0};
+    
+    // 装载命令
+    cmd[0] =  0x01;                       // 地址
+    cmd[1] =  0xFE;                       // 功能码
+    cmd[2] =  0x98;                       // 辅助码
+    cmd[3] =  snF;                        // 多机同步运动标志
+    cmd[4] =  0x6B;                       // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, 5,USART_TRANSFER_DMA);
+
+}
+
+void StepMotorSynMotion(StepMotorInstance* motor)
+{
+    uint8_t cmd[16] = {0};
+    
+    // 装载命令
+    cmd[0] =  0x01;                       // 地址
+    cmd[1] =  0xFF;                       // 功能码
+    cmd[2] =  0x66;                       // 辅助码
+    cmd[3] =  0x6B;                       // 校验字节
+    
+    // 发送命令
+    USARTSend(motor->usart_instance,cmd, 4,USART_TRANSFER_DMA);
+}
+
+

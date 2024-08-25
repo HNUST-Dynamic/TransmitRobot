@@ -29,7 +29,6 @@ void ChassisInit()
         .subdivision = 0x20,
         .data = 1200,
         .speed = 50,
-        .control = &StepMotorControl,
     };
 
     //注册四个步进电机
@@ -42,11 +41,6 @@ void ChassisInit()
     ChassisMotor_Init_Config.usart_handle = &huart4;
     LeftBackMotorInstance = StepMotorRegister(&ChassisMotor_Init_Config);
 
-    //设置力矩
-    LeftForwardMotorInstance->control(LeftForwardMotorInstance);
-    RightForwardMotorInstance->control(RightForwardMotorInstance);
-    RightBackMotorInstance->control(RightBackMotorInstance);
-    LeftBackMotorInstance->control(LeftBackMotorInstance);
 
 }
 
@@ -189,11 +183,6 @@ void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,float Lengt
             break;
     }
 
-    //启动电机
-    LeftForwardMotorInstance->control(LeftForwardMotorInstance);
-    RightForwardMotorInstance->control(RightForwardMotorInstance);
-    RightBackMotorInstance->control(RightBackMotorInstance);
-    LeftBackMotorInstance->control(LeftBackMotorInstance);
 
 }
 
