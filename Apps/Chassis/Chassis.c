@@ -28,7 +28,7 @@ void ChassisInit()
         .motor_direction = CounterClockWise,
         .subdivision = 0x20,
         .data = 1200,
-        .speed = 30,
+        .speed = 50,
         .control = &StepMotorControl,
     };
 

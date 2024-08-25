@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include"Chassis.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -80,7 +80,7 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock *
+  /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
@@ -101,10 +101,6 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  // ChassisInit();
-  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_1);
-  __HAL_TIM_SetCompare(&htim3,TIM_CHANNEL_1,50);
-  //ChassisTransiation(Forward,1,4);
 
   /* USER CODE END 2 */
 
