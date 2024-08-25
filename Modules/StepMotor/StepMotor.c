@@ -12,7 +12,6 @@
 #include "bsp_usart.h"
 #include "memory.h"
 #include "usart.h"
-#include "DataFrame.h"
 
 static StepMotorInstance *step_motor_instance[STEP_MOTOR_CNT] = {NULL};
 static uint8_t step_motor_idx = 0; 
@@ -94,11 +93,9 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
     memset(motor, 0, sizeof(StepMotorInstance));
 
     //成员变量初始化
-    motor->control_id = StepMotor_Init_Config->control_id;
-    motor->control_mode = StepMotor_Init_Config->control_mode;
+    motor->step_mode = StepMotor_Init_Config->step_mode;
+    motor->ctrl_mode = StepMotor_Init_Config->ctrl_mode;
     motor->motor_direction = StepMotor_Init_Config->motor_direction;
-    motor->subdivision = StepMotor_Init_Config->subdivision;
-    motor->data = StepMotor_Init_Config->data;
     motor->speed = StepMotor_Init_Config->speed;
     motor->usart_handle = StepMotor_Init_Config->usart_handle;
 
@@ -184,7 +181,7 @@ void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s)
     USARTSend(motor->usart_instance,cmd, sizeof(cmd),USART_TRANSFER_DMA);
 }
 
-void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF, uint8_t ctrl_mode)
+void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF)
 {
   uint8_t cmd[16] = {0};
   
@@ -193,7 +190,7 @@ void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF, uint8_t ctrl_mo
   cmd[1] =  0x46;                       // 功能码
   cmd[2] =  0x69;                       // 辅助码
   cmd[3] =  svF;                        // 是否存储标志，false为不存储，true为存储
-  cmd[4] =  ctrl_mode;                  // 控制模式（对应屏幕上的P_Pul菜单），0是关闭脉冲输入引脚，1是开环模式，2是闭环模式，3是让En端口复用为多圈限位开关输入引脚，Dir端口复用为到位输出高电平功能
+  cmd[4] =  motor->ctrl_mode;                  // 控制模式（对应屏幕上的P_Pul菜单），0是关闭脉冲输入引脚，1是开环模式，2是闭环模式，3是让En端口复用为多圈限位开关输入引脚，Dir端口复用为到位输出高电平功能
   cmd[5] =  0x6B;                       // 校验字节
   
   // 发送命令
@@ -216,17 +213,17 @@ void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF)
     USARTSend(motor->usart_instance,cmd, 6,USART_TRANSFER_DMA);
 }
 
-void StepMotorVelControl(StepMotorInstance* motor, uint8_t dir, uint16_t vel, uint8_t acc, bool snF)
+void StepMotorVelControl(StepMotorInstance* motor, bool snF)
 {
     uint8_t cmd[16] = {0};
 
     // 装载命令
     cmd[0] =  0x01;                       // 地址
     cmd[1] =  0xF6;                       // 功能码
-    cmd[2] =  dir;                        // 方向
-    cmd[3] =  (uint8_t)(vel >> 8);        // 速度(RPM)高8位字节
-    cmd[4] =  (uint8_t)(vel >> 0);        // 速度(RPM)低8位字节
-    cmd[5] =  acc;                        // 加速度，注意：0是直接启动
+    cmd[2] =  motor->motor_direction;                        // 方向
+    cmd[3] =  (uint8_t)(motor->speed >> 8);        // 速度(RPM)高8位字节
+    cmd[4] =  (uint8_t)(motor->speed >> 0);        // 速度(RPM)低8位字节
+    cmd[5] =  motor->acc;                        // 加速度，注意：0是直接启动
     cmd[6] =  snF;                        // 多机同步运动标志
     cmd[7] =  0x6B;                       // 校验字节
     
@@ -234,21 +231,21 @@ void StepMotorVelControl(StepMotorInstance* motor, uint8_t dir, uint16_t vel, ui
     USARTSend(motor->usart_instance,cmd, 8,USART_TRANSFER_DMA);
 }
 
-void StepMotorPosControl(StepMotorInstance* motor, uint8_t dir, uint16_t vel, uint8_t acc, uint32_t clk, bool raF, bool snF)
+void StepMotorPosControl(StepMotorInstance* motor, bool raF, bool snF)
 {
     uint8_t cmd[16] = {0};
 
     // 装载命令
     cmd[0]  =  0x01;                      // 地址
     cmd[1]  =  0xFD;                      // 功能码
-    cmd[2]  =  dir;                       // 方向
-    cmd[3]  =  (uint8_t)(vel >> 8);       // 速度(RPM)高8位字节
-    cmd[4]  =  (uint8_t)(vel >> 0);       // 速度(RPM)低8位字节 
-    cmd[5]  =  acc;                       // 加速度，注意：0是直接启动
-    cmd[6]  =  (uint8_t)(clk >> 24);      // 脉冲数(bit24 - bit31)
-    cmd[7]  =  (uint8_t)(clk >> 16);      // 脉冲数(bit16 - bit23)
-    cmd[8]  =  (uint8_t)(clk >> 8);       // 脉冲数(bit8  - bit15)
-    cmd[9]  =  (uint8_t)(clk >> 0);       // 脉冲数(bit0  - bit7 )
+    cmd[2]  =  motor->motor_direction;                       // 方向
+    cmd[3]  =  (uint8_t)(motor->speed >> 8);       // 速度(RPM)高8位字节
+    cmd[4]  =  (uint8_t)(motor->speed >> 0);       // 速度(RPM)低8位字节 
+    cmd[5]  =  motor->acc;                       // 加速度，注意：0是直接启动
+    cmd[6]  =  (uint8_t)(motor->clk >> 24);      // 脉冲数(bit24 - bit31)
+    cmd[7]  =  (uint8_t)(motor->clk >> 16);      // 脉冲数(bit16 - bit23)
+    cmd[8]  =  (uint8_t)(motor->clk >> 8);       // 脉冲数(bit8  - bit15)
+    cmd[9]  =  (uint8_t)(motor->clk >> 0);       // 脉冲数(bit0  - bit7 )
     cmd[10] =  raF;                       // 相位/绝对标志，false为相对运动，true为绝对值运动
     cmd[11] =  snF;                       // 多机同步运动标志，false为不启用，true为启用
     cmd[12] =  0x6B;                      // 校验字节

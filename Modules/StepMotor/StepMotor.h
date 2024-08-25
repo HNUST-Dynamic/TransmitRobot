@@ -6,9 +6,9 @@
 #include "stdbool.h"
 
 #define STEP_MOTOR_CNT 5
+#define STEPS_PER_REVOLUTION 200   // 假设电机每转一圈是200步（在未细分的情况下）
+#define MICROSTEPS 256             // 电机的细分数
 
-// 定义一个函数指针类型，用于电机控制
-typedef void (*MotorControlFunction)(struct StepMotorInstance* motor);
 
 /**
  * @brief 步进电机控制模式枚举
@@ -18,13 +18,22 @@ typedef enum
 {
     SpeedMode = 0x01,       //速度模式
     PosMode = 0x02,         //位置模式
-    ForceMode = 0x03,       //力矩模式
-} Control_Mode_e;
+
+} Step_Mode_e;
+
+typedef enum
+{  
+    OffPulMode = (uint8_t)0,
+    OpenCircuit = (uint8_t)1,
+    CloseCircuit = (uint8_t)2,
+    Multiplexed = (uint8_t)3,
+
+} Ctrl_Mode_e;
 
 typedef enum
 {
-    ClockWise,              //顺时针
-    CounterClockWise,       //逆时针
+    ClockWise = (bool)0,              //顺时针
+    CounterClockWise = (bool)1,       //逆时针
 } Motor_Direction_e;
 
 /**
@@ -33,14 +42,11 @@ typedef enum
  */
 typedef struct 
 {
-    uint8_t control_id;      // 控制ID: 默认为0x01
-    Control_Mode_e control_mode;    // 控制模式: 0x01=速度控制, 0x02=位置控制, 0x03=力矩控制, 0x04=单圈绝对角度控制
+    Step_Mode_e step_mode;    // 电机模式 速度 位置
+    Ctrl_Mode_e ctrl_mode;     //控制模式
     Motor_Direction_e motor_direction; // 转向: 0=逆时针, 1=顺时针
-    uint8_t subdivision;     // 细分值: 例如0x20=32细分
-    uint16_t data;            // 速度控制模式下为 0；
-                             // 位置控制模式下的角度数据，单位为角度;
-                             // 力矩控制模式下的电流大小数据，单位为毫安
-    uint16_t speed;           // 速度,单位为 rad/s
+    uint16_t speed;           // 速度,单位为 RPM
+    uint8_t acc;              //加速度 0直接启动
     UART_HandleTypeDef* usart_handle; // 使用具体的 UART_HandleTypeDef 实例
 
 } StepMotor_Init_Config_s;
@@ -51,14 +57,12 @@ typedef struct
  */
 typedef struct 
 {
-    uint8_t control_id;      // 控制ID: 默认为0x01
-    Control_Mode_e control_mode;    // 控制模式: 0x01=速度控制, 0x02=位置控制, 0x03=力矩控制, 0x04=单圈绝对角度控制
+    Step_Mode_e step_mode;    // 电机模式 速度 位置
+    Ctrl_Mode_e ctrl_mode;     //控制模式
     Motor_Direction_e motor_direction; // 转向: 0=逆时针, 1=顺时针
-    uint8_t subdivision;     // 细分值: 例如0x20=32细分
-    uint16_t data;            // 速度控制模式下为 0；
-                             // 位置控制模式下的角度数据，单位为角度;
-                             // 力矩控制模式下的电流大小数据，单位为毫安
-    uint16_t speed;           // 速度,单位为 rad/s
+    uint16_t speed;           // 速度,单位为 RPM
+    uint8_t acc;              //加速度 0直接启动
+    uint32_t clk;
     UART_HandleTypeDef* usart_handle; // 使用具体的 UART_HandleTypeDef 实例
     USARTInstance* usart_instance; // 添加指向 USART 实例的指针
 
@@ -107,7 +111,7 @@ void StepMotorResetClogPro(StepMotorInstance* motor);
  * @brief 电机读取参数
  * 
  * @param motor 
- * @param s 
+ * @param s         系统参数类型
  */
 void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s);
 
@@ -115,49 +119,42 @@ void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s);
  * @brief 电机修改开环/闭环控制模式
  * 
  * @param motor 
- * @param svF 
- * @param ctrl_mode 
+ * @param svF           是否存储标志，false为不存储，true为存储
  */
-void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF, uint8_t ctrl_mode);
+void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF);
 
 /**
  * @brief 电机使能信号控制
  * 
  * @param motor 
- * @param state 
- * @param snF 
+ * @param state         使能状态 true为使能电机，false为关闭电机
+ * @param snF           多机同步标志，false为不启用，true为启用
  */
-void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF);
+void StepMotorEnControl(StepMotorInstance* motor, bool state,bool snF);
 
 /**
  * @brief 电机速度模式设置
  * 
  * @param motor 
- * @param dir 
- * @param vel 
- * @param acc 
- * @param snF 
+ * @param snF       多机同步标志 false true
  */
-void StepMotorVelControl(StepMotorInstance* motor, uint8_t dir, uint16_t vel, uint8_t acc, bool snF);
+void StepMotorVelControl(StepMotorInstance* motor, bool snF);
 
 /**
  * @brief 电机位置模式设置
  * 
  * @param motor 
- * @param dir 
- * @param vel 
- * @param acc 
- * @param clk 
- * @param raF 
- * @param snF 
+ * @param clk       脉冲数 0-（2^32 - 1）
+ * @param raF       相位/绝对标志 false为相对运动 ， true为绝对运动
+ * @param snF       多机同步标志
  */
-void StepMotorPosControl(StepMotorInstance* motor, uint8_t dir, uint16_t vel, uint8_t acc, uint32_t clk, bool raF, bool snF);
+void StepMotorPosControl(StepMotorInstance* motor, bool raF, bool snF);
 
 /**
  * @brief 电机立即停止
  * 
  * @param motor 
- * @param snF 
+ * @param snF   多机同步标志
  */
 void StepMotorStop(StepMotorInstance* motor, bool snF);
 

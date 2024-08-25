@@ -6,6 +6,8 @@
 #define WHEEL_RADIUS 0.0375f // 轮子半径（米）
 #define ROBOT_RADIUS 0.15f   // 中心到轮子的距离（米）
 #define PI           3.1415926f
+
+#define ROTATION_TIME 800
 typedef enum
 {
     Forward,
@@ -41,7 +43,8 @@ void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,float Lengt
  * @param Direction 方向
  * @param Velocity  速度
  * @param Angle     角度
+ * @param omega     旋转角速度
  */
-void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle);
+void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle,float omega);
 
 #endif // !CHASSIS_H

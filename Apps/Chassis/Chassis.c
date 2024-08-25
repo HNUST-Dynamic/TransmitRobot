@@ -13,6 +13,7 @@
 #include "usart.h"
 #include <math.h>
 
+
 //实例化底盘四个电机
 static StepMotorInstance *LeftForwardMotorInstance,
                         *RightForwardMotorInstance,
@@ -23,11 +24,10 @@ void ChassisInit()
 {
     //填写设置参数
     StepMotor_Init_Config_s ChassisMotor_Init_Config = {
-        .control_id = 0x01,
-        .control_mode = ForceMode,
+        .step_mode = PosMode,
+        .ctrl_mode = CloseCircuit,
         .motor_direction = CounterClockWise,
-        .subdivision = 0x20,
-        .data = 1200,
+        .acc = 0,
         .speed = 50,
     };
 
@@ -41,6 +41,23 @@ void ChassisInit()
     ChassisMotor_Init_Config.usart_handle = &huart4;
     LeftBackMotorInstance = StepMotorRegister(&ChassisMotor_Init_Config);
 
+    //电机位置清零
+    StepMotorResetZero(LeftForwardMotorInstance);
+    StepMotorResetZero(RightForwardMotorInstance);
+    StepMotorResetZero(RightBackMotorInstance);
+    StepMotorResetZero(LeftBackMotorInstance);
+
+    //电机修改成闭环控制
+    StepMotorModifyCtrlMode(LeftForwardMotorInstance,true);
+    StepMotorModifyCtrlMode(RightForwardMotorInstance,true);
+    StepMotorModifyCtrlMode(RightBackMotorInstance,true);
+    StepMotorModifyCtrlMode(LeftBackMotorInstance,true);
+
+    //电机使能
+    StepMotorEnControl(LeftForwardMotorInstance,true,true);
+    StepMotorEnControl(RightForwardMotorInstance,true,true);
+    StepMotorEnControl(RightBackMotorInstance,true,true);
+    StepMotorEnControl(LeftBackMotorInstance,true,true);
 
 }
 
@@ -55,10 +72,10 @@ void MecanumKinematics(float vx, float vy, float omega)
 {
     //vx+-vy 不能超过1.875
     // 计算每个轮子的转速
-    LeftForwardMotorInstance->speed = (uint16_t)(fabs((vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左前轮 单位rad/s
-    RightForwardMotorInstance->speed = (uint16_t)(fabs((-vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右前轮
-    RightBackMotorInstance->speed = (uint16_t)(fabs((vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右后轮
-    LeftBackMotorInstance->speed = (uint16_t)(fabs((-vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左后轮
+    LeftForwardMotorInstance->speed = (uint16_t)(fabs((vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左前轮 单位rad/s
+    RightForwardMotorInstance->speed = (uint16_t)(fabs((-vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右前轮
+    RightBackMotorInstance->speed = (uint16_t)(fabs((vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右后轮
+    LeftBackMotorInstance->speed = (uint16_t)(fabs((-vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左后轮
 
 }
 /**
@@ -70,20 +87,20 @@ void MecanumKinematics(float vx, float vy, float omega)
 void MecanumInverseKinematics(float distance_x,float distance_y)
 {
     //distance_x +- distance_y 不能超过4.28
-    LeftForwardMotorInstance->data = (uint16_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
-    RightForwardMotorInstance->data = (uint16_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
-    RightBackMotorInstance->data = (uint16_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右后轮
-    LeftBackMotorInstance->data = (uint16_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左后轮
+    LeftForwardMotorInstance->clk = (uint32_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
+    RightForwardMotorInstance->clk = (uint32_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
+    RightBackMotorInstance->clk = (uint32_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右后轮
+    LeftBackMotorInstance->clk = (uint32_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左后轮
 
 }
 
 void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,float Length)
 {
     //设置四个电机为pos模式
-    LeftForwardMotorInstance->control_mode = PosMode;
-    RightForwardMotorInstance->control_mode = PosMode;
-    RightBackMotorInstance->control_mode = PosMode;
-    LeftBackMotorInstance->control_mode = PosMode;
+    LeftForwardMotorInstance->step_mode = PosMode;
+    RightForwardMotorInstance->step_mode = PosMode;
+    RightBackMotorInstance->step_mode = PosMode;
+    LeftBackMotorInstance->step_mode = PosMode;
 
     switch(Direction)
     {
@@ -183,10 +200,99 @@ void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,float Lengt
             break;
     }
 
+    //确保电机使能
+    StepMotorEnControl(LeftForwardMotorInstance,true,true);
+    StepMotorEnControl(RightForwardMotorInstance,true,true);
+    StepMotorEnControl(RightBackMotorInstance,true,true);
+    StepMotorEnControl(LeftBackMotorInstance,true,true);
+
+    //电机位置模式运行
+    StepMotorPosControl(LeftForwardMotorInstance,false,true);
+    StepMotorPosControl(RightForwardMotorInstance,false,true);
+    StepMotorPosControl(RightBackMotorInstance,false,true);
+    StepMotorPosControl(LeftBackMotorInstance,false,true);
 
 }
-
-void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle)
+void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
 {
+     // 计算每个轮子需要转动的距离（假设角度为正时顺时针旋转）
+    float rotation_circumference = 2 * PI * ROBOT_RADIUS;
+    float distance_per_degree = rotation_circumference / 360.0;
+    float distance = distance_per_degree * Angle;
+
+    // 计算每个轮子的转动角度
+    float wheel_rotation_angle = (distance / WHEEL_RADIUS) * (180.0 / PI); // 转换为度数
+
+    // // 将角度转换为电机的步数或角度
+    // float motor_rotation = wheel_rotation_angle * MOTOR_GEAR_RATIO;
+    // 将旋转角度转换为步数
+    float steps_per_degree = (STEPS_PER_REVOLUTION * MICROSTEPS) / 360.0;
+    uint32_t steps = (uint32_t)(wheel_rotation_angle * steps_per_degree);
+
+    // 设置每个电机脉冲
+    if(Direction == ClockWise)
+    {
+        LeftForwardMotorInstance->motor_direction = CounterClockWise;
+        LeftForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 左前轮
+
+        RightForwardMotorInstance->motor_direction = ClockWise;
+        RightForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 右前
+
+        RightBackMotorInstance->motor_direction = ClockWise;
+        RightBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 右后轮
+
+        LeftBackMotorInstance->motor_direction = CounterClockWise;
+        LeftBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 左后轮
+    }else{
+        LeftForwardMotorInstance->motor_direction = ClockWise;
+        LeftForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 左前轮
+
+        RightForwardMotorInstance->motor_direction = CounterClockWise;
+        RightForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 右前
+
+        RightBackMotorInstance->motor_direction = CounterClockWise;
+        RightBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 右后轮
+
+        LeftBackMotorInstance->motor_direction = ClockWise;
+        LeftBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 左后轮
+    }
+
+}
+void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle,float omega)
+{
+
+    #ifdef USE_IMU
+
+    /*…………预留IMU结合算法…………*/
+
+    #endif
+
+    #ifndef USE_IMU
+    //底盘旋转运动学逆解算
+    RotationMecanumInverseKinematics(Direction,Angle);
+
+    //确保电机使能
+    StepMotorEnControl(LeftForwardMotorInstance,true,true);
+    StepMotorEnControl(RightForwardMotorInstance,true,true);
+    StepMotorEnControl(RightBackMotorInstance,true,true);
+    StepMotorEnControl(LeftBackMotorInstance,true,true);
+
+    //电机位置模式运行
+    StepMotorPosControl(LeftForwardMotorInstance,false,true);
+    StepMotorPosControl(RightForwardMotorInstance,false,true);
+    StepMotorPosControl(RightBackMotorInstance,false,true);
+    StepMotorPosControl(LeftBackMotorInstance,false,true);
+
+    //预留执行时间
+    HAL_Delay(ROTATION_TIME);
+
+    //到时急停
+    StepMotorStop(LeftForwardMotorInstance,true);
+    StepMotorStop(RightForwardMotorInstance,true);
+    StepMotorStop(RightBackMotorInstance,true);
+    StepMotorStop(LeftBackMotorInstance,true);
+
+
+    #endif // !USE_IMU USE_IMU
 
 }
