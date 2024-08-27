@@ -101,11 +101,9 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  // ChassisInit();
-  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_1);
-  __HAL_TIM_SetCompare(&htim3,TIM_CHANNEL_1,50);
-  //ChassisTransiation(Forward,1,4);
-
+  ChassisInit();
+  ChassisTransiation(Forward,10,270);
+  ChassisRotate(ClockWise_Chassis,10,90.0);
   /* USER CODE END 2 */
 
   /* Infinite loop */

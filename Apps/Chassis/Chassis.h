@@ -35,7 +35,7 @@ void ChassisInit();
  * @param Velocity  速度
  * @param Length    距离(绝对值)
  */
-void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,float Length);
+void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,uint32_t Length);
 
 /**
  * @brief 底盘旋转
@@ -45,6 +45,6 @@ void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,float Lengt
  * @param Angle     角度
  * @param omega     旋转角速度
  */
-void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle,float omega);
+void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle);
 
 #endif // !CHASSIS_H

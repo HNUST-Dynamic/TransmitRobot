@@ -70,7 +70,6 @@ void ChassisInit()
  */
 void MecanumKinematics(float vx, float vy, float omega) 
 {
-    //vx+-vy 不能超过1.875
     // 计算每个轮子的转速
     LeftForwardMotorInstance->speed = (uint16_t)(fabs((vx + vy + (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 左前轮 单位rad/s
     RightForwardMotorInstance->speed = (uint16_t)(fabs((-vx + vy - (ROBOT_RADIUS * omega)) / WHEEL_RADIUS));  // 右前轮
@@ -84,9 +83,8 @@ void MecanumKinematics(float vx, float vy, float omega)
  * @param distance_x x方向移动的目标距离（米）
  * @param distance_y y方向移动的目标距离（米）
  */
-void MecanumInverseKinematics(float distance_x,float distance_y)
+void MecanumInverseKinematics(uint32_t distance_x,uint32_t distance_y)
 {
-    //distance_x +- distance_y 不能超过4.28
     LeftForwardMotorInstance->clk = (uint32_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
     RightForwardMotorInstance->clk = (uint32_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
     RightBackMotorInstance->clk = (uint32_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右后轮
@@ -94,7 +92,7 @@ void MecanumInverseKinematics(float distance_x,float distance_y)
 
 }
 
-void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,float Length)
+void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,uint32_t Length)
 {
     //设置四个电机为pos模式
     LeftForwardMotorInstance->step_mode = PosMode;
@@ -230,7 +228,7 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
     uint32_t steps = (uint32_t)(wheel_rotation_angle * steps_per_degree);
 
     // 设置每个电机脉冲
-    if(Direction == ClockWise)
+    if(Direction == ClockWise_Chassis)
     {
         LeftForwardMotorInstance->motor_direction = CounterClockWise;
         LeftForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 左前轮
@@ -258,7 +256,7 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
     }
 
 }
-void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle,float omega)
+void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle)
 {
 
     #ifdef USE_IMU
