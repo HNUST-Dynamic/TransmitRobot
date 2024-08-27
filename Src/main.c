@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include"Chassis.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -80,7 +80,7 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock *
+  /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
@@ -101,9 +101,7 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  ChassisInit();
-  ChassisTransiation(Forward,10,270);
-  ChassisRotate(ClockWise_Chassis,10,90.0);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
