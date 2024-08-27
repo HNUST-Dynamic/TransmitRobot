@@ -18,27 +18,28 @@ void IICCallback()
 
 }
 
-void IMU_Init()
+void IMUInit()
 {
     IIC_Init_Config_s IIC_Init_Config = {
         .id = 0,
         .work_mode = IIC_BLOCK_MODE,
-        .dev_address = 0x51,
+        .dev_address = 0x50,
         .callback = &IICCallback,
-        .handle = &hi2c1,
+        .handle = &hi2c2,
     };
 
     IIC1 = IICRegister(&IIC_Init_Config);
 
 }
 
-void IMU_Send(IICInstance* IIC)
+void IMUSend()
 {
-    uint8_t Data[2] = {0x3f,(IIC->dev_address<<1)|1};
-    IICTransmit(IIC1,&Data,sizeof(Data),IIC_SEQ_RELEASE);
+    uint8_t Data = 0x3f;
+    IICTransmit(IIC1,&Data,1,IIC_SEQ_RELEASE);
 }
 
-void IMU_Recive(IICInstance* IIC)
+void IMURecive()
 {
-    IICReceive(IIC1,&ReciveData,sizeof(ReciveData),IIC_SEQ_RELEASE);
+    IIC1->dev_address = 0x51;
+    IICReceive(IIC1,&ReciveData,1,IIC_SEQ_RELEASE);
 }

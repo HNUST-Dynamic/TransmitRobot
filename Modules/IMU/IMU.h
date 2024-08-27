@@ -4,23 +4,25 @@
 #include "main.h"
 #include "bsp_iic.h"
 
+extern uint8_t ReciveData[2];
+
 /**
  * @brief IMU初始化
  * 
  */
-void IMU_Init();
+void IMUInit();
 
 /**
  * @brief IMU发送读取请求
  * 
  */
-void IMU_Send(IICInstance* IIC);
+void IMUSend();
 
 /**
  * @brief IMU接受返回数据
  * 
  * @return void 
  */
-void IMU_Recive(IICInstance* IIC);
+void IMURecive();
 
 #endif
