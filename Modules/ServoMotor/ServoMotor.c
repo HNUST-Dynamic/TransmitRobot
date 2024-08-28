@@ -1,6 +1,8 @@
 #include "servoMotor.h"
 #include "stdlib.h"
 #include "memory.h"
+#include "stm32f4xx_hal_tim.h"
+#include "bsp_pwm.h"
 
 extern TIM_HandleTypeDef htim1;
 
@@ -41,7 +43,7 @@ void ServoMotor_Control()
     if(servo_motor_instance[i])
     {
         compare_value[i] = 0.5 * 20000 / 20 + Servo_Motor->angle * 20000 / 20 / 135;
-        _HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, compare_value[i]);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, compare_value[i]);
     }
        
   }
@@ -52,6 +54,6 @@ void ServoMotor_Set_Angle(ServoInstance* xServo,uint16_t xangle)
 {
     xServo->angle =xangle;
     pluse =0.5 * 20000 / 20 + xServo->angle * 20000 / 20 / 135;
-     _HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, pluse);
+     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, pluse);
 
 }

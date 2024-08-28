@@ -109,7 +109,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    ServoMotor_Control();
+    pickup();
     HAL_Delay(5);
     /* USER CODE BEGIN 3 */
   }

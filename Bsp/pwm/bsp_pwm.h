@@ -88,4 +88,26 @@ void PWMSetPeriod(PWMInstance *pwm, float period);
  */
 void PWMStartDMA(PWMInstance *pwm, uint32_t *pData, uint32_t Size);
 
+
+
+/**
+  * @brief  Set the TIM Capture Compare Register value on runtime without calling another time ConfigChannel function.
+  * @param  __HANDLE__ TIM handle.
+  * @param  __CHANNEL__ TIM Channels to be configured.
+  *          This parameter can be one of the following values:
+  *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+  *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+  *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+  *            @arg TIM_CHANNEL_4: TIM Channel 4 selected
+  * @param  __COMPARE__ specifies the Capture Compare register new value.
+  * @retval None
+  */
+#define __HAL_TIM_SET_COMPARE(__HANDLE__, __CHANNEL__, __COMPARE__) \
+  (((__CHANNEL__) == TIM_CHANNEL_1) ? ((__HANDLE__)->Instance->CCR1 = (__COMPARE__)) :\
+   ((__CHANNEL__) == TIM_CHANNEL_2) ? ((__HANDLE__)->Instance->CCR2 = (__COMPARE__)) :\
+   ((__CHANNEL__) == TIM_CHANNEL_3) ? ((__HANDLE__)->Instance->CCR3 = (__COMPARE__)) :\
+   ((__HANDLE__)->Instance->CCR4 = (__COMPARE__)))
+
+
+
 #endif // BSP_PWM_H

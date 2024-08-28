@@ -11,9 +11,17 @@
 #include "Lift.h"
 #include "ServoMotor.h"
 #include "StepMotor.h"
+
+
+#include "chassis.h"
+#include "StepMotor.h"
+#include "usart.h"
+#include <math.h>
 static ServoInstance     *GripperServoMotor_Instance,    // 抓手舵机
                          *ElevatorServoMotor_Instance,   //电梯下盘舵机
                          *TurntableServoMotor_Instance;  //物料盘舵机
+
+static StepMotorInstance *ElevatorMotorInstance;
 
 //注册三个舵机
 void Lift_Init()
@@ -41,25 +49,44 @@ void Lift_Init()
 
 void pickup()//抓手抓取，参数要调整
 {
-  ServoMotor_Set_Angle(GripperServoMotor_Instance,60);
+    ServoMotor_Set_Angle(GripperServoMotor_Instance,60);
 }
 void putdown()
 {
-  ServoMotor_Set_Angle(GripperServoMotor_Instance,0);
+    ServoMotor_Set_Angle(GripperServoMotor_Instance,0);
 }
 
 void Lift_Turn()//电梯转正向
 {
-  ServoMotor_Set_Angle(ElevatorServoMotor_Instance,180);
+    ServoMotor_Set_Angle(ElevatorServoMotor_Instance,180);
 }
 
 void Lift_Turn_back()//电梯转反向
 {
-  ServoMotor_Set_Angle(ElevatorServoMotor_Instance,0);
+    ServoMotor_Set_Angle(ElevatorServoMotor_Instance,0);
 }
 
 
 void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
 {
-  ServoMotor_Set_Angle(TurntableServoMotor_Instance,180);
+    ServoMotor_Set_Angle(TurntableServoMotor_Instance,180);
+}
+
+void ElevatorMotor_Init()
+{
+    StepMotor_Init_Config_s ElevatorMotor_Init_Config = {
+     .control_id = 0x01,
+     .control_mode = ForceMode,
+     .motor_direction = CounterClockWise,
+     .subdivision = 0x20,
+     .data = 1200,
+     .speed = 50,
+     .control = &StepMotorControl,
+    };
+
+    ElevatorMotor_Init_Config.usart_handle = &huart1;
+    ElevatorMotorInstance = StepMotorRegister(&ElevatorMotor_Init_Config);
+
+    ElevatorMotorInstance->control(ElevatorMotorInstance);
+
 }
