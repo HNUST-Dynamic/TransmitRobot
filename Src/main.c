@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "myiic.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -100,6 +100,16 @@ int main(void)
   MX_USART6_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+  uint8_t ReciveData[2];
+  iic_init();
+  iic_start();
+  iic_send_byte(0xA0);
+  while(iic_wait_ack());
+  iic_send_byte(0x3f);
+  while(iic_wait_ack());
+  iic_start();
+  iic_send_byte(0xA1);
+  while(iic_wait_ack());
 
   /* USER CODE END 2 */
 
@@ -107,6 +117,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+    ReciveData[0] = iic_read_byte(1);
+    ReciveData[1] = iic_read_byte(1);
+
+    HAL_UART_Transmit_DMA(&huart5,&ReciveData,2);
+    HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
