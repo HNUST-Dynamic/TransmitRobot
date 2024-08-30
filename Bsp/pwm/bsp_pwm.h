@@ -108,6 +108,10 @@ void PWMStartDMA(PWMInstance *pwm, uint32_t *pData, uint32_t Size);
    ((__CHANNEL__) == TIM_CHANNEL_3) ? ((__HANDLE__)->Instance->CCR3 = (__COMPARE__)) :\
    ((__HANDLE__)->Instance->CCR4 = (__COMPARE__)))
 
+#define GTIM_TIMX_INT                       TIM3
+#define GTIM_TIMX_INT_IRQn                  TIM3_IRQn
+#define GTIM_TIMX_INT_CLK_ENABLE()          do{ __HAL_RCC_TIM3_CLK_ENABLE(); }while(0)   /* TIM3时钟使能 */
+
 
 
 #endif // BSP_PWM_H

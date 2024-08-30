@@ -8,8 +8,8 @@ extern TIM_HandleTypeDef htim1;
 
 static ServoInstance* servo_motor_instance[SERVO_MOTOR_CNT] = {NULL} ;
 static int16_t compare_value[SERVO_MOTOR_CNT] = {0};
-static int16_t pluse;
-static  uint8_t servo_idx = 0;
+static uint32_t pluse;
+static  uint8_t servo_idx = 3;
 
 //注册舵机
 ServoInstance *ServoInit(Servo_Init_Config_s *Servo_Init_Config)
@@ -37,15 +37,13 @@ void ServoMotor_Init()
 void ServoMotor_Control()
 {
   ServoInstance* Servo_Motor;
-
   for (size_t i =0; i < servo_idx ; i++)
   {
     if(servo_motor_instance[i])
     {
-        compare_value[i] = 0.5 * 20000 / 20 + Servo_Motor->angle * 20000 / 20 / 135;
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, compare_value[i]);
+        compare_value[i] = 0.5 * 20000 / 20 + Servo_Motor->angle * 20000 / 20 / 135;       
+        __HAL_TIM_SET_COMPARE(&htim1,servo_motor_instance[i]->Channel, compare_value[i]);
     }
-       
   }
    
 }
@@ -53,7 +51,12 @@ void ServoMotor_Control()
 void ServoMotor_Set_Angle(ServoInstance* xServo,uint16_t xangle)
 {
     xServo->angle =xangle;
-    pluse =0.5 * 20000 / 20 + xServo->angle * 20000 / 20 / 135;
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, pluse);
+    uint32_t pulse_min = 3500;  // 对应0°的脉冲宽度 (0.5ms)
+    uint32_t pulse_max = 5833;  // 对应270°的脉冲宽度 (2.5ms)
+    
+    // 计算实际脉宽
+    uint32_t pulse = pulse_min + (xServo->angle * (pulse_max - pulse_min)) / 270;
+    // uint32_t pluse =0.5 * 20000 / 20 + xServo->angle * 20000 / 20 / 135;
+    __HAL_TIM_SET_COMPARE(&htim1, xServo->Channel, pluse);
 
 }

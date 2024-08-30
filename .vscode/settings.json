@@ -58,7 +58,8 @@
         "can.h": "c",
         "cstdlib": "c",
         "stepmotor.h": "c",
-        "usart.h": "c"
+        "usart.h": "c",
+        "tim.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",

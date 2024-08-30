@@ -26,7 +26,7 @@ static StepMotorInstance *ElevatorMotorInstance;
 //注册三个舵机
 void Lift_Init()
 {
-    ServoMotor_Init();
+    //ServoMotor_Init();
     Servo_Init_Config_s LiftServoMotor_Config = {
         .angle   = 0 ,
         .htim    = &htim1,
@@ -49,11 +49,11 @@ void Lift_Init()
 
 void pickup()//抓手抓取，参数要调整
 {
-    ServoMotor_Set_Angle(GripperServoMotor_Instance,60);
+    ServoMotor_Set_Angle(GripperServoMotor_Instance,10);
 }
 void putdown()
 {
-    ServoMotor_Set_Angle(GripperServoMotor_Instance,);
+    ServoMotor_Set_Angle(GripperServoMotor_Instance,270);
 }
 
 void Lift_Turn()//电梯转正向
