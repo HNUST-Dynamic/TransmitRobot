@@ -33,7 +33,7 @@ void ServoMotor_Init()
     HAL_TIM_MspPostInit(&htim1);
 }
 
-//多个舵机控制
+//单次多个舵机控制
 void ServoMotor_Control()
 {
   ServoInstance* Servo_Motor;
@@ -54,6 +54,6 @@ void ServoMotor_Set_Angle(ServoInstance* xServo,uint16_t xangle)
 {
     xServo->angle =xangle;
     pluse =0.5 * 20000 / 20 + xServo->angle * 20000 / 20 / 135;
-     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, pluse);
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, pluse);
 
 }

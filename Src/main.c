@@ -109,8 +109,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    pickup();
-    HAL_Delay(5);
+    //pickup();
+    //HAL_Delay(5);
+    putdown();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

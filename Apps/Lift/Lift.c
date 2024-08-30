@@ -53,7 +53,7 @@ void pickup()//抓手抓取，参数要调整
 }
 void putdown()
 {
-    ServoMotor_Set_Angle(GripperServoMotor_Instance,0);
+    ServoMotor_Set_Angle(GripperServoMotor_Instance,);
 }
 
 void Lift_Turn()//电梯转正向
@@ -70,6 +70,12 @@ void Lift_Turn_back()//电梯转反向
 void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
 {
     ServoMotor_Set_Angle(TurntableServoMotor_Instance,180);
+}
+
+void test( int tst_angle)
+{
+
+    ServoMotor_Set_Angle(GripperServoMotor_Instance,tst_angle);
 }
 
 void ElevatorMotor_Init()
