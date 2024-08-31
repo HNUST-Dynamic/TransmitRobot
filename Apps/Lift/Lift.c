@@ -13,10 +13,11 @@
 #include "StepMotor.h"
 
 
-#include "chassis.h"
+#include "Chassis.h"
 #include "StepMotor.h"
 #include "usart.h"
 #include <math.h>
+
 static ServoInstance     *GripperServoMotor_Instance,    // 抓手舵机
                          *ElevatorServoMotor_Instance,   //电梯下盘舵机
                          *TurntableServoMotor_Instance;  //物料盘舵机
@@ -66,17 +67,12 @@ void Lift_Turn_back()//电梯转反向
     ServoMotor_Set_Angle(ElevatorServoMotor_Instance,0);
 }
 
-
 void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
 {
     ServoMotor_Set_Angle(TurntableServoMotor_Instance,180);
 }
 
-void test( int tst_angle)
-{
 
-    ServoMotor_Set_Angle(GripperServoMotor_Instance,tst_angle);
-}
 
 void ElevatorMotor_Init()
 {
@@ -94,5 +90,15 @@ void ElevatorMotor_Init()
     ElevatorMotorInstance = StepMotorRegister(&ElevatorMotor_Init_Config);
 
     ElevatorMotorInstance->control(ElevatorMotorInstance);
+
+}
+
+void Lift_updown_control(Chassis_Direction_e Direction,float Velocity,float Length)
+{
+   ElevatorMotorInstance->control_mode = PosMode;
+
+   ElevatorMotorInstance->motor_direction = CounterClockWise;
+
+   ElevatorMotorInstance->control(ElevatorMotorInstance);
 
 }
