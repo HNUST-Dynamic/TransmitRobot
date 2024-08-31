@@ -46,19 +46,19 @@ void ChassisInit()
     StepMotorResetZero(RightForwardMotorInstance);
     StepMotorResetZero(RightBackMotorInstance);
     StepMotorResetZero(LeftBackMotorInstance);
-
+    HAL_Delay(200);
     //电机修改成闭环控制
     StepMotorModifyCtrlMode(LeftForwardMotorInstance,true);
     StepMotorModifyCtrlMode(RightForwardMotorInstance,true);
     StepMotorModifyCtrlMode(RightBackMotorInstance,true);
     StepMotorModifyCtrlMode(LeftBackMotorInstance,true);
-
+    HAL_Delay(200);
     //电机使能
-    StepMotorEnControl(LeftForwardMotorInstance,true,true);
-    StepMotorEnControl(RightForwardMotorInstance,true,true);
-    StepMotorEnControl(RightBackMotorInstance,true,true);
-    StepMotorEnControl(LeftBackMotorInstance,true,true);
-
+    StepMotorEnControl(LeftForwardMotorInstance,true,false);
+    StepMotorEnControl(RightForwardMotorInstance,true,false);
+    StepMotorEnControl(RightBackMotorInstance,true,false);
+    StepMotorEnControl(LeftBackMotorInstance,true,false);
+    HAL_Delay(200);
 }
 
 /**
@@ -92,7 +92,7 @@ void MecanumInverseKinematics(uint32_t distance_x,uint32_t distance_y)
 
 }
 
-void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,uint32_t Length)
+void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t Length)
 {
     //设置四个电机为pos模式
     LeftForwardMotorInstance->step_mode = PosMode;
@@ -199,16 +199,16 @@ void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,uint32_t Le
     }
 
     //确保电机使能
-    StepMotorEnControl(LeftForwardMotorInstance,true,true);
-    StepMotorEnControl(RightForwardMotorInstance,true,true);
-    StepMotorEnControl(RightBackMotorInstance,true,true);
-    StepMotorEnControl(LeftBackMotorInstance,true,true);
-
+    StepMotorEnControl(LeftForwardMotorInstance,true,false);
+    StepMotorEnControl(RightForwardMotorInstance,true,false);
+    StepMotorEnControl(RightBackMotorInstance,true,false);
+    StepMotorEnControl(LeftBackMotorInstance,true,false);
+    HAL_Delay(200);
     //电机位置模式运行
-    StepMotorPosControl(LeftForwardMotorInstance,false,true);
-    StepMotorPosControl(RightForwardMotorInstance,false,true);
-    StepMotorPosControl(RightBackMotorInstance,false,true);
-    StepMotorPosControl(LeftBackMotorInstance,false,true);
+    StepMotorPosControl(LeftForwardMotorInstance,false,false);
+    StepMotorPosControl(RightForwardMotorInstance,false,false);
+    StepMotorPosControl(RightBackMotorInstance,false,false);
+    StepMotorPosControl(LeftBackMotorInstance,false,false);
 
 }
 void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)

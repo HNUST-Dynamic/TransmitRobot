@@ -23,7 +23,7 @@
  */
 
 #include "myiic.h"
-
+#define IIC_Delay_Time 20
 /**
  * @brief       初始化IIC
  * @param       无
@@ -62,8 +62,12 @@ static void iic_delay(void)
 }
 void Delay(uint32_t count)//400KHzIIC
 {
-	unsigned int uiCnt = count*8;
-	while (uiCnt --);
+    uint8_t i = 0;    
+    while(count--)
+    {
+        i = IIC_Delay_Time;
+        while(i--);
+    }
 }
 
 /**
@@ -75,11 +79,11 @@ void iic_start(void)
 {
     IIC_SDA(1);
     IIC_SCL(1);
-    Delay(5);
+    Delay(1);
     IIC_SDA(0);             /* START信号: 当SCL为高时, SDA从高变成低, 表示起始信号 */
-    Delay(5);
+    Delay(1);
     IIC_SCL(0);             /* 钳住I2C总线，准备发送或接收数据 */
-    Delay(5);
+    Delay(1);
 }
 
 /**
@@ -90,11 +94,11 @@ void iic_start(void)
 void iic_stop(void)
 {
     IIC_SDA(0);             /* STOP信号: 当SCL为高时, SDA从低变成高, 表示停止信号 */
-    Delay(5);
+    Delay(1);
     IIC_SCL(1);
-    Delay(5);
+    Delay(1);
     IIC_SDA(1);             /* 发送I2C总线结束信号 */
-    Delay(5);
+    Delay(1);
 }
 
 /**
@@ -109,9 +113,9 @@ uint8_t iic_wait_ack(void)
     uint8_t rack = 0;
 
     IIC_SDA(1);             /* 主机释放SDA线(此时外部器件可以拉低SDA线) */
-    Delay(5);
+    Delay(1);
     IIC_SCL(1);             /* SCL=1, 此时从机可以返回ACK */
-    Delay(5);
+    Delay(1);
 
     while (IIC_READ_SDA)    /* 等待应答 */
     {
@@ -126,7 +130,7 @@ uint8_t iic_wait_ack(void)
     }
 
     IIC_SCL(0);             /* SCL=0, 结束ACK检查 */
-    Delay(5);
+    Delay(1);
     return rack;
 }
 
@@ -138,13 +142,13 @@ uint8_t iic_wait_ack(void)
 void iic_ack(void)
 {
     IIC_SDA(0);             /* SCL 0 -> 1 时 SDA = 0,表示应答 */
-    Delay(5);
+    Delay(1);
     IIC_SCL(1);             /* 产生一个时钟 */
-    Delay(5);
+    Delay(1);
     IIC_SCL(0);
-    Delay(5);
+    Delay(1);
     IIC_SDA(1);             /* 主机释放SDA线 */
-    Delay(5);
+    Delay(1);
 }
 
 /**
@@ -155,11 +159,11 @@ void iic_ack(void)
 void iic_nack(void)
 {
     IIC_SDA(1);             /* SCL 0 -> 1  时 SDA = 1,表示不应答 */
-    Delay(5);
+    Delay(1);
     IIC_SCL(1);             /* 产生一个时钟 */
-    Delay(5);
+    Delay(1);
     IIC_SCL(0);
-    Delay(5);
+    Delay(1);
 }
 
 /**
@@ -174,9 +178,9 @@ void iic_send_byte(uint8_t data)
     for (t = 0; t < 8; t++)
     {
         IIC_SDA((data & 0x80) >> 7);    /* 高位先发送 */
-        Delay(5);
+        Delay(1);
         IIC_SCL(1);
-        Delay(5);
+        Delay(1);
         IIC_SCL(0);
         data <<= 1;             /* 左移1位,用于下一次发送 */
     }
@@ -196,7 +200,7 @@ uint8_t iic_read_byte(uint8_t ack)
     {
         receive <<= 1;          /* 高位先输出,所以先收到的数据位要左移 */
         IIC_SCL(1);
-        Delay(5);
+        Delay(1);
 
         if (IIC_READ_SDA)
         {
@@ -204,7 +208,7 @@ uint8_t iic_read_byte(uint8_t ack)
         }
         
         IIC_SCL(0);
-        Delay(5);
+        Delay(1);
     }
 
     if (!ack)

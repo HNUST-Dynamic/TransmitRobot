@@ -35,7 +35,7 @@ void ChassisInit();
  * @param Velocity  速度
  * @param Length    距离(绝对值)
  */
-void ChassisTransiation(Chassis_Direction_e Direction,float Velocity,uint32_t Length);
+void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t Length);
 
 /**
  * @brief 底盘旋转

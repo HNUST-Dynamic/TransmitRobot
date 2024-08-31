@@ -122,7 +122,7 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
 
 void StepMotorResetZero(StepMotorInstance* motor)
 {
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
     
     // 装载命令
     cmd[0] =  0x01;                       // 地址
@@ -136,7 +136,7 @@ void StepMotorResetZero(StepMotorInstance* motor)
 
 void StepMotorResetClogPro(StepMotorInstance* motor)
 {
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
     
     // 装载命令
     cmd[0] =  0x01;                       // 地址
@@ -151,7 +151,7 @@ void StepMotorResetClogPro(StepMotorInstance* motor)
 void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s)
 {
     uint8_t i = 0;
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
     
     // 装载命令
     cmd[i] = 0x01; ++i;                   // 地址
@@ -183,7 +183,7 @@ void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s)
 
 void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF)
 {
-  uint8_t cmd[16] = {0};
+  static uint8_t cmd[16] = {0};
   
   // 装载命令
   cmd[0] =  0x01;                       // 地址
@@ -199,7 +199,7 @@ void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF)
 
 void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF)
 {
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
     
     // 装载命令
     cmd[0] =  0x01;                       // 地址
@@ -215,7 +215,7 @@ void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF)
 
 void StepMotorVelControl(StepMotorInstance* motor, bool snF)
 {
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
 
     // 装载命令
     cmd[0] =  0x01;                       // 地址
@@ -233,7 +233,7 @@ void StepMotorVelControl(StepMotorInstance* motor, bool snF)
 
 void StepMotorPosControl(StepMotorInstance* motor, bool raF, bool snF)
 {
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
 
     // 装载命令
     cmd[0]  =  0x01;                      // 地址
@@ -257,7 +257,7 @@ void StepMotorPosControl(StepMotorInstance* motor, bool raF, bool snF)
 
 void StepMotorStop(StepMotorInstance* motor, bool snF)
 {
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
     
     // 装载命令
     cmd[0] =  0x01;                       // 地址
@@ -273,7 +273,7 @@ void StepMotorStop(StepMotorInstance* motor, bool snF)
 
 void StepMotorSynMotion(StepMotorInstance* motor)
 {
-    uint8_t cmd[16] = {0};
+    static uint8_t cmd[16] = {0};
     
     // 装载命令
     cmd[0] =  0x01;                       // 地址

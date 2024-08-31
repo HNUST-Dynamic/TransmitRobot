@@ -62,9 +62,10 @@
         "imu.h": "c",
         "myiic.h": "c",
         "core_cm4.h": "c",
-        "stm32f407xx.h": "c"
+        "stm32f407xx.h": "c",
+        "stdbool.h": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": true,
+    "cortex-debug.variableUseNaturalFormat": false,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     // "C_Cpp.default.compilerPath": "D:\\Msys2\\mingw64\\bin\\arm-none-eabi-gcc.exe"
     "makefile.compileCommandsPath": "build/compile_commands.json"
