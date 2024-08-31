@@ -114,7 +114,7 @@ int main(void)
   {
     /* USER CODE END WHILE */
   //pickup();
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 5000);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 5000);//3600/5000
   //putdown();
     /* USER CODE BEGIN 3 */
   }
