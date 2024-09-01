@@ -31,6 +31,7 @@
 #include "bsp_usart.h"
 #include "Chassis.h"
 #include "stdbool.h"
+#include "Lift.h"
 
 
 /* USER CODE END Includes */
@@ -94,7 +95,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  //MX_DMA_Init();
+  MX_DMA_Init();
   MX_TIM1_Init();
   MX_TIM3_Init();
   MX_UART4_Init();
@@ -105,15 +106,20 @@ int main(void)
   MX_USART6_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  // IMUInit();
+  IMUInit();
   ChassisInit();
   HAL_Delay(2000);
   ChassisTransiation(Forward,1000,3200);
-  ChassisTransiation();
+
   HAL_TIM_PWM_Init(&htim1);
   HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2); /* 配置TIMx通道y */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                           /* 开启对应PWM通道 */
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
   
+  ElevatorMotor_Init();
+  HAL_Delay(2000);
+
+  Lift_updown_control(Forward ,1000,3200);
+
  
   /* USER CODE END 2 */
 
@@ -123,10 +129,7 @@ int main(void)
   { 
 
     /* USER CODE END WHILE */
-  //pickup();
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 3000);//3600/5000
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 5000);
-  //putdown();
+  
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

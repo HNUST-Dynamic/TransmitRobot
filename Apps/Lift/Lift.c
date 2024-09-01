@@ -77,28 +77,59 @@ void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为�
 void ElevatorMotor_Init()
 {
     StepMotor_Init_Config_s ElevatorMotor_Init_Config = {
-     .control_id = 0x01,
-     .control_mode = ForceMode,
-     .motor_direction = CounterClockWise,
-     .subdivision = 0x20,
-     .data = 1200,
-     .speed = 50,
-     .control = &StepMotorControl,
+    .step_mode = PosMode,
+    .ctrl_mode = CloseCircuit,
+    .motor_direction = CounterClockWise,
+    .acc = 0,
+    .speed = 50,
     };
 
-    ElevatorMotor_Init_Config.usart_handle = &huart1;
+
+    ElevatorMotor_Init_Config.usart_handle = &huart5;
     ElevatorMotorInstance = StepMotorRegister(&ElevatorMotor_Init_Config);
 
-    ElevatorMotorInstance->control(ElevatorMotorInstance);
+    StepMotorResetZero(ElevatorMotorInstance);
+    StepMotorModifyCtrlMode(ElevatorMotorInstance,true);
+
+    StepMotorEnControl(ElevatorMotorInstance,true,false);
+    HAL_Delay(100);
 
 }
 
 void Lift_updown_control(Chassis_Direction_e Direction,float Velocity,float Length)
 {
-   ElevatorMotorInstance->control_mode = PosMode;
+   ElevatorMotorInstance->step_mode = PosMode;
 
    ElevatorMotorInstance->motor_direction = CounterClockWise;
 
-   ElevatorMotorInstance->control(ElevatorMotorInstance);
+   MecanumKinematics(0,Velocity,0);
+   MecanumInverseKinematics(0,Length);
+
+   StepMotorEnControl(ElevatorMotorInstance,true,false);
+   StepMotorPosControl(ElevatorMotorInstance,false,false);
+}
+
+//启动之后将电梯升起然后转向出去
+void Lift_StartFirst()
+{
+
+
+
+
+
+
+
+
+
+}
+
+void Lift_wholeProcess()
+{
+
+
+
+
+
+
 
 }
