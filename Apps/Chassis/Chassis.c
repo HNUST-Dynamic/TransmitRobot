@@ -105,8 +105,8 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
         case Forward:
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = CounterClockWise;
-            RightForwardMotorInstance->motor_direction = CounterClockWise;
-            RightBackMotorInstance->motor_direction = CounterClockWise;
+            RightForwardMotorInstance->motor_direction = ClockWise;
+            RightBackMotorInstance->motor_direction = ClockWise;
             LeftBackMotorInstance->motor_direction = CounterClockWise;
             //设置四个电机的速度
             MecanumKinematics(0,Velocity,0);
@@ -116,8 +116,8 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
         case Back:
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = ClockWise;
-            RightForwardMotorInstance->motor_direction = ClockWise;
-            RightBackMotorInstance->motor_direction = ClockWise;
+            RightForwardMotorInstance->motor_direction = CounterClockWise;
+            RightBackMotorInstance->motor_direction = CounterClockWise;
             LeftBackMotorInstance->motor_direction = ClockWise;
             //设置四个电机的速度
             MecanumKinematics(Velocity,0,0);
@@ -127,8 +127,8 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
         case Left:
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = CounterClockWise;
-            RightForwardMotorInstance->motor_direction = ClockWise;
-            RightBackMotorInstance->motor_direction = CounterClockWise;
+            RightForwardMotorInstance->motor_direction = CounterClockWise;
+            RightBackMotorInstance->motor_direction = ClockWise;
             LeftBackMotorInstance->motor_direction = ClockWise;
             //设置四个电机的速度
             MecanumKinematics(Velocity,0,0);
@@ -138,8 +138,8 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
         case Right:
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = ClockWise;
-            RightForwardMotorInstance->motor_direction = CounterClockWise;
-            RightBackMotorInstance->motor_direction = ClockWise;
+            RightForwardMotorInstance->motor_direction = ClockWise;
+            RightBackMotorInstance->motor_direction = CounterClockWise;
             LeftBackMotorInstance->motor_direction = CounterClockWise;
             //设置四个电机的速度
             MecanumKinematics(-Velocity,0,0);
@@ -150,7 +150,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = CounterClockWise;
             RightForwardMotorInstance->motor_direction = CounterClockWise;
-            RightBackMotorInstance->motor_direction = CounterClockWise;
+            RightBackMotorInstance->motor_direction = ClockWise;
             LeftBackMotorInstance->motor_direction = CounterClockWise;
             //设置四个电机的速度
             MecanumKinematics(0.707*Velocity,0.707*Velocity,0);
@@ -160,7 +160,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
         case RightForward:
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = CounterClockWise;
-            RightForwardMotorInstance->motor_direction = CounterClockWise;
+            RightForwardMotorInstance->motor_direction = ClockWise;
             RightBackMotorInstance->motor_direction = CounterClockWise;
             LeftBackMotorInstance->motor_direction = CounterClockWise;
             //设置四个电机的速度
@@ -171,7 +171,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
         case LeftBack:
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = ClockWise;
-            RightForwardMotorInstance->motor_direction = ClockWise;
+            RightForwardMotorInstance->motor_direction = CounterClockWise;
             RightBackMotorInstance->motor_direction = ClockWise;
             LeftBackMotorInstance->motor_direction = ClockWise;
             //设置四个电机的速度
@@ -183,7 +183,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的方向
             LeftForwardMotorInstance->motor_direction = ClockWise;
             RightForwardMotorInstance->motor_direction = ClockWise;
-            RightBackMotorInstance->motor_direction = ClockWise;
+            RightBackMotorInstance->motor_direction = CounterClockWise;
             LeftBackMotorInstance->motor_direction = ClockWise;
             //设置四个电机的速度
             MecanumKinematics(-0.707*Velocity,-0.707*Velocity,0);
@@ -233,10 +233,10 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
         LeftForwardMotorInstance->motor_direction = CounterClockWise;
         LeftForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 左前轮
 
-        RightForwardMotorInstance->motor_direction = ClockWise;
+        RightForwardMotorInstance->motor_direction = CounterClockWise;
         RightForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 右前
 
-        RightBackMotorInstance->motor_direction = ClockWise;
+        RightBackMotorInstance->motor_direction = CounterClockWise;
         RightBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 右后轮
 
         LeftBackMotorInstance->motor_direction = CounterClockWise;
@@ -245,10 +245,10 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
         LeftForwardMotorInstance->motor_direction = ClockWise;
         LeftForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 左前轮
 
-        RightForwardMotorInstance->motor_direction = CounterClockWise;
+        RightForwardMotorInstance->motor_direction = ClockWise;
         RightForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 右前
 
-        RightBackMotorInstance->motor_direction = CounterClockWise;
+        RightBackMotorInstance->motor_direction = ClockWise;
         RightBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 右后轮
 
         LeftBackMotorInstance->motor_direction = ClockWise;
