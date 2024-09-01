@@ -233,10 +233,10 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
         LeftForwardMotorInstance->motor_direction = CounterClockWise;
         LeftForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 左前轮
 
-        RightForwardMotorInstance->motor_direction = ClockWise;
+        RightForwardMotorInstance->motor_direction = CounterClockWise;
         RightForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 右前
 
-        RightBackMotorInstance->motor_direction = ClockWise;
+        RightBackMotorInstance->motor_direction = CounterClockWise;
         RightBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 右后轮
 
         LeftBackMotorInstance->motor_direction = CounterClockWise;
@@ -245,10 +245,10 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
         LeftForwardMotorInstance->motor_direction = ClockWise;
         LeftForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 左前轮
 
-        RightForwardMotorInstance->motor_direction = CounterClockWise;
+        RightForwardMotorInstance->motor_direction = ClockWise;
         RightForwardMotorInstance->clk = (uint32_t)(fabs(steps));  // 右前
 
-        RightBackMotorInstance->motor_direction = CounterClockWise;
+        RightBackMotorInstance->motor_direction = ClockWise;
         RightBackMotorInstance->clk = (uint32_t)(fabs(steps));  // 右后轮
 
         LeftBackMotorInstance->motor_direction = ClockWise;
