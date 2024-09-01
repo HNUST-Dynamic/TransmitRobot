@@ -102,10 +102,11 @@ void Lift_updown_control(Chassis_Direction_e Direction,float Velocity,float Leng
 
    ElevatorMotorInstance->motor_direction = CounterClockWise;
 
-   MecanumKinematics(0,Velocity,0);
-   MecanumInverseKinematics(0,Length);
-
+   ElevatorMotorInstance->speed = Velocity;
+   ElevatorMotorInstance->clk =  Length;
+   
    StepMotorEnControl(ElevatorMotorInstance,true,false);
+   HAL_Delay(200);
    StepMotorPosControl(ElevatorMotorInstance,false,false);
 }
 
