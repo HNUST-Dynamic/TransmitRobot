@@ -109,7 +109,6 @@ int main(void)
   ChassisInit();
   HAL_Delay(2000);
   ChassisTransiation(Forward,1000,3200);
-  ChassisTransiation();
   /* USER CODE END 2 */
 
   /* Infinite loop */
