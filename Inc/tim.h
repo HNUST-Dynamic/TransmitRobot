@@ -36,6 +36,7 @@ extern TIM_HandleTypeDef htim1;
 
 extern TIM_HandleTypeDef htim3;
 
+extern TIM_OC_InitTypeDef sConfigOC ;
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
