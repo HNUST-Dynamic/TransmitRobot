@@ -106,18 +106,14 @@ int main(void)
   MX_USART6_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+  //上电后2秒用来给电机初始化
+  HAL_Delay(2000);
   IMUInit();
-  // ChassisInit();
-  // HAL_Delay(2000);
-  //ChassisTransiation(Forward,1000,3200);
-
-  // HAL_TIM_PWM_Init(&htim1);
-  // HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2); /* 配置TIMx通道y */
-  // HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  
-  ElevatorMotor_Init();
-  HAL_Delay(1000);
-  Lift_updown_control(Forward ,1000,3200);
+  ChassisInit();
+  ChassisStop();
+  ChassisTransiation(Forward,20,16);
+  HAL_Delay(10000);
+  ChassisRotate(ClockWise_Chassis,20,8);
 
  
   /* USER CODE END 2 */

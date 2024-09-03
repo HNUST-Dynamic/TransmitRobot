@@ -9,7 +9,6 @@
  * 
  */
 #include "chassis.h"
-#include "StepMotor.h"
 #include "usart.h"
 #include <math.h>
 
@@ -28,7 +27,7 @@ void ChassisInit()
         .ctrl_mode = CloseCircuit,
         .motor_direction = CounterClockWise,
         .acc = 0,
-        .speed = 50,
+        .speed = 0,
     };
 
     //注册四个步进电机
@@ -41,12 +40,6 @@ void ChassisInit()
     ChassisMotor_Init_Config.usart_handle = &huart4;
     LeftBackMotorInstance = StepMotorRegister(&ChassisMotor_Init_Config);
 
-    //电机位置清零
-    StepMotorResetZero(LeftForwardMotorInstance);
-    StepMotorResetZero(RightForwardMotorInstance);
-    StepMotorResetZero(RightBackMotorInstance);
-    StepMotorResetZero(LeftBackMotorInstance);
-    HAL_Delay(200);
     //电机修改成闭环控制
     StepMotorModifyCtrlMode(LeftForwardMotorInstance,true);
     StepMotorModifyCtrlMode(RightForwardMotorInstance,true);
@@ -256,7 +249,7 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
     }
 
 }
-void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle)
+void ChassisRotate(Chassis_Direction_e Direction,uint16_t Velocity,float Angle)
 {
 
     #ifdef USE_IMU
@@ -270,27 +263,37 @@ void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle)
     RotationMecanumInverseKinematics(Direction,Angle);
 
     //确保电机使能
-    StepMotorEnControl(LeftForwardMotorInstance,true,true);
-    StepMotorEnControl(RightForwardMotorInstance,true,true);
-    StepMotorEnControl(RightBackMotorInstance,true,true);
-    StepMotorEnControl(LeftBackMotorInstance,true,true);
+    StepMotorEnControl(LeftForwardMotorInstance,true,false);
+    StepMotorEnControl(RightForwardMotorInstance,true,false);
+    StepMotorEnControl(RightBackMotorInstance,true,false);
+    StepMotorEnControl(LeftBackMotorInstance,true,false);
+
+    HAL_Delay(200);
 
     //电机位置模式运行
-    StepMotorPosControl(LeftForwardMotorInstance,false,true);
-    StepMotorPosControl(RightForwardMotorInstance,false,true);
-    StepMotorPosControl(RightBackMotorInstance,false,true);
-    StepMotorPosControl(LeftBackMotorInstance,false,true);
+    StepMotorPosControl(LeftForwardMotorInstance,false,false);
+    StepMotorPosControl(RightForwardMotorInstance,false,false);
+    StepMotorPosControl(RightBackMotorInstance,false,false);
+    StepMotorPosControl(LeftBackMotorInstance,false,false);
 
-    //预留执行时间
-    HAL_Delay(ROTATION_TIME);
+    // //预留执行时间
+    // HAL_Delay(ROTATION_TIME);
 
-    //到时急停
-    StepMotorStop(LeftForwardMotorInstance,true);
-    StepMotorStop(RightForwardMotorInstance,true);
-    StepMotorStop(RightBackMotorInstance,true);
-    StepMotorStop(LeftBackMotorInstance,true);
+    // //到时急停
+    // StepMotorStop(LeftForwardMotorInstance,true);
+    // StepMotorStop(RightForwardMotorInstance,true);
+    // StepMotorStop(RightBackMotorInstance,true);
+    // StepMotorStop(LeftBackMotorInstance,true);
 
 
     #endif // !USE_IMU USE_IMU
 
+}
+
+void ChassisStop()
+{
+    StepMotorStop(LeftForwardMotorInstance,false);
+    StepMotorStop(RightForwardMotorInstance,false);
+    StepMotorStop(RightBackMotorInstance,false);
+    StepMotorStop(LeftBackMotorInstance,false);
 }

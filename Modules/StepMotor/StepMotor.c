@@ -13,6 +13,8 @@
 #include "memory.h"
 #include "usart.h"
 
+#define USARTCALLBACK
+
 static StepMotorInstance *step_motor_instance[STEP_MOTOR_CNT] = {NULL};
 static uint8_t step_motor_idx = 0; 
 // 串口回调函数实现
@@ -20,66 +22,36 @@ void MyUSARTCallback()
 {
 
 #ifdef USARTCALLBACK
+	__IO uint16_t i = 0;
 
-    //一个 USART 实例指针
-    extern USARTInstance *global_usart_instance;
-    
-    // 获取接收到的数据
-    USARTInstance *instance = global_usart_instance;
-    if (instance == NULL) {
-        return;
-    }
+/**********************************************************
+***	串口接收中断
+**********************************************************/
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
+	{
+		// 未完成一帧数据接收，数据进入缓冲队列
+		fifo_enQueue((uint8_t)USART1->DR);
 
-    uint8_t *recv_buffer = instance->recv_buff;
-    uint8_t recv_size = instance->recv_buff_size;
+		// 清除串口接收中断
+		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+	}
 
-    // 检查接收数据的大小
-    if (recv_size < sizeof(DataFrame)) {
-        return;
-    }
+/**********************************************************
+***	串口空闲中断
+**********************************************************/
+	else if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
+	{
+		// 先读SR再读DR，清除IDLE中断
+		USART1->SR; USART1->DR;
 
-    // 解析数据帧
-    DataFrame frame;
-    memcpy(&frame, recv_buffer, sizeof(DataFrame));
+		// 提取一帧数据命令
+		rxCount = fifo_queueLength(); for(i=0; i < rxCount; i++) { rxCmd[i] = fifo_deQueue(); }
 
-    // 简单的帧头和帧尾检查
-    if (frame.frame_header != 0x7B || frame.frame_footer != 0x7D) {
-        // 帧头或帧尾错误
-        return;
-    }
+		// 一帧数据接收完成，置位帧标志位
+		rxFrameFlag = true;
+	}
 
-    // 校验位检查
-    uint8_t calculated_bcc = 0;
-    for (int i = 0; i < sizeof(DataFrame) - 1; i++) {
-        calculated_bcc ^= ((uint8_t *)&frame)[i];
-    }
-    if (frame.bcc != calculated_bcc) {
-        // 校验位错误
-        return;
-    }
 
-    // 处理数据帧
-    switch (frame.control_mode) {
-        case 0x01:
-            // 速度控制模式
-            // 处理速度控制逻辑
-            break;
-        case 0x02:
-            // 位置控制模式
-            // 处理位置控制逻辑
-            break;
-        case 0x03:
-            // 力矩控制模式
-            // 处理力矩控制逻辑
-            break;
-        case 0x04:
-            // 单圈绝对角度控制模式
-            // 处理绝对角度控制逻辑
-            break;
-        default:
-            // 无效的控制模式
-            return;
-    }
 #endif // USARTCALLBACK
 
     // 根据控制模式处理数据
@@ -87,6 +59,7 @@ void MyUSARTCallback()
 
     // 其他处理逻辑
 }
+
 StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Config)
 {
     StepMotorInstance *motor = (StepMotorInstance *)malloc(sizeof(StepMotorInstance));
@@ -109,7 +82,8 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
 
     //注册串口实例
     motor->usart_instance = USARTRegister(&usart_config);
-    if ( motor->usart_instance == NULL) {
+    if ( motor->usart_instance == NULL)
+    {
         // 处理串口注册失败的情况
         return;
     }
