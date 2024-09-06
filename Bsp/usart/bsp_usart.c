@@ -91,7 +91,7 @@ uint8_t USARTIsReady(USARTInstance *_instance)
 
 /**
  * @brief 每次dma/idle中断发生时，都会调用此函数.对于每个uart实例会调用对应的回调进行进一步的处理
- *        例如:视觉协议解析/遥控器解析/裁判系统解析
+ * 
  *
  * @note  通过__HAL_DMA_DISABLE_IT(huart->hdmarx,DMA_IT_HT)关闭dma half transfer中断防止两次进入HAL_UARTEx_RxEventCallback()
  *        这是HAL库的一个设计失误,发生DMA传输完成/半完成以及串口IDLE中断都会触发HAL_UARTEx_RxEventCallback()

@@ -13,7 +13,7 @@
 #include "memory.h"
 #include "usart.h"
 
-#define USARTCALLBACK
+
 
 static StepMotorInstance *step_motor_instance[STEP_MOTOR_CNT] = {NULL};
 static uint8_t step_motor_idx = 0; 
@@ -22,35 +22,6 @@ void MyUSARTCallback()
 {
 
 #ifdef USARTCALLBACK
-	__IO uint16_t i = 0;
-
-/**********************************************************
-***	串口接收中断
-**********************************************************/
-	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-	{
-		// 未完成一帧数据接收，数据进入缓冲队列
-		fifo_enQueue((uint8_t)USART1->DR);
-
-		// 清除串口接收中断
-		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-	}
-
-/**********************************************************
-***	串口空闲中断
-**********************************************************/
-	else if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
-	{
-		// 先读SR再读DR，清除IDLE中断
-		USART1->SR; USART1->DR;
-
-		// 提取一帧数据命令
-		rxCount = fifo_queueLength(); for(i=0; i < rxCount; i++) { rxCmd[i] = fifo_deQueue(); }
-
-		// 一帧数据接收完成，置位帧标志位
-		rxFrameFlag = true;
-	}
-
 
 #endif // USARTCALLBACK
 
