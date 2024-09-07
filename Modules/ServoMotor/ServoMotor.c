@@ -51,12 +51,17 @@ void ServoMotor_Control()
 void ServoMotor_Set_Angle(ServoInstance* xServo,uint16_t xangle)
 {
     xServo->angle =xangle;
-    uint32_t pulse_min = 3500;  // 对应0°的脉冲宽度 (0.5ms)
-    uint32_t pulse_max = 5833;  // 对应270°的脉冲宽度 (2.5ms)
+    //uint32_t pulse_min = 1167;  // 对应0°的脉冲宽度 (0.5ms)
+    //uint32_t pulse_max = 5833;  // 对应270°的脉冲宽度 (2.5ms)
     
     // 计算实际脉宽
-    uint32_t pulse = pulse_min + (xServo->angle * (pulse_max - pulse_min)) / 270;
+    //uint32_t pulse = pulse_min + (xServo->angle * (pulse_max - pulse_min)) / 270;
     // uint32_t pluse =0.5 * 20000 / 20 + xServo->angle * 20000 / 20 / 135;
-    __HAL_TIM_SET_COMPARE(&htim1, xServo->Channel, pluse);
+    __HAL_TIM_SET_COMPARE(&htim1, xServo->Channel,xServo->angle );
+
+
+
+
+
 
 }

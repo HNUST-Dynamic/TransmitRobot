@@ -106,7 +106,7 @@ int main(void)
   MX_USART6_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  IMUInit();
+  //IMUInit();
   // ChassisInit();
   // HAL_Delay(2000);
   //ChassisTransiation(Forward,1000,3200);
@@ -114,10 +114,12 @@ int main(void)
   // HAL_TIM_PWM_Init(&htim1);
   // HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2); /* 配置TIMx通道y */
   // HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  
+  //ServoMotor_Set_Angle(GripperServoMotor_Instance,1167);
+  //__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2 , 1167);
+
   ElevatorMotor_Init();
   HAL_Delay(1000);
-  Lift_updown_control(Forward ,1000,3200);
+  Lift_updown_control(Back,300,30000);
 
  
   /* USER CODE END 2 */

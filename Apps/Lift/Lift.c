@@ -18,9 +18,10 @@
 #include "usart.h"
 #include <math.h>
 
-static ServoInstance     *GripperServoMotor_Instance,    // 抓手舵机
-                         *ElevatorServoMotor_Instance,   //电梯下盘舵机
-                         *TurntableServoMotor_Instance;  //物料盘舵机
+ ServoInstance     *GripperServoMotor_Instance,    // 抓手舵机
+                   *ElevatorServoMotor_Instance,   //电梯下盘舵机
+                    *TurntableServoMotor_Instance;  //物料盘舵机
+
 
 static StepMotorInstance *ElevatorMotorInstance;
 
@@ -71,9 +72,12 @@ void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为�
 {
     ServoMotor_Set_Angle(TurntableServoMotor_Instance,180);
 }
+void angle_tset()
+{
+    ServoMotor_Set_Angle(GripperServoMotor_Instance,270);
+}
 
-
-
+// 电梯的方向：Forward-向下；Back-向上；
 void ElevatorMotor_Init()
 {
     StepMotor_Init_Config_s ElevatorMotor_Init_Config = {
@@ -89,14 +93,15 @@ void ElevatorMotor_Init()
     ElevatorMotorInstance = StepMotorRegister(&ElevatorMotor_Init_Config);
 
     StepMotorResetZero(ElevatorMotorInstance);
+    HAL_Delay(200);
     StepMotorModifyCtrlMode(ElevatorMotorInstance,true);
-
+    HAL_Delay(200);
     StepMotorEnControl(ElevatorMotorInstance,true,false);
-    HAL_Delay(100);
+    HAL_Delay(200);
 
 }
 
-void Lift_updown_control(Chassis_Direction_e Direction,float Velocity,float Length)
+void Lift_updown_control(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t Length)
 {
    ElevatorMotorInstance->step_mode = PosMode;
 
@@ -113,7 +118,11 @@ void Lift_updown_control(Chassis_Direction_e Direction,float Velocity,float Leng
 //启动之后将电梯升起然后转向出去
 void Lift_StartFirst()
 {
-
+    //Top
+    //ElevatorMotor_Init();
+    //HAL_Delay(1000);
+    Lift_updown_control(Back,1000,30000);
+    //Turn
 
 
 
