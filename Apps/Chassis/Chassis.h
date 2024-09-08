@@ -9,6 +9,13 @@
 #define PI           3.1415926f
 
 #define ROTATION_TIME 800
+//暂时public 
+extern StepMotorInstance *LeftForwardMotorInstance,
+                        *RightForwardMotorInstance,
+                        *RightBackMotorInstance,
+                        *LeftBackMotorInstance;
+
+
 typedef enum
 {
     Forward,

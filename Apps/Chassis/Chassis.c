@@ -14,7 +14,7 @@
 
 
 //实例化底盘四个电机
-static StepMotorInstance *LeftForwardMotorInstance,
+StepMotorInstance *LeftForwardMotorInstance,
                         *RightForwardMotorInstance,
                         *RightBackMotorInstance,
                         *LeftBackMotorInstance;
@@ -284,7 +284,8 @@ void ChassisRotate(Chassis_Direction_e Direction,uint16_t Velocity,float Angle)
     // StepMotorStop(RightForwardMotorInstance,true);
     // StepMotorStop(RightBackMotorInstance,true);
     // StepMotorStop(LeftBackMotorInstance,true);
-
+    HAL_Delay(200);
+    
 
     #endif // !USE_IMU USE_IMU
     

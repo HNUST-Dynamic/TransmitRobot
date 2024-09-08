@@ -13,16 +13,25 @@
 #include "memory.h"
 #include "usart.h"
 
-
+#define USARTCALLBACK
 
 static StepMotorInstance *step_motor_instance[STEP_MOTOR_CNT] = {NULL};
 static uint8_t step_motor_idx = 0; 
+volatile uint16_t encoder_value;
+
 // 串口回调函数实现
-void MyUSARTCallback() 
+void MyUSARTCallback(USARTInstance* USARTInstance, uint16_t Size) 
 {
 
 #ifdef USARTCALLBACK
-
+    if(USARTInstance->usart_handle == &huart1)
+    {
+        //HAL_UART_Transmit_DMA(&huart5,USARTInstance->recv_buff,Size);
+        if(0x31 == USARTInstance->recv_buff[1])
+        {
+            encoder_value = (USARTInstance->recv_buff[2]<<8) + USARTInstance->recv_buff[3];
+        }
+    }
 #endif // USARTCALLBACK
 
     // 根据控制模式处理数据
@@ -58,7 +67,6 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
         // 处理串口注册失败的情况
         return;
     }
-    
     //将这个新步进电机加入步进电机序列
     step_motor_instance[step_motor_idx++] = motor;
     return motor;
@@ -96,7 +104,7 @@ void StepMotorResetClogPro(StepMotorInstance* motor)
 void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s)
 {
     uint8_t i = 0;
-    static uint8_t cmd[16] = {0};
+    static uint8_t cmd[3] = {0};
     
     // 装载命令
     cmd[i] = 0x01; ++i;                   // 地址
