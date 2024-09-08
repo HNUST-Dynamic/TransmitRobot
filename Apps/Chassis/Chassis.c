@@ -76,7 +76,7 @@ void MecanumKinematics(float vx, float vy, float omega)
  * @param distance_x x方向移动的目标距离（米）
  * @param distance_y y方向移动的目标距离（米）
  */
-void MecanumInverseKinematics(uint32_t distance_x,uint32_t distance_y)
+void MecanumInverseKinematics(float distance_x,float distance_y)
 {
     LeftForwardMotorInstance->clk = (uint32_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
     RightForwardMotorInstance->clk = (uint32_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
@@ -87,6 +87,7 @@ void MecanumInverseKinematics(uint32_t distance_x,uint32_t distance_y)
 
 void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t Length)
 {
+    float Length_f = (float)((Length * 16) / 100.0);
     //设置四个电机为pos模式
     LeftForwardMotorInstance->step_mode = PosMode;
     RightForwardMotorInstance->step_mode = PosMode;
@@ -104,7 +105,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(0,Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0,Length);
+            MecanumInverseKinematics(0,Length_f);
             break;
         case Back:
             //设置四个电机的方向
@@ -115,7 +116,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(Velocity,0,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(Length,0);
+            MecanumInverseKinematics(Length_f,0);
             break;
         case Left:
             //设置四个电机的方向
@@ -126,7 +127,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(Velocity,0,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(Length,0);
+            MecanumInverseKinematics(Length_f,0);
             break;
         case Right:
             //设置四个电机的方向
@@ -137,7 +138,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(-Velocity,0,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(Length,0);
+            MecanumInverseKinematics(Length_f,0);
             break;
         case LeftForward:
             //设置四个电机的方向
@@ -148,7 +149,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(0.707*Velocity,0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         case RightForward:
             //设置四个电机的方向
@@ -159,7 +160,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(-0.707*Velocity,0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         case LeftBack:
             //设置四个电机的方向
@@ -170,7 +171,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(0.707*Velocity,-0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         case RightBack:
             //设置四个电机的方向
@@ -181,7 +182,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(-0.707*Velocity,-0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         default:
             //设置四个电机的速度

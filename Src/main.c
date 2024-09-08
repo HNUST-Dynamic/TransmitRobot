@@ -111,7 +111,7 @@ int main(void)
   IMUInit();
   ChassisInit();
   ChassisStop();
-  ChassisTransiation(Forward,20,16);
+  ChassisTransiation(Forward,20,100);
   HAL_Delay(10000);
   ChassisRotate(ClockWise_Chassis,20,8);
  
@@ -121,8 +121,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {   	
-    HAL_Delay(1000);
-    StepMotorReadParams(LeftForwardMotorInstance,S_ENCL);
 
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
