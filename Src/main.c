@@ -119,7 +119,7 @@ int main(void)
 
   ElevatorMotor_Init();
   HAL_Delay(1000);
-  Lift_updown_control(Back,300,30000);
+  Lift_updown_control(Forward,300,30000);
 
  
   /* USER CODE END 2 */

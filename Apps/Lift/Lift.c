@@ -105,7 +105,7 @@ void Lift_updown_control(Chassis_Direction_e Direction,uint16_t Velocity,uint32_
 {
    ElevatorMotorInstance->step_mode = PosMode;
 
-   ElevatorMotorInstance->motor_direction = CounterClockWise;
+   ElevatorMotorInstance->motor_direction = Direction;
 
    ElevatorMotorInstance->speed = Velocity;
    ElevatorMotorInstance->clk =  Length;
