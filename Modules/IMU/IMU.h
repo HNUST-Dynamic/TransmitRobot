@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "bsp_usart.h"
+#include "i2c.h"
 
 void IMUInit();
 
