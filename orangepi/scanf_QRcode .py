@@ -3,6 +3,7 @@ import numpy as np
 from pyzbar.pyzbar import decode
 import serial  # 导入串口通信库
 import time
+import sys  # 导入系统模块，用于退出程序
 
 # 定义帧头和帧尾
 FRAME_HEADER = b'\x02'  # 十六进制表示帧头 (STX)
@@ -34,7 +35,7 @@ ser = serial.Serial('/dev/ttyS1', 9600, timeout=1)
 time.sleep(2)
 
 # 初始化摄像头
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture('/dev/came1')
 
 if not camera.isOpened():
     raise IOError("无法打开摄像头")
@@ -51,7 +52,6 @@ try:
             # 当收到的指令是 '1' 时开始扫描二维码
             if request == "1":
                 print("收到 '1' 指令，开始扫描二维码...")
-                
                 while True:
                     ret, frame = camera.read()
                     if not ret:
@@ -59,8 +59,9 @@ try:
 
                     # 解码二维码
                     if decode_qr_code(frame):
-                        print("检测到二维码。退出扫描...")
-                        break
+                        print("检测到二维码。退出程序...")
+                        # 直接退出整个程序
+                        sys.exit(0)
 
                     # 显示结果帧
                     cv2.imshow('QR Code Detection', frame)
