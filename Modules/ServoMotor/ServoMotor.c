@@ -59,9 +59,4 @@ void ServoMotor_Set_Angle(ServoInstance* xServo,uint16_t xangle)
     // uint32_t pluse =0.5 * 20000 / 20 + xServo->angle * 20000 / 20 / 135;
     __HAL_TIM_SET_COMPARE(&htim1, xServo->Channel,xServo->angle );
 
-
-
-
-
-
 }

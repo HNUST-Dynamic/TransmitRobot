@@ -11,16 +11,24 @@
 #include "Lift.h"
 #include "ServoMotor.h"
 #include "StepMotor.h"
-
+#include "bsp_usart.h"
 
 #include "Chassis.h"
 #include "StepMotor.h"
 #include "usart.h"
 #include <math.h>
 
- ServoInstance     *GripperServoMotor_Instance,    // 抓手舵机
-                   *ElevatorServoMotor_Instance,   //电梯下盘舵机
-                    *TurntableServoMotor_Instance;  //物料盘舵机
+#define WHEEL_RADIUS 0.01f // 轮子半径（米）
+#define PI           3.1415926f
+#define RX_BUFFER 16  //缓存区大小
+#define USARTCALLBACK2 
+uint8_t RX_Buffer[RX_BUFFER];
+uint8_t rxData;
+//UART_HandleTypeDef  huart6;
+
+ ServoInstance     *GripperServoMotor_Instance,     // 抓手舵机        通道一
+                   *ElevatorServoMotor_Instance,    //电梯下盘舵机     通道二
+                   *TurntableServoMotor_Instance;   //物料盘舵机       通道三
 
 
 static StepMotorInstance *ElevatorMotorInstance;
@@ -47,15 +55,22 @@ void Lift_Init()
     LiftServoMotor_Config.Channel  = TIM_CHANNEL_4 ;
     TurntableServoMotor_Instance   = ServoInit(&LiftServoMotor_Config);
 
+    HAL_TIM_PWM_Init(&htim1);
+    HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2);
+    HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+    HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
+
 }
 
 void pickup()//抓手抓取，参数要调整
 {
-    ServoMotor_Set_Angle(GripperServoMotor_Instance,10);
+   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 2500);
 }
 void putdown()
 {
-    ServoMotor_Set_Angle(GripperServoMotor_Instance,270);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 1167);
 }
 
 void Lift_Turn()//电梯转正向
@@ -140,6 +155,24 @@ void Lift_wholeProcess()
 
 
 
+
+
+}
+void_CommandReceive()
+{
+//    USART_Init_Config_s usart6_config;
+//    usart6_config.recv_buff_size =  RX_BUFFER; 
+//    usart6_config.usart_handle =  &huart6;
+//    usart6_config.module_callback =  CommandUSARTCallback;   //这里创建一个给命令的串口实例
+
+//    USARTInstance *Command_instance = USARTRegister(&usart6_config);
+
+
+
+}
+void CommandUSARTCallback(USARTInstance* USARTInstance, uint16_t Size) 
+{
+    
 
 
 }
