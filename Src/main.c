@@ -23,17 +23,10 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "tim.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "myiic.h"
-#include <stdio.h>
-#include "bsp_usart.h"
-#include "Chassis.h"
-#include "stdbool.h"
-#include "Lift.h"
-
-
+#include "IMU.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,6 +58,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
 /* USER CODE END 0 */
 
 /**
@@ -105,7 +99,9 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
   MX_I2C1_Init();
+  //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
+<<<<<<< HEAD
 
   //IMUInit();
   // ChassisInit();
@@ -132,14 +128,19 @@ int main(void)
   // HAL_Delay(10000);
   // ChassisRotate(ClockWise_Chassis,20,8);
  
+=======
+  IMUInit();
+>>>>>>> 6fdb71e4f4f8c0801235cfac60f06b8a59b4909a
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {   	
-
+  {
+    IMURecive();
+    HAL_Delay(200);
     /* USER CODE END WHILE */
+    
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
