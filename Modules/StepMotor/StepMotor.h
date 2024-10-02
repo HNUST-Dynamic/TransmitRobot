@@ -6,10 +6,10 @@
 #include "stdbool.h"
 
 #define STEP_MOTOR_CNT 5
-#define STEPS_PER_REVOLUTION 200   // 假设电机每转一圈是200步（在未细分的情况下）
+#define STEPS_PER_REVOLUTION 3200   // 假设电机每转一圈是200*16步（在未细分的情况下）
 #define MICROSTEPS 256             // 电机的细分数
 
-
+extern volatile uint16_t encoder_value;
 /**
  * @brief 步进电机控制模式枚举
  * 

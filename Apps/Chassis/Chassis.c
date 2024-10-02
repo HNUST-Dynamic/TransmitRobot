@@ -9,13 +9,12 @@
  * 
  */
 #include "chassis.h"
-#include "StepMotor.h"
 #include "usart.h"
 #include <math.h>
 
 
 //实例化底盘四个电机
-static StepMotorInstance *LeftForwardMotorInstance,
+StepMotorInstance *LeftForwardMotorInstance,
                         *RightForwardMotorInstance,
                         *RightBackMotorInstance,
                         *LeftBackMotorInstance;
@@ -28,7 +27,7 @@ void ChassisInit()
         .ctrl_mode = CloseCircuit,
         .motor_direction = CounterClockWise,
         .acc = 0,
-        .speed = 50,
+        .speed = 0,
     };
 
     //注册四个步进电机
@@ -41,12 +40,6 @@ void ChassisInit()
     ChassisMotor_Init_Config.usart_handle = &huart4;
     LeftBackMotorInstance = StepMotorRegister(&ChassisMotor_Init_Config);
 
-    //电机位置清零
-    StepMotorResetZero(LeftForwardMotorInstance);
-    StepMotorResetZero(RightForwardMotorInstance);
-    StepMotorResetZero(RightBackMotorInstance);
-    StepMotorResetZero(LeftBackMotorInstance);
-    HAL_Delay(200);
     //电机修改成闭环控制
     StepMotorModifyCtrlMode(LeftForwardMotorInstance,true);
     StepMotorModifyCtrlMode(RightForwardMotorInstance,true);
@@ -83,7 +76,7 @@ void MecanumKinematics(float vx, float vy, float omega)
  * @param distance_x x方向移动的目标距离（米）
  * @param distance_y y方向移动的目标距离（米）
  */
-void MecanumInverseKinematics(uint32_t distance_x,uint32_t distance_y)
+void MecanumInverseKinematics(float distance_x,float distance_y)
 {
     LeftForwardMotorInstance->clk = (uint32_t)(fabs(((distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 左前轮 单位rad/s
     RightForwardMotorInstance->clk = (uint32_t)(fabs(((-distance_x + distance_y)*180) / (PI*WHEEL_RADIUS)));  // 右前轮
@@ -94,6 +87,7 @@ void MecanumInverseKinematics(uint32_t distance_x,uint32_t distance_y)
 
 void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t Length)
 {
+    float Length_f = (float)((Length * 16) / 100.0);
     //设置四个电机为pos模式
     LeftForwardMotorInstance->step_mode = PosMode;
     RightForwardMotorInstance->step_mode = PosMode;
@@ -111,7 +105,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(0,Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0,Length);
+            MecanumInverseKinematics(0,Length_f);
             break;
         case Back:
             //设置四个电机的方向
@@ -122,7 +116,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(Velocity,0,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(Length,0);
+            MecanumInverseKinematics(Length_f,0);
             break;
         case Left:
             //设置四个电机的方向
@@ -133,7 +127,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(Velocity,0,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(Length,0);
+            MecanumInverseKinematics(Length_f,0);
             break;
         case Right:
             //设置四个电机的方向
@@ -144,7 +138,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(-Velocity,0,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(Length,0);
+            MecanumInverseKinematics(Length_f,0);
             break;
         case LeftForward:
             //设置四个电机的方向
@@ -155,7 +149,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(0.707*Velocity,0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         case RightForward:
             //设置四个电机的方向
@@ -166,7 +160,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(-0.707*Velocity,0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         case LeftBack:
             //设置四个电机的方向
@@ -177,7 +171,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(0.707*Velocity,-0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         case RightBack:
             //设置四个电机的方向
@@ -188,7 +182,7 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
             //设置四个电机的速度
             MecanumKinematics(-0.707*Velocity,-0.707*Velocity,0);
             //设置四个电机转动角度
-            MecanumInverseKinematics(0.707*Length,0.707*Length);
+            MecanumInverseKinematics(0.707*Length_f,0.707*Length_f);
             break;
         default:
             //设置四个电机的速度
@@ -256,7 +250,7 @@ void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
     }
 
 }
-void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle)
+void ChassisRotate(Chassis_Direction_e Direction,uint16_t Velocity,float Angle)
 {
 
     #ifdef USE_IMU
@@ -270,27 +264,38 @@ void ChassisRotate(Chassis_Direction_e Direction,float Velocity,float Angle)
     RotationMecanumInverseKinematics(Direction,Angle);
 
     //确保电机使能
-    StepMotorEnControl(LeftForwardMotorInstance,true,true);
-    StepMotorEnControl(RightForwardMotorInstance,true,true);
-    StepMotorEnControl(RightBackMotorInstance,true,true);
-    StepMotorEnControl(LeftBackMotorInstance,true,true);
+    StepMotorEnControl(LeftForwardMotorInstance,true,false);
+    StepMotorEnControl(RightForwardMotorInstance,true,false);
+    StepMotorEnControl(RightBackMotorInstance,true,false);
+    StepMotorEnControl(LeftBackMotorInstance,true,false);
+
+    HAL_Delay(200);
 
     //电机位置模式运行
-    StepMotorPosControl(LeftForwardMotorInstance,false,true);
-    StepMotorPosControl(RightForwardMotorInstance,false,true);
-    StepMotorPosControl(RightBackMotorInstance,false,true);
-    StepMotorPosControl(LeftBackMotorInstance,false,true);
+    StepMotorPosControl(LeftForwardMotorInstance,false,false);
+    StepMotorPosControl(RightForwardMotorInstance,false,false);
+    StepMotorPosControl(RightBackMotorInstance,false,false);
+    StepMotorPosControl(LeftBackMotorInstance,false,false);
 
-    //预留执行时间
-    HAL_Delay(ROTATION_TIME);
+    // //预留执行时间
+    // HAL_Delay(ROTATION_TIME);
 
-    //到时急停
-    StepMotorStop(LeftForwardMotorInstance,true);
-    StepMotorStop(RightForwardMotorInstance,true);
-    StepMotorStop(RightBackMotorInstance,true);
-    StepMotorStop(LeftBackMotorInstance,true);
-
+    // //到时急停
+    // StepMotorStop(LeftForwardMotorInstance,true);
+    // StepMotorStop(RightForwardMotorInstance,true);
+    // StepMotorStop(RightBackMotorInstance,true);
+    // StepMotorStop(LeftBackMotorInstance,true);
+    HAL_Delay(200);
+    
 
     #endif // !USE_IMU USE_IMU
+    
+}
 
+void ChassisStop()
+{
+    StepMotorStop(LeftForwardMotorInstance,false);
+    StepMotorStop(RightForwardMotorInstance,false);
+    StepMotorStop(RightBackMotorInstance,false);
+    StepMotorStop(LeftBackMotorInstance,false);
 }
