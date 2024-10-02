@@ -22,7 +22,7 @@ TARGET = stm32f4_demo
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og
+OPT = -O0 -g
 
 
 #######################################
@@ -116,9 +116,9 @@ C_INCLUDES := $(addprefix -I,$(ALL_DIRS))
 
 
 # compile gcc flags
-ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -fdata-sections -ffunction-sections
+ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -fdata-sections -ffunction-sections -w
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -fdata-sections -ffunction-sections -fmessage-length=0
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -fdata-sections -ffunction-sections -fmessage-length=0 -fdiagnostics-color=always -w
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
