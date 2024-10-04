@@ -20,6 +20,6 @@ void CommandReceive();
                           *ElevatorServoMotor_Instance,   //电梯下盘舵机
                           *TurntableServoMotor_Instance;  //物料盘舵机
 
-
+extern TIM_OC_InitTypeDef sConfigOC;
 #endif // !LIFT_H
 #define LIFT_H

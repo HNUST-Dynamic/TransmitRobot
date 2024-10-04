@@ -13,6 +13,7 @@
 #include "StepMotor.h"
 #include "bsp_usart.h"
 
+#include "stm32f4xx_hal_tim.h"
 #include "Chassis.h"
 #include "StepMotor.h"
 #include "usart.h"
@@ -25,10 +26,11 @@
 uint8_t RX_Buffer[RX_BUFFER];
 uint8_t rxData;
 //UART_HandleTypeDef  huart6;
+TIM_OC_InitTypeDef sConfigOC;
 
- ServoInstance     *GripperServoMotor_Instance,     // 抓手舵机        通道一
+ ServoInstance     *GripperServoMotor_Instance,     // 抓手舵机        通道三
                    *ElevatorServoMotor_Instance,    //电梯下盘舵机     通道二
-                   *TurntableServoMotor_Instance;   //物料盘舵机       通道三
+                   *TurntableServoMotor_Instance;   //物料盘舵机       通道一
 
 
 static StepMotorInstance *ElevatorMotorInstance;

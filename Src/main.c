@@ -23,10 +23,17 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
+// #include "StepMotor.h"
+// #include "Chassis.h"
+// #include "ServoMotor.h"
+// #include "Lift.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "IMU.h"
+#include "StepMotor.h"
+#include "Chassis.h"
+#include "ServoMotor.h"
+#include "Lift.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -101,23 +108,22 @@ int main(void)
   MX_I2C1_Init();
   //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-<<<<<<< HEAD
 
   //IMUInit();
   // ChassisInit();
   // HAL_Delay(2000);
   //ChassisTransiation(Forward,1000,3200);
 
-  // HAL_TIM_PWM_Init(&htim1);
-  // HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2); /* 配置TIMx通道y */
-  // HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  //  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2220);
+  HAL_TIM_PWM_Init(&htim1);
+  HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
+   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 3711);
   //pickup();
 
 
-  ElevatorMotor_Init();
-  HAL_Delay(1000);
-  Lift_updown_control(Forward,300,203757);//203757
+  // ElevatorMotor_Init();
+  // HAL_Delay(1000);
+  // Lift_updown_control(Forward,300,210000);//203757
 
   //上电后2秒用来给电机初始化
   // HAL_Delay(2000);
@@ -128,17 +134,14 @@ int main(void)
   // HAL_Delay(10000);
   // ChassisRotate(ClockWise_Chassis,20,8);
  
-=======
-  IMUInit();
->>>>>>> 6fdb71e4f4f8c0801235cfac60f06b8a59b4909a
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    IMURecive();
-    HAL_Delay(200);
+    // IMURecive();
+    // HAL_Delay(200);
     /* USER CODE END WHILE */
     
     /* USER CODE BEGIN 3 */
