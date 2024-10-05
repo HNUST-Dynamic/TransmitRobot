@@ -7,3 +7,9 @@
 
 ## 控制一个电机的方法
 调用已经注册的StepMotorInstance 实例中的control方法
+
+## 张大头步进电机驱动板设置
+* 256细分
+* 10速度细分
+* Response ： None
+* 限流 3000mA

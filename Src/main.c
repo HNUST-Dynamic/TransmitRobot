@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "IMU.h"
+#include "Chassis.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -101,7 +102,9 @@ int main(void)
   MX_I2C1_Init();
   //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
+  ChassisInit();
   IMUInit();
+  ChassisTransiation(Right,20,1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
