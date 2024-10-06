@@ -30,14 +30,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "IMU.h"
-<<<<<<< HEAD
 #include "StepMotor.h"
 #include "Chassis.h"
 #include "ServoMotor.h"
 #include "Lift.h"
-=======
-#include "Chassis.h"
->>>>>>> 769ba16fec3a6f320b949874e6a37c0090aab94c
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -123,7 +119,7 @@ int main(void)
   //HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
   //Lift_Turn();
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                    /* 开启对应PWM通道 */
-   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1110);//3771
+   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,20000-1000);//
   //pickup();
 
 
