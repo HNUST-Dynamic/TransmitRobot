@@ -168,7 +168,7 @@ void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 6,USART_TRANSFER_DMA);
-    HAL_Delay(22);
+    HAL_Delay(2);
     free(cmd);
 }
 
@@ -213,7 +213,7 @@ void StepMotorPosControl(StepMotorInstance* motor, bool raF, bool snF)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 13,USART_TRANSFER_DMA);
-    HAL_Delay(22);
+    HAL_Delay(2);//留给dma搬运的时间，!!!不要删除!!!
     // 释放分配的内存
     free(cmd);
 }
