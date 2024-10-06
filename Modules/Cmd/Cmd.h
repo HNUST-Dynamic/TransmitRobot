@@ -1,10 +1,11 @@
+#ifndef ORANGEP_INSTANCE_H
+#define ORANGEP_INSTANCE_H
+
 #include "bsp_usart.h"
 #include "main.h"
 #include "stdbool.h"
 #include "stdlib.h"
 
-#ifndef ORANGEP_INSTANCE_H
-#define ORANGEP_INSTANCE_H
 
 
 
@@ -21,6 +22,6 @@ extern char command[16];
 
 
 void QR_callback(USARTInstance* USARTInstance);
-void QR_recive(OrangepiInstance *Orangepi);
+void QR_recive();
 
 #endif // ORANGEP_INSTANCE_H

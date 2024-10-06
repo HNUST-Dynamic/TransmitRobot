@@ -28,6 +28,8 @@
 /* USER CODE BEGIN Includes */
 #include "IMU.h"
 #include "Chassis.h"
+#include "Vision.h"
+#include "bsp_usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,7 +71,6 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -106,9 +107,8 @@ int main(void)
   // IMUInit();
   // ChassisTransiation(Right,20,1000);
   /* USER CODE END 2 */
-  OLED_Fill(0,0,256,128,0x00);
   Task_showing();
-  
+ 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
