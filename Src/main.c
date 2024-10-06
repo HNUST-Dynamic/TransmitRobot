@@ -106,6 +106,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
   MX_I2C1_Init();
+  //_HAL_RCC_TIM1_ENABLE();
   //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
@@ -114,10 +115,25 @@ int main(void)
   // HAL_Delay(2000);
   //ChassisTransiation(Forward,1000,3200);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   HAL_TIM_PWM_Init(&htim1);
-  HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 3711);
+  //HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
+  //Lift_Turn();
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                    /* 开启对应PWM通道 */
+   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1110);//3771
   //pickup();
 
 

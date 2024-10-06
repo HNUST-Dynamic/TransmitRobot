@@ -11,20 +11,13 @@
 #include "Lift.h"
 #include "ServoMotor.h"
 #include "StepMotor.h"
-#include "bsp_usart.h"
-
-#include "stm32f4xx_hal_tim.h"
-#include "Chassis.h"
-#include "StepMotor.h"
-#include "usart.h"
 #include <math.h>
+
 
 #define WHEEL_RADIUS 0.01f // 轮子半径（米）
 #define PI           3.1415926f
-#define RX_BUFFER 16  //缓存区大小
-#define USARTCALLBACK2 
-uint8_t RX_Buffer[RX_BUFFER];
-uint8_t rxData;
+
+
 //UART_HandleTypeDef  huart6;
 TIM_OC_InitTypeDef sConfigOC;
 
@@ -67,31 +60,55 @@ void Lift_Init()
 void pickup()//抓手抓取，参数要调整
 {
    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 2500);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 1500);
 }
 void putdown()
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 1167);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 2000);
 }
 
-void Lift_Turn()//电梯转正向
+void Lift_Turn()//电梯转外向
 {
-    ServoMotor_Set_Angle(ElevatorServoMotor_Instance,180);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3, 2500);
 }
 
-void Lift_Turn_back()//电梯转反向
+void Lift_Turn_back()//电梯转内向
 {
-    ServoMotor_Set_Angle(ElevatorServoMotor_Instance,0);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3, 1150);
 }
 
 void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
 {
-    ServoMotor_Set_Angle(TurntableServoMotor_Instance,180);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2500);
 }
+void Turn_Red()
+{
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 200);
+
+}
+
+void Turn_Bule()
+{
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2000);
+
+}
+void Turn_Green()
+{
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 1110);
+
+}
+
 void angle_tset()
 {
-    ServoMotor_Set_Angle(GripperServoMotor_Instance,270);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2500);
 }
 
 // 电梯的方向：Forward-向下；Back-向上；
@@ -118,7 +135,7 @@ void ElevatorMotor_Init()
 
 }
 
-void Lift_updown_control(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t Length)
+void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t Length)
 {
    ElevatorMotorInstance->step_mode = PosMode;
 
@@ -135,22 +152,17 @@ void Lift_updown_control(Chassis_Direction_e Direction,uint16_t Velocity,uint32_
 //启动之后将电梯升起然后转向出去
 void Lift_StartFirst()
 {
-    //Top
-    //ElevatorMotor_Init();
-    //HAL_Delay(1000);
-    Lift_updown_control(Back,1000,30000);
-    //Turn
-
-
-
-
-
-
-
+    //Top升到顶
+    Lift_updown_control(up,1000,210000);
+    //Turn把电梯转出去参数为：
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                     /* 开启对应PWM通道 */
+    __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3, 500);//3771
+    //Down把电梯放下来
+    Lift_updown_control(down,1000,210000);
 
 }
 
-void Lift_wholeProcess()
+void LiftwholeProcess()
 {
 
 
@@ -159,22 +171,9 @@ void Lift_wholeProcess()
 
 
 
-}
-void_CommandReceive()
-{
-//    USART_Init_Config_s usart6_config;
-//    usart6_config.recv_buff_size =  RX_BUFFER; 
-//    usart6_config.usart_handle =  &huart6;
-//    usart6_config.module_callback =  CommandUSARTCallback;   //这里创建一个给命令的串口实例
-
-//    USARTInstance *Command_instance = USARTRegister(&usart6_config);
 
 
 
-}
-void CommandUSARTCallback(USARTInstance* USARTInstance, uint16_t Size) 
-{
+
     
-
-
 }
