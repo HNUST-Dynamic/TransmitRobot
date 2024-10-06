@@ -30,10 +30,14 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "IMU.h"
+<<<<<<< HEAD
 #include "StepMotor.h"
 #include "Chassis.h"
 #include "ServoMotor.h"
 #include "Lift.h"
+=======
+#include "Chassis.h"
+>>>>>>> 769ba16fec3a6f320b949874e6a37c0090aab94c
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -114,20 +118,6 @@ int main(void)
   // ChassisInit();
   // HAL_Delay(2000);
   //ChassisTransiation(Forward,1000,3200);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   HAL_TIM_PWM_Init(&htim1);
   //HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */

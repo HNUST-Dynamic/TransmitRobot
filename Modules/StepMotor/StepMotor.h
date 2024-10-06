@@ -32,8 +32,8 @@ typedef enum
 
 typedef enum
 {
-    ClockWise = (bool)0,              //顺时针
-    CounterClockWise = (bool)1,       //逆时针
+    ClockWise = (bool)1,              //顺时针
+    CounterClockWise = (bool)0,       //逆时针
 } Motor_Direction_e;
 
 /**

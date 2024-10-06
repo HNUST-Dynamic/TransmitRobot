@@ -75,8 +75,8 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
 
 void StepMotorResetZero(StepMotorInstance* motor)
 {
-    static uint8_t cmd[16] = {0};
-    
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
     // 装载命令
     cmd[0] =  0x01;                       // 地址
     cmd[1] =  0x0A;                       // 功能码
@@ -85,12 +85,13 @@ void StepMotorResetZero(StepMotorInstance* motor)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 4,USART_TRANSFER_DMA);
+    free(cmd);
 }
 
 void StepMotorResetClogPro(StepMotorInstance* motor)
 {
-    static uint8_t cmd[16] = {0};
-    
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
     // 装载命令
     cmd[0] =  0x01;                       // 地址
     cmd[1] =  0x0E;                       // 功能码
@@ -99,13 +100,14 @@ void StepMotorResetClogPro(StepMotorInstance* motor)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 4,USART_TRANSFER_DMA);
+    free(cmd);
 }
 
 void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s)
 {
     uint8_t i = 0;
-    static uint8_t cmd[3] = {0};
-    
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(3 * sizeof(uint8_t));
     // 装载命令
     cmd[i] = 0x01; ++i;                   // 地址
 
@@ -132,12 +134,13 @@ void StepMotorReadParams(StepMotorInstance* motor, SysParams_e s)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, sizeof(cmd),USART_TRANSFER_DMA);
+    free(cmd);
 }
 
 void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF)
 {
-  static uint8_t cmd[16] = {0};
-  
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
   // 装载命令
   cmd[0] =  0x01;                       // 地址
   cmd[1] =  0x46;                       // 功能码
@@ -148,12 +151,13 @@ void StepMotorModifyCtrlMode(StepMotorInstance* motor, bool svF)
   
   // 发送命令
     USARTSend(motor->usart_instance,cmd, 6,USART_TRANSFER_DMA);
+    free(cmd);
 }
 
 void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF)
 {
-    static uint8_t cmd[16] = {0};
-    
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
     // 装载命令
     cmd[0] =  0x01;                       // 地址
     cmd[1] =  0xF3;                       // 功能码
@@ -164,12 +168,14 @@ void StepMotorEnControl(StepMotorInstance* motor, bool state, bool snF)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 6,USART_TRANSFER_DMA);
+    HAL_Delay(22);
+    free(cmd);
 }
 
 void StepMotorVelControl(StepMotorInstance* motor, bool snF)
 {
-    static uint8_t cmd[16] = {0};
-
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
     // 装载命令
     cmd[0] =  0x01;                       // 地址
     cmd[1] =  0xF6;                       // 功能码
@@ -182,12 +188,14 @@ void StepMotorVelControl(StepMotorInstance* motor, bool snF)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 8,USART_TRANSFER_DMA);
+    free(cmd);
 }
 
 void StepMotorPosControl(StepMotorInstance* motor, bool raF, bool snF)
 {
-    static uint8_t cmd[16] = {0};
-
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
+    
     // 装载命令
     cmd[0]  =  0x01;                      // 地址
     cmd[1]  =  0xFD;                      // 功能码
@@ -205,13 +213,15 @@ void StepMotorPosControl(StepMotorInstance* motor, bool raF, bool snF)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 13,USART_TRANSFER_DMA);
-
+    HAL_Delay(22);
+    // 释放分配的内存
+    free(cmd);
 }
 
 void StepMotorStop(StepMotorInstance* motor, bool snF)
 {
-    static uint8_t cmd[16] = {0};
-    
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
     // 装载命令
     cmd[0] =  0x01;                       // 地址
     cmd[1] =  0xFE;                       // 功能码
@@ -221,13 +231,13 @@ void StepMotorStop(StepMotorInstance* motor, bool snF)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 5,USART_TRANSFER_DMA);
-
+    free(cmd);
 }
 
 void StepMotorSynMotion(StepMotorInstance* motor)
 {
-    static uint8_t cmd[16] = {0};
-    
+    // 动态分配16字节的内存，用于存储命令数组
+    uint8_t* cmd = (uint8_t*)malloc(16 * sizeof(uint8_t));
     // 装载命令
     cmd[0] =  0x01;                       // 地址
     cmd[1] =  0xFF;                       // 功能码
@@ -236,6 +246,7 @@ void StepMotorSynMotion(StepMotorInstance* motor)
     
     // 发送命令
     USARTSend(motor->usart_instance,cmd, 4,USART_TRANSFER_DMA);
+    free(cmd);
 }
 
 
