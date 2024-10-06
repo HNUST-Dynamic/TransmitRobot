@@ -102,18 +102,21 @@ int main(void)
   MX_I2C1_Init();
   //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-  ChassisInit();
-  IMUInit();
-  ChassisTransiation(Right,20,1000);
+  // ChassisInit();
+  // IMUInit();
+  // ChassisTransiation(Right,20,1000);
   /* USER CODE END 2 */
-
+  OLED_Fill(0,0,256,128,0x00);
+  Task_showing();
+  
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    IMURecive();
-    HAL_Delay(200);
+    // IMURecive();
+    // HAL_Delay(200);
     /* USER CODE END WHILE */
+    
     
     /* USER CODE BEGIN 3 */
   }

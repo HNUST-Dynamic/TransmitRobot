@@ -64,7 +64,9 @@
         "core_cm4.h": "c",
         "stm32f407xx.h": "c",
         "stdbool.h": "c",
-        "stm32f4xx_hal.h": "c"
+        "stm32f4xx_hal.h": "c",
+        "vision.h": "c",
+        "cmd.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
