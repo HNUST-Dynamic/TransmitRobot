@@ -198,7 +198,7 @@ void Lift_Back()
  Lift_updown_control(up,1000,210000);
  putdown();
 }
-//在存储区把物料盘上的物料放下的操作，检查了逻辑一遍
+//在粗加工、存储区把物料盘上的物料放下的操作，检查了逻辑一遍
 void Goods_Putdown(int *X)
 {
 Turn_Color(X);
