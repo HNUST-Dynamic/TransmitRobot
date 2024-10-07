@@ -11,6 +11,10 @@ void TurnTabble_Turn();
 void ElevatorMotor_Init();
 void Lift_updown_control(Chassis_Direction_e Direction,float Velocity,float Length);
 void Lift_StartFirst();
-void Lift_wholeProcess();
+
+void Lift_Catch(int *X);
+void Lift_Back();
+void Goods_Putdown(int *X);
+
 #endif // !LIFT_H
 #define LIFT_H

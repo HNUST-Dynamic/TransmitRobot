@@ -21,7 +21,7 @@ extern OrangepiInstance *Orangepi;
 extern char command[8];
 
 
-void QR_callback(USARTInstance* USARTInstance);
-void QR_recive();
+void Cmd_Callback(USARTInstance* USARTInstance);
+void CmdUart_Init();
 
 #endif // ORANGEP_INSTANCE_H

@@ -4,9 +4,10 @@
 #include "Cmd.h"
 #include "OLED.h"
 
-void Task_showing();
+void Vision_Init();
 void OLED_Show();
-
+bool IsStable();
+bool IsMatch();
 #endif //VISION_H
 
 

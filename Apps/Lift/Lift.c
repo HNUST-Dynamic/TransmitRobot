@@ -66,7 +66,24 @@ void Lift_Turn_back()//电梯转反向
 {
     ServoMotor_Set_Angle(ElevatorServoMotor_Instance,0);
 }
+void Turn_Red()
+{
 
+
+
+}
+void Turn_Bule()
+{
+
+
+    
+}
+void Turn_Green()
+{
+
+
+    
+}
 void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
 {
     ServoMotor_Set_Angle(TurntableServoMotor_Instance,180);
@@ -132,5 +149,23 @@ void Lift_wholeProcess()
 
 
 
+
+}
+
+void Lift_Catch(int *X)
+{
+
+}
+
+void Lift_Back()
+{
+
+
+
+
+
+}
+void Goods_Putdown(int *X)
+{
 
 }
