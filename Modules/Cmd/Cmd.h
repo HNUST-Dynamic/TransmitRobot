@@ -18,7 +18,7 @@ typedef struct
 } OrangepiInstance;
 
 extern OrangepiInstance *Orangepi;
-extern char command[16];
+extern char command[8];
 
 
 void QR_callback(USARTInstance* USARTInstance);

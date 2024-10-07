@@ -5,7 +5,7 @@
 #include "OLED.h"
 
 void Task_showing();
-
+void OLED_Show();
 
 #endif //VISION_H
 

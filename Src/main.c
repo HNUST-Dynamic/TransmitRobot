@@ -100,7 +100,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
-  MX_I2C1_Init();
+  //MX_I2C1_Init();
   //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
   // ChassisInit();
@@ -116,7 +116,8 @@ int main(void)
     // IMURecive();
     // HAL_Delay(200);
     /* USER CODE END WHILE */
-    
+     OLED_Show();
+
     
     /* USER CODE BEGIN 3 */
   }

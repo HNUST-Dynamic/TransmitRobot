@@ -2,17 +2,15 @@
 
 //这个函数直接执行对标屏幕显示相关的最顶层任务
 
-void Task_showing()
+void Task_showing()//必须放在while函数外面
 {
     OLED_Init();
     OLED_Fill(0,0,256,128,0x00);
     QR_recive();
     
-    
-    OLED_ShowString(44,90,"command",24,1);
-    // HAL_UART_Transmit(&huart6,&buff,1,HAL_MAX_DELAY);
-
-    // HAL_Delay(100);
-    
+}
+void OLED_Show()//要放在while函数才能执行
+{
+    OLED_ShowString(22,45,command,32,0);
 
 }

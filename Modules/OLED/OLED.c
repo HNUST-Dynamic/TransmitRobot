@@ -392,6 +392,10 @@ void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 sizey,u8 mode)
 		{
 			temp=ascii_3216[c][i];//16x32 ASCII码
 		}
+		else if(sizey==48)
+		{
+			temp=ascii_4824[c][i];//16x32 ASCII码
+		}
 		if(sizey%16)
 		{
 			m=sizey/16+1;
@@ -442,7 +446,7 @@ void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 sizey,u8 mode)
 //******************************************************************************
 void OLED_ShowString(u8 x,u8 y,u8 *dp,u8 sizey,u8 mode)
 {
-	while(*dp!='\0')
+	for(int i=0;i<7;i++)
 	{
 	  OLED_ShowChar(x,y,*dp,sizey,mode);
 		dp++;

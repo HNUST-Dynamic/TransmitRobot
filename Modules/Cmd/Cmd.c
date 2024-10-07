@@ -9,21 +9,22 @@
 
 
 OrangepiInstance *Orangepi;
-char command[16];
-
+char command[8];
 
 void QR_callback(USARTInstance* USARTInstance)
 {
         
-        if((0x31 == USARTInstance->recv_buff[0]) && (0x32 == USARTInstance->recv_buff[9]))
+        if((0x02 == USARTInstance->recv_buff[0]) && (0x03 == USARTInstance->recv_buff[8]))
         {
-                for(int i=0;i<9;i++)
+                for(int i=0;i<7;i++)
                 {
                         command[i] = USARTInstance->recv_buff[i+1];
-                        USARTSend(USARTInstance,command,16,USART_TRANSFER_DMA);
                 }
-        
+                        command[7]='\0';
         }
+
+        USARTSend(USARTInstance,command,7,USART_TRANSFER_DMA);
+
 }
 void QR_recive()
 {
