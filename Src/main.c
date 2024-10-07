@@ -111,21 +111,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   //IMUInit();
-  // ChassisInit();
+   //ChassisInit();
   // HAL_Delay(2000);
   //ChassisTransiation(Forward,1000,3200);
 
-  HAL_TIM_PWM_Init(&htim1);
+  //HAL_TIM_PWM_Init(&htim1);
   //HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
-  //Lift_Turn();
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                    /* 开启对应PWM通道 */
-   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,20000-1000);//
+  //Turn_Red();
+  //Lift_Init();
+  //ElevatorMotor_Init();
+  //Lift_StartFirst();
   //pickup();
 
 
-  // ElevatorMotor_Init();
-  // HAL_Delay(1000);
-  // Lift_updown_control(Forward,300,210000);//203757
+  ElevatorMotor_Init();
+  HAL_Delay(1000);
+  Lift_updown_control(up,300,210000);
 
   //上电后2秒用来给电机初始化
   // HAL_Delay(2000);
