@@ -32,8 +32,8 @@
 #include "IMU.h"
 #include "StepMotor.h"
 #include "Chassis.h"
-#include "ServoMotor.h"
-#include "Lift.h"
+#include "Vision.h"
+#include "bsp_usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,7 +43,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define RANGING           0                               //测距矫正的开关宏定义
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -75,7 +75,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  uint8_t timeout_count = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -105,30 +105,85 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
-  MX_I2C1_Init();
-  //_HAL_RCC_TIM1_ENABLE();
-  //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-
-  
-
-  HAL_TIM_PWM_Init(&htim1);
-
+  /*初始化*/
+  ChassisInit();
   Lift_Init();
-  ElevatorMotor_Init();
+  Vision_Init();
+  // IMUInit();
+
+  /*出来*/
+  ChassisTransiation(Left,20,1000);
+  HAL_Delay(1000);
+  ChassisTransiation(Forward,20,1000);
   Lift_StartFirst();
-  //pickup();
+  HAL_Delay(2000);
+
+  /*问香橙派QRCode 阻塞*/
+  while(command[7]!='\0'){}
+  /*OLED展示顺序*/
+  OLED_Show();
+  
+  #if (RANGING==1)
+  while(timeout_count<10)
+  {
+    /*与香橙派问答测距*/
+    timeout_count++;
+  }
+  timeout_count = 0;
+  #endif
+
+  /*出发去转盘*/
+  ChassisTransiation(Forward,20,1000);
+  HAL_Delay(2000);
+  /*靠近转盘*/
+  ChassisTransiation(Right,20,1000);
+  HAL_Delay(2000);
+  
+  /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
+  for(int i = 0;i < 3;i++)
+  {
+      while(!(IsStable() && IsMatch())){}
+      Lift_Catch(int *X);
+      Lift_Back();
+  }
+
+  /*离开转盘*/
+  ChassisTransiation(Left,20,1000);
+  HAL_Delay(1000);
+
+  /*出发去暂存区*/
+  ChassisTransiation(Forward,20,1000);
+  HAL_Delay(1000);
+  ChassisRotate(CounterClockWise_Chassis,10,90);
+  HAL_Delay(1000);
+  ChassisTransiation(Forward,20,1000);
+  HAL_Delay(1000);
+
+  /*靠近暂存区 一个颜色区*/
+  ChassisTransiation(Right,20,1000);
+  HAL_Delay(1000);
+  Goods_Putdown(int *X);
+  /*第二个颜色区*/
+  ChassisTransiation(Forward,20,1000);
+  HAL_Delay(800);
+  Goods_Putdown(int *X);
+  Lift_Back();
+  /*第三个颜色区*/
+  ChassisTransiation(Forward,20,1000);
+  HAL_Delay(800);
+  Goods_Putdown();
+  Lift_Back();
+
 
   /* USER CODE END 2 */
-
+ 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // IMURecive();
-    // HAL_Delay(200);
+
     /* USER CODE END WHILE */
-    
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

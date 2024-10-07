@@ -84,7 +84,24 @@ void Lift_Turn_back()//电梯转内向
     HAL_Delay(20);
   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,710);
 }
+void Turn_Red()
+{
 
+
+
+}
+void Turn_Bule()
+{
+
+
+    
+}
+void Turn_Green()
+{
+
+
+    
+}
 void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
@@ -213,4 +230,22 @@ Lift_Turn();
 Lift_updown_control(down,1000,210000);
 HAL_Delay(4000);
 putdown();
+}
+
+void Lift_Catch(int *X)
+{
+
+}
+
+void Lift_Back()
+{
+
+
+
+
+
+}
+void Goods_Putdown(int *X)
+{
+
 }
