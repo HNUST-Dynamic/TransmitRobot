@@ -6,8 +6,8 @@
 
 void Vision_Init();
 void OLED_Show();
-bool IsStable();
-bool IsMatch();
+void CmdUart_Init();
+
 #endif //VISION_H
 
 

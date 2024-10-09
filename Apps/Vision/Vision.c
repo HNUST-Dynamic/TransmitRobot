@@ -13,16 +13,7 @@ void Vision_Init()//必须放在while函数外面
 void OLED_Show()//要放在while函数才能执行
 {
     OLED_ShowString(22,45,command,32,0);
-
 }
 
-bool IsStable()
-{
 
-}
-
-bool IsMatch()
-{
-
-}
 

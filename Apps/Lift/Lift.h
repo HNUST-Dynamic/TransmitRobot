@@ -19,15 +19,15 @@ void Lift_Turn_back();
 void TurnTabble_Turn();
 void angle_tset();
 void Turn_Red();
-void Turn_Bule();
+void Turn_Blue();
 void Turn_Green();
-void Turn_Color(int  *X);
+void Turn_Color(uint8_t element);
 void ElevatorMotor_Init();
 void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t Length);
 void Lift_StartFirst();
-void Lift_Catch(int *X);
+void Lift_Catch(uint8_t element);
 void Lift_Back();
-void Goods_Putdown(int *X);
+ void Goods_Putdown(uint8_t element);
 
 
 #endif // !LIFT_H

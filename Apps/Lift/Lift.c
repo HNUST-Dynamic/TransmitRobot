@@ -1,22 +1,23 @@
-/**
- * @file Lift.c
- * @author Libaoen18
- * @brief  电梯平台程序（包括物料盘转动）
- * @version 0.1
- * @date 2024-08-27
- * 
- * @copyright Copyright (c) 2024
- * 
- */
+// /**
+//  * @file Lift.c
+//  * @author Libaoen18
+//  * @brief  电梯平台程序（包括物料盘转动）
+//  * @version 0.1
+//  * @date 2024-08-27
+//  * 
+//  * @copyright Copyright (c) 2024
+//  * 
+//  */
 #include "Lift.h"
 #include "ServoMotor.h"
 #include "StepMotor.h"
 #include <math.h>
+#include "Cmd.h"
 
 
 #define WHEEL_RADIUS 0.01f // 轮子半径（米）
 #define PI           3.1415926f
-int *X;
+extern int X;
 //UART_HandleTypeDef  huart6;
 TIM_OC_InitTypeDef sConfigOC;
 
@@ -84,24 +85,6 @@ void Lift_Turn_back()//电梯转内向
     HAL_Delay(20);
   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,710);
 }
-void Turn_Red()
-{
-
-
-
-}
-void Turn_Bule()
-{
-
-
-    
-}
-void Turn_Green()
-{
-
-
-    
-}
 void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
@@ -133,18 +116,18 @@ void angle_tset()
   __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2500);
 }
 
-void Turn_Color(int  *X)
+void Turn_Color(uint8_t element)
 {
-  switch ( *X)
+  switch (element)
   {
   case 0 : 
   Turn_Red();
     break;
   case 1 : 
-  Turn_Red();
+  Turn_Green();
     break;
   case 2 : 
-  Turn_Red();
+  Turn_Bule();
     break;
   default:
     break;
@@ -175,77 +158,59 @@ void ElevatorMotor_Init()
 }
 
 void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t Length)
-{
-   ElevatorMotorInstance->step_mode = PosMode;
+ {
+    ElevatorMotorInstance->step_mode = PosMode;
 
-   ElevatorMotorInstance->motor_direction = Direction;
+    ElevatorMotorInstance->motor_direction = Direction;
 
-   ElevatorMotorInstance->speed = Velocity;
-   ElevatorMotorInstance->clk =  Length;
+    ElevatorMotorInstance->speed = Velocity;
+    ElevatorMotorInstance->clk =  Length;
    
-   StepMotorEnControl(ElevatorMotorInstance,true,false);
-   HAL_Delay(200);
-   StepMotorPosControl(ElevatorMotorInstance,false,false);
-}
+    StepMotorEnControl(ElevatorMotorInstance,true,false);
+    HAL_Delay(200);
+    StepMotorPosControl(ElevatorMotorInstance,false,false);
+ }
 
-//启动之后将电梯升起然后转向出去
-void Lift_StartFirst()
-{
-    //Turn把电梯转出去参数为：
-    Lift_Turn();
-    putdown();
-    //Down把电梯放下来
-    Lift_updown_control(down,1000,210000);
-}
-//抓取第一区的物料然后放在物料盘，一遍
-void Lift_Catch(int *X)
-{
-pickup();
-HAL_Delay(20);
-Lift_updown_control(up,1000,210000);
-Lift_Turn_back();
-Turn_Color(X);
-HAL_Delay(4000);
-putdown();
-}
-//把物料放在物料盘里之后的操作，检查了一遍
-void Lift_Back()
-{
- Lift_Turn();
+ //启动之后将电梯升起然后转向出去
+ void Lift_StartFirst()
+ {
+     //Turn把电梯转出去参数为：
+     Lift_Turn();
+     putdown();
+     //Down把电梯放下来
+     Lift_updown_control(down,1000,210000);
+ }
+ //抓取第一区的物料然后放在物料盘，一遍
+ void Lift_Catch(uint8_t element)
+ {
+ pickup();
+ HAL_Delay(20);
  Lift_updown_control(up,1000,210000);
+ Lift_Turn_back();
+ Turn_Color(element);
+ HAL_Delay(4000);
  putdown();
-}
-//在粗加工、存储区把物料盘上的物料放下的操作，检查了逻辑一遍
-void Goods_Putdown(int *X)
-{
-Turn_Color(X);
-HAL_Delay(20);
-Lift_updown_control(up,1000,210000);
-HAL_Delay(20);
-Lift_Turn_back();
-HAL_Delay(20);
-pickup();
-HAL_Delay(20);
-Lift_Turn();
-Lift_updown_control(down,1000,210000);
-HAL_Delay(4000);
-putdown();
-}
-
-void Lift_Catch(int *X)
-{
-
-}
-
-void Lift_Back()
-{
-
-
-
-
-
-}
-void Goods_Putdown(int *X)
-{
-
-}
+ }
+ //把物料放在物料盘里之后的操作，检查了一遍a?
+ void Lift_Back()
+ {
+  Lift_Turn();
+  Lift_updown_control(up,1000,210000);
+  putdown();
+ }
+ //在粗加工、存储区把物料盘上的物料放下的操作，检查了逻辑一遍
+void Goods_Putdown(uint8_t element)
+ {
+ Turn_Color(element);
+ HAL_Delay(20);
+ Lift_updown_control(up,1000,210000);
+ HAL_Delay(20);
+ Lift_Turn_back();
+ HAL_Delay(20);
+ pickup();
+ HAL_Delay(20);
+ Lift_Turn();
+ Lift_updown_control(down,1000,210000);
+ HAL_Delay(4000);
+ putdown();
+ }

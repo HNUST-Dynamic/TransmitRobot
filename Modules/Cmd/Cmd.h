@@ -19,9 +19,13 @@ typedef struct
 
 extern OrangepiInstance *Orangepi;
 extern char command[8];
-
+extern uint8_t wuliao[16];
+extern bool IsMatch();
+extern uint8_t element;
 
 void Cmd_Callback(USARTInstance* USARTInstance);
 void CmdUart_Init();
+bool IsStable();
+bool IsMatch();
 
 #endif // ORANGEP_INSTANCE_H

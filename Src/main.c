@@ -23,10 +23,10 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-// #include "StepMotor.h"
-// #include "Chassis.h"
-// #include "ServoMotor.h"
-// #include "Lift.h"
+#include "StepMotor.h"
+#include "Chassis.h"
+#include "ServoMotor.h"
+#include "Lift.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "IMU.h"
@@ -110,11 +110,16 @@ int main(void)
   ChassisInit();
   Lift_Init();
   Vision_Init();
-  // IMUInit();
-
+  //IMUInit();
+  // strcpy(command, "123+321");
+  // while(IsStable())
+  // {
+  //   HAL_UART_Transmit(&huart6,(uint8_t *)"1",1,HAL_MAX_DELAY);
+  // }
+  
   /*出来*/
   ChassisTransiation(Left,20,1000);
-  HAL_Delay(1000);
+   HAL_Delay(1000);
   ChassisTransiation(Forward,20,1000);
   Lift_StartFirst();
   HAL_Delay(2000);
@@ -124,70 +129,72 @@ int main(void)
   /*OLED展示顺序*/
   OLED_Show();
   
-  #if (RANGING==1)
-  while(timeout_count<10)
-  {
-    /*与香橙派问答测距*/
-    timeout_count++;
-  }
-  timeout_count = 0;
-  #endif
+  // #if (RANGING==1)
+  // while(timeout_count<10)
+  // {
+  //   /*与香橙派问答测距*/
+  //   timeout_count++;
+  // }
+  // timeout_count = 0;
+  // #endif
 
-  /*出发去转盘*/
-  ChassisTransiation(Forward,20,1000);
-  HAL_Delay(2000);
-  /*靠近转盘*/
-  ChassisTransiation(Right,20,1000);
-  HAL_Delay(2000);
+  // /*出发去转盘*/
+   ChassisTransiation(Forward,20,1000);
+   HAL_Delay(2000);
+  // /*靠近转盘*/
+   ChassisTransiation(Right,20,1000);
+   HAL_Delay(2000);
   
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
-  for(int i = 0;i < 3;i++)
-  {
-      while(!(IsStable() && IsMatch())){}
-      Lift_Catch(int *X);
+   for(int i = 0;i < 3;i++)
+   {
+       while(!(IsStable() && IsMatch())){}
+      Lift_Catch(command[i]);
       Lift_Back();
-  }
-
-  /*离开转盘*/
-  ChassisTransiation(Left,20,1000);
-  HAL_Delay(1000);
+   }
+     /*离开转盘*/
+   ChassisTransiation(Left,20,1000);
+   HAL_Delay(1000);
 
   /*出发去暂存区*/
-  ChassisTransiation(Forward,20,1000);
-  HAL_Delay(1000);
-  ChassisRotate(CounterClockWise_Chassis,10,90);
-  HAL_Delay(1000);
-  ChassisTransiation(Forward,20,1000);
-  HAL_Delay(1000);
+   ChassisTransiation(Forward,20,1000);
+   HAL_Delay(1000);
+   ChassisRotate(CounterClockWise_Chassis,10,90);
+   HAL_Delay(1000);
+   ChassisTransiation(Forward,20,1000);
+   HAL_Delay(1000);
 
   /*靠近暂存区 一个颜色区*/
-  ChassisTransiation(Right,20,1000);
-  HAL_Delay(1000);
-  Goods_Putdown(int *X);
+   ChassisTransiation(Right,20,1000);
+   HAL_Delay(1000);
+  Goods_Putdown(element);
   /*第二个颜色区*/
-  ChassisTransiation(Forward,20,1000);
-  HAL_Delay(800);
-  Goods_Putdown(int *X);
+   ChassisTransiation(Forward,20,1000);
+   HAL_Delay(800);
+  Goods_Putdown(element);
   Lift_Back();
   /*第三个颜色区*/
-  ChassisTransiation(Forward,20,1000);
-  HAL_Delay(800);
-  Goods_Putdown();
+   ChassisTransiation(Forward,20,1000);
+   HAL_Delay(800);
+  Goods_Putdown(element);
   Lift_Back();
+
+   
+}
 
 
   /* USER CODE END 2 */
  
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  // while (1)
+  // {
 
-    /* USER CODE END WHILE */
-    /* USER CODE BEGIN 3 */
-  }
+  //   /* USER CODE END WHILE */
+  //   /* USER CODE BEGIN 3 */
+  // }
   /* USER CODE END 3 */
-}
+
 
 /**
   * @brief System Clock Configuration

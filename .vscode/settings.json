@@ -68,7 +68,8 @@
         "vision.h": "c",
         "cmd.h": "c",
         "servomotor.h": "c",
-        "lift.h": "c"
+        "lift.h": "c",
+        "oled.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
