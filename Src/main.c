@@ -76,6 +76,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   uint8_t timeout_count = 0;
+  command[7]=1;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -108,9 +109,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
   /*初始化*/
   ChassisInit();
-  Lift_Init();
+  Lift_Init(); 
   Vision_Init();
-  //IMUInit();
+  ElevatorMotor_Init();
+ 
+  // IMUInit();
   // strcpy(command, "123+321");
   // while(IsStable())
   // {
@@ -118,64 +121,71 @@ int main(void)
   // }
   
   /*出来*/
-  ChassisTransiation(Left,20,1000);
+  ElevatorMotor_Init();
+  ChassisTransiation(Left,20,150);
    HAL_Delay(1000);
-  ChassisTransiation(Forward,20,1000);
+  ChassisTransiation(Forward,20,600);
   Lift_StartFirst();
   HAL_Delay(2000);
+  
 
   /*问香橙派QRCode 阻塞*/
   while(command[7]!='\0'){}
   /*OLED展示顺序*/
   OLED_Show();
-  
-  // #if (RANGING==1)
-  // while(timeout_count<10)
-  // {
-  //   /*与香橙派问答测距*/
-  //   timeout_count++;
-  // }
-  // timeout_count = 0;
-  // #endif
 
-  // /*出发去转盘*/
-   ChassisTransiation(Forward,20,1000);
-   HAL_Delay(2000);
-  // /*靠近转盘*/
-   ChassisTransiation(Right,20,1000);
-   HAL_Delay(2000);
+  #if (RANGING==1)
+  while(timeout_count<10)
+  {
+    /*与香橙派问答测距*/
+    timeout_count++;
+  }
+  timeout_count = 0;
+  #endif
+
+
+  /*出发去转盘*/
+   ChassisTransiation(Forward,20,3400);
+   HAL_Delay(3300);
+   /*靠近转盘*/
+   ChassisTransiation(Right,20,80);
+   HAL_Delay(1500);
   
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
    for(int i = 0;i < 3;i++)
    {
        while(!(IsStable() && IsMatch())){}
-      Lift_Catch(command[i]);
+      Lift_Catch(element);
+      HAL_Delay(1000);
       Lift_Back();
    }
      /*离开转盘*/
-   ChassisTransiation(Left,20,1000);
-   HAL_Delay(1000);
+   ChassisTransiation(Left,20,80);
+   HAL_Delay(1500);
 
   /*出发去暂存区*/
-   ChassisTransiation(Forward,20,1000);
-   HAL_Delay(1000);
+   ChassisTransiation(Forward,20,300);
+   HAL_Delay(3000);
    ChassisRotate(CounterClockWise_Chassis,10,90);
    HAL_Delay(1000);
-   ChassisTransiation(Forward,20,1000);
-   HAL_Delay(1000);
+   ChassisTransiation(Forward,20,380);
+   HAL_Delay(3800);
 
   /*靠近暂存区 一个颜色区*/
-   ChassisTransiation(Right,20,1000);
+   ChassisTransiation(Right,20,50);
    HAL_Delay(1000);
+  while(!(IsStable())){};
   Goods_Putdown(element);
   /*第二个颜色区*/
-   ChassisTransiation(Forward,20,1000);
-   HAL_Delay(800);
+   ChassisTransiation(Forward,20,50);
+   HAL_Delay(1000);
+    while(!(IsStable())){};
   Goods_Putdown(element);
   Lift_Back();
   /*第三个颜色区*/
-   ChassisTransiation(Forward,20,1000);
-   HAL_Delay(800);
+   ChassisTransiation(Forward,20,50);
+   HAL_Delay(1000);
+    while(!(IsStable())){};
   Goods_Putdown(element);
   Lift_Back();
 

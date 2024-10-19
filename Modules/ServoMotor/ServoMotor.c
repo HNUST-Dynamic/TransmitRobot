@@ -21,7 +21,7 @@ ServoInstance *ServoInit(Servo_Init_Config_s *Servo_Init_Config)
     servo->htim = Servo_Init_Config->htim;
     servo->Channel = Servo_Init_Config->Channel;
 
-    HAL_TIM_PWM_Start(Servo_Init_Config->htim, Servo_Init_Config->Channel);
+    //HAL_TIM_PWM_Start(Servo_Init_Config->htim, Servo_Init_Config->Channel);
     servo_motor_instance[servo_idx++] = servo;
     return servo;
 }

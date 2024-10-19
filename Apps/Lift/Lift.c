@@ -51,89 +51,107 @@ void Lift_Init()
     TurntableServoMotor_Instance   = ServoInit(&LiftServoMotor_Config);
 
     HAL_TIM_PWM_Init(&htim1);
-    HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2);
-    HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
-    HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
+    // HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2);
+    // HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+    // HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4); /* 配置TIMx通道y */
 
 }
 
-void pickup()//抓手抓取，参数要调整
+void pickup()//抓手抓取
 {
    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 1500);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 1000);
 }
-void putdown()
+void putdown()//抓手松开
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 800);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,800);
 }
 
-void Lift_Turn()//电梯转外向
+void Lift_Turn()//电梯由
+{
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                     /* 开启对应PWM通道 */
+  //HAL_Delay(20);
+  //__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
+  //HAL_Delay(20);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,800);
+
+}
+
+void Lift_Turn_back()//电梯由
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                     /* 开启对应PWM通道 */
   HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
-  HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1900);
+  //__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
+  //  HAL_Delay(20);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,2100);
 }
-
-void Lift_Turn_back()//电梯转内向
-{
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);                     /* 开启对应PWM通道 */
-  HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
-    HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,710);
-}
-void TurnTabble_Turn()//物料盘转一格，这个肯定是要改的，因为放和取物料的顺序不一样
+void TurnTabble_Turn()//这个不用了
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2500);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,2500);
 }
-void Turn_Red()
+void Turn_Red()//物料盘把红色格子转到取放区
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2278);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,1389);
 
 }
 
-void Turn_Bule()
+void Turn_Bule()//物料盘把蓝色格子转到取放区
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2000);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,2278);
 
 }
-void Turn_Green()
+void Turn_Green()//物料盘把绿色格子转到取放区
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 1389);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,500);
 
 }
 
-void angle_tset()
+void angle_tset()//不需要了
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2, 2500);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,20000-2500);
 }
 
-void Turn_Color(uint8_t element)
+void Turn_Color(uint8_t element)//将视觉识别到的数据传入，物料盘就可以移动到对应的待取区
 {
   switch (element)
   {
-  case 0 : 
+  case 0x33 : 
   Turn_Red();
     break;
-  case 1 : 
+  case 0x34 : 
   Turn_Green();
     break;
-  case 2 : 
+  case 0x35 : 
   Turn_Bule();
     break;
   default:
     break;
   }
 }
-// 电梯的方向：Forward-向下；Back-向上；
+void Turn_Color_two(uint8_t element)//将视觉识别到的数据传入，物料盘就可以移动到对应的待取区
+{
+  switch (element)
+  {
+  case 0x30 : 
+  Turn_Red();
+    break;
+  case 0x31 : 
+  Turn_Green();
+    break;
+  case 0x32 : 
+  Turn_Bule();
+    break;
+  default:
+    break;
+  }
+}
+// 电梯的方向：down向下；up向上；
 void ElevatorMotor_Init()
 {
     StepMotor_Init_Config_s ElevatorMotor_Init_Config = {
@@ -156,7 +174,7 @@ void ElevatorMotor_Init()
     HAL_Delay(200);
 
 }
-
+//控制电梯上下的程序，参数需要修改了，参数为方向、速度、距离
 void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t Length)
  {
     ElevatorMotorInstance->step_mode = PosMode;
@@ -171,46 +189,56 @@ void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t L
     StepMotorPosControl(ElevatorMotorInstance,false,false);
  }
 
- //启动之后将电梯升起然后转向出去
+ //初始展开
  void Lift_StartFirst()
  {
      //Turn把电梯转出去参数为：
      Lift_Turn();
      putdown();
+     HAL_Delay(1000);
      //Down把电梯放下来
-     Lift_updown_control(down,1000,210000);
+     //Lift_updown_control(down,800,170000);
  }
  //抓取第一区的物料然后放在物料盘，一遍
  void Lift_Catch(uint8_t element)
  {
- pickup();
- HAL_Delay(20);
- Lift_updown_control(up,1000,210000);
- Lift_Turn_back();
- Turn_Color(element);
- HAL_Delay(4000);
- putdown();
+    pickup();
+    HAL_Delay(20);
+    //Lift_updown_control(up,1000,170000);
+    HAL_Delay(1000);
+    Turn_Color(element);
+    HAL_Delay(1000);
+    Lift_Turn_back();
+    HAL_Delay(4000);
+    Lift_updown_control(down,1000,30000);
+    HAL_Delay(1000);    
+    putdown();
+    HAL_Delay(1000);
+    Lift_updown_control(up,1000,30000);
+    HAL_Delay(1000);
+
  }
- //把物料放在物料盘里之后的操作，检查了一遍a?
+ //把物料放在物料盘里后，把电梯转外面
  void Lift_Back()
  {
-  Lift_Turn();
-  Lift_updown_control(up,1000,210000);
-  putdown();
+    Lift_Turn();
+    //Lift_updown_control(up,1000,210000);
+    putdown();
  }
  //在粗加工、存储区把物料盘上的物料放下的操作，检查了逻辑一遍
 void Goods_Putdown(uint8_t element)
  {
- Turn_Color(element);
- HAL_Delay(20);
- Lift_updown_control(up,1000,210000);
- HAL_Delay(20);
- Lift_Turn_back();
- HAL_Delay(20);
- pickup();
- HAL_Delay(20);
- Lift_Turn();
- Lift_updown_control(down,1000,210000);
- HAL_Delay(4000);
- putdown();
+    Turn_Color_two(element);
+    HAL_Delay(1000);
+    HAL_Delay(20);
+    //Lift_updown_control(up,1000,210000);
+    HAL_Delay(20);
+    Lift_Turn_back();
+    HAL_Delay(20);
+    //pickup();
+    HAL_Delay(20);
+    Lift_Turn();
+    //Lift_updown_control(down,1000,210000);
+    HAL_Delay(4000);
+    //putdown();
  }
