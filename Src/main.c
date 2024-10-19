@@ -122,7 +122,7 @@ int main(void)
   
   /*出来*/
   ElevatorMotor_Init();
-  ChassisTransiation(Left,20,150);
+  ChassisTransiation(Left,20,180);
    HAL_Delay(1000);
   ChassisTransiation(Forward,20,600);
   Lift_StartFirst();
@@ -164,26 +164,26 @@ int main(void)
    HAL_Delay(1500);
 
   /*出发去暂存区*/
-   ChassisTransiation(Forward,20,300);
+   ChassisTransiation(Forward,20,390);
    HAL_Delay(3000);
    ChassisRotate(CounterClockWise_Chassis,10,90);
    HAL_Delay(1000);
-   ChassisTransiation(Forward,20,380);
+   ChassisTransiation(Forward,20,610);
    HAL_Delay(3800);
 
   /*靠近暂存区 一个颜色区*/
-   ChassisTransiation(Right,20,50);
+   ChassisTransiation(Right,20,100);
    HAL_Delay(1000);
   while(!(IsStable())){};
   Goods_Putdown(element);
   /*第二个颜色区*/
-   ChassisTransiation(Forward,20,50);
+   ChassisTransiation(Forward,20,100);
    HAL_Delay(1000);
     while(!(IsStable())){};
   Goods_Putdown(element);
   Lift_Back();
   /*第三个颜色区*/
-   ChassisTransiation(Forward,20,50);
+   ChassisTransiation(Forward,20,100);
    HAL_Delay(1000);
     while(!(IsStable())){};
   Goods_Putdown(element);

@@ -211,11 +211,11 @@ void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t L
     Lift_Turn_back();
     HAL_Delay(4000);
     Lift_updown_control(down,1000,30000);
-    HAL_Delay(1000);    
+    HAL_Delay(2000);    
     putdown();
     HAL_Delay(1000);
     Lift_updown_control(up,1000,30000);
-    HAL_Delay(1000);
+    HAL_Delay(2000);
 
  }
  //把物料放在物料盘里后，把电梯转外面
@@ -230,15 +230,19 @@ void Goods_Putdown(uint8_t element)
  {
     Turn_Color_two(element);
     HAL_Delay(1000);
-    HAL_Delay(20);
-    //Lift_updown_control(up,1000,210000);
-    HAL_Delay(20);
     Lift_Turn_back();
-    HAL_Delay(20);
-    //pickup();
-    HAL_Delay(20);
+    Lift_updown_control(down,1000,40000);
+    HAL_Delay(3500);
+    pickup();
+    HAL_Delay(1000);
+    Lift_updown_control(up,1000,40000);
+    HAL_Delay(3500);
     Lift_Turn();
-    //Lift_updown_control(down,1000,210000);
-    HAL_Delay(4000);
-    //putdown();
+    Lift_updown_control(down,1000,80000);
+    HAL_Delay(6000);
+    putdown();
+    HAL_Delay(1000);
+    Lift_updown_control(down,1000,80000);
+    HAL_Delay(6000);
+
  }
