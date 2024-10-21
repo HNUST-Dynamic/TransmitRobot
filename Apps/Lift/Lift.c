@@ -202,25 +202,23 @@ void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t L
  //抓取第一区的物料然后放在物料盘，一遍
  void Lift_Catch(uint8_t element)
  {
-    Lift_updown_control(down,1000,60000);
-    HAL_Delay(2000);
-
-    pickup();
+    Lift_updown_control(down,2500,65000);
     HAL_Delay(1000);
-
-    Lift_updown_control(up,1000,60000);
-    HAL_Delay(2000);
+    pickup();
+    HAL_Delay(200);
+    Lift_updown_control(up,2500,65000);
+    HAL_Delay(1000);
 
     Turn_Color(element);
     HAL_Delay(1000);
     Lift_Turn_back();
-    HAL_Delay(4000);
-    Lift_updown_control(down,1000,40000);
-    HAL_Delay(2000);    
+    HAL_Delay(2000);
+    Lift_updown_control(down,2500,40000);
+    HAL_Delay(1000);    
     putdown();
     HAL_Delay(1000);
-    Lift_updown_control(up,1000,40000);
-    HAL_Delay(2000);
+    Lift_updown_control(up,2500,40000);
+    HAL_Delay(1000);
 
  }
 void Lift_Catch_two(uint8_t element)//把物料从地面上抓到物料盘里

@@ -45,8 +45,8 @@
 /* USER CODE BEGIN PD */
 #define RANGING           0                               //测距矫正的开关宏定义
 #define REDZONE           0
-#define GREENZONE         130
-#define BLUEZONE          260
+#define GREENZONE         138
+#define BLUEZONE          275
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -57,7 +57,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+  uint16_t zone[3];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,7 +80,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
   uint8_t timeout_count = 0;
   command[7]=1;
-  uint8_t zone[3];
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -156,7 +156,7 @@ int main(void)
    HAL_Delay(3300);
    /*靠近转盘*/
 
-   ChassisTransiation(Right,20,83);
+   ChassisTransiation(Right,20,98);
    HAL_Delay(1500);
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
    for(int i = 0;i < 3;i++)
@@ -167,15 +167,15 @@ int main(void)
       Lift_Back();
    }
      /*离开转盘*/
-   ChassisTransiation(Left,20,63);
+   ChassisTransiation(Left,20,68);
    HAL_Delay(1500);
 
   /*出发去暂存区*/
-   ChassisTransiation(Forward,20,360);
+   ChassisTransiation(Forward,20,380);
    HAL_Delay(3000);
    ChassisRotate(CounterClockWise_Chassis,10,90);
    HAL_Delay(1000);
-   ChassisTransiation(Forward,20,630);
+   ChassisTransiation(Forward,20,635);
    HAL_Delay(4000);
 
   for(int i = 0;i < 3;i++)
@@ -194,7 +194,7 @@ int main(void)
   /*靠近暂存区 第一个颜色区*/
    ChassisTransiation(Right,20,110);
    HAL_Delay(1200);
-   ChassisTransiation(Forward,20,zone[0]);
+   ChassisTransiation(Forward,20,(uint8_t)zone[0]);
    HAL_Delay(1200);
   while(!(IsStable())){};
   Goods_Putdown(command[0]);
@@ -203,10 +203,10 @@ int main(void)
   //  HAL_Delay(1200);
   if((zone[1]-zone[0])>0)
   {
-    ChassisTransiation(Forward,20,(zone[1]-zone[0]));   
+    ChassisTransiation(Forward,20,(uint8_t)(zone[1]-zone[0]));   
     HAL_Delay(1200);
   }else{
-    ChassisTransiation(Back,20,(zone[0]-zone[1]));
+    ChassisTransiation(Back,20,(uint8_t)(zone[0]-zone[1]));
      HAL_Delay(1200);
   }
     while(!(IsStable())){};
