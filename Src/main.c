@@ -156,14 +156,14 @@ int main(void)
    HAL_Delay(3300);
    /*靠近转盘*/
 
-   ChassisTransiation(Right,20,98);
+   ChassisTransiation(Right,20,100);
    HAL_Delay(1500);
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
    for(int i = 0;i < 3;i++)
    {
        while(!(IsStable() && IsMatch())){}
       Lift_Catch(element);
-      HAL_Delay(1000);
+      //HAL_Delay(1000);
       Lift_Back();
    }
      /*离开转盘*/
@@ -209,13 +209,13 @@ int main(void)
     ChassisTransiation(Back,20,(uint8_t)(zone[0]-zone[1]));
      HAL_Delay(1200);
   }
-    while(!(IsStable())){};
+  while(!(IsStable())){};
   Goods_Putdown(command[1]);
   Lift_Back();
   /*第三个颜色区*/
   //  ChassisTransiation(Forward,20,125);
   //  HAL_Delay(1200);
-    if((zone[2]-zone[1])>0)
+  if((zone[2]-zone[1])>0)
   {
     ChassisTransiation(Forward,20,(zone[2]-zone[1]));
      HAL_Delay(1200);
@@ -228,47 +228,45 @@ int main(void)
   Lift_Back();
 
 
+/*抓取*/
+//第一区抓取
+  if((zone[0]-zone[2])>0)
+  {
+    ChassisTransiation(Forward,20,(uint8_t)(zone[0]-zone[2]));   
+    HAL_Delay(1200);
+  }else{
+    ChassisTransiation(Back,20,(uint8_t)(zone[2]-zone[0]));
+     HAL_Delay(1200);
+  }
+  while(!(IsStable())){};
+  Goods_Pickup(command[0]);
+  Lift_Back();
 
-  // /*靠近暂存区 第一个颜色区*/
-  //  //hassisTransiation(Right,20,110);
-  //  //HAL_Delay(1200);
-  //  ChassisTransiation(Forward,20,zone[0]);
-  //  HAL_Delay(1200);
-  // while(!(IsStable())){}
-  // Lift_Catch_two(element);
-  // HAL_Delay(1000);
-  // Lift_Back();
-  // /*第二个颜色区*/
-  // //  ChassisTransiation(Forward,20,125);
-  // //  HAL_Delay(1200);
-  // if((zone[1]-zone[0])>0)
-  // {
-  //   ChassisTransiation(Forward,20,(zone[1]-zone[0]));   
-  //   HAL_Delay(1200);
-  // }else{
-  //   ChassisTransiation(Back,20,(zone[0]-zone[1]));
-  //    HAL_Delay(1200);
-  // }
-  // while(!(IsStable())){}
-  // Lift_Catch_two(element);
-  // HAL_Delay(1000);
-  // Lift_Back();
-  // /*第三个颜色区*/
-  // //  ChassisTransiation(Forward,20,125);
-  // //  HAL_Delay(1200);
-  //   if((zone[2]-zone[1])>0)
-  // {
-  //   ChassisTransiation(Forward,20,(zone[2]-zone[1]));
-  //    HAL_Delay(1200);
-  // }else{
-  //   ChassisTransiation(Back,20,(zone[1]-zone[2]));
-  //   HAL_Delay(1200);
-  // }
-  // while(!(IsStable())){}
-  // Lift_Catch_two(element);
-  // HAL_Delay(1000);
-  // Lift_Back();
+//第二区抓取
+  if((zone[1]-zone[0])>0)
+  {
+    ChassisTransiation(Forward,20,(uint8_t)(zone[1]-zone[0]));   
+    HAL_Delay(1200);
+  }else{
+    ChassisTransiation(Back,20,(uint8_t)(zone[0]-zone[1]));
+     HAL_Delay(1200);
+  }
+  while(!(IsStable())){};
+  Goods_Pickup(command[1]);
+  Lift_Back();
 
+//第三区抓取
+  if((zone[2]-zone[1])>0)
+  {
+    ChassisTransiation(Forward,20,(uint8_t)(zone[2]-zone[1]));   
+    HAL_Delay(1200);
+  }else{
+    ChassisTransiation(Back,20,(uint8_t)(zone[1]-zone[2]));
+     HAL_Delay(1200);
+  }
+  while(!(IsStable())){};
+  Goods_Pickup(command[2]);
+  Lift_Back();
    
 }
 
