@@ -65,7 +65,7 @@ void pickup()//抓手抓取
 void putdown()//抓手松开
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,750);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,710);
 }
 
 void Lift_Turn()//电梯由

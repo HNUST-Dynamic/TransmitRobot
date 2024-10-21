@@ -45,8 +45,8 @@
 /* USER CODE BEGIN PD */
 #define RANGING           0                               //测距矫正的开关宏定义
 #define REDZONE           0
-#define GREENZONE         125
-#define BLUEZONE          250
+#define GREENZONE         130
+#define BLUEZONE          260
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -152,11 +152,11 @@ int main(void)
 
 
   /*出发去转盘*/
-   ChassisTransiation(Forward,20,695);
+   ChassisTransiation(Forward,20,700);
    HAL_Delay(3300);
    /*靠近转盘*/
 
-   ChassisTransiation(Right,20,90);
+   ChassisTransiation(Right,20,83);
    HAL_Delay(1500);
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
    for(int i = 0;i < 3;i++)
@@ -167,7 +167,7 @@ int main(void)
       Lift_Back();
    }
      /*离开转盘*/
-   ChassisTransiation(Left,20,70);
+   ChassisTransiation(Left,20,63);
    HAL_Delay(1500);
 
   /*出发去暂存区*/
@@ -175,8 +175,8 @@ int main(void)
    HAL_Delay(3000);
    ChassisRotate(CounterClockWise_Chassis,10,90);
    HAL_Delay(1000);
-   ChassisTransiation(Forward,20,605);
-   HAL_Delay(3800);
+   ChassisTransiation(Forward,20,630);
+   HAL_Delay(4000);
 
   for(int i = 0;i < 3;i++)
   {
