@@ -44,6 +44,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define RANGING           0                               //测距矫正的开关宏定义
+#define REDZONE           0
+#define GREENZONE         125
+#define BLUEZONE          250
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -77,6 +80,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
   uint8_t timeout_count = 0;
   command[7]=1;
+  uint8_t zone[3];
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -126,11 +130,14 @@ int main(void)
    HAL_Delay(1000);
   ChassisTransiation(Forward,20,600);
   Lift_StartFirst();
-  HAL_Delay(2000);
-  
+  Lift_updown_control(down,1000,200000);
+  HAL_Delay(6000);
 
   /*问香橙派QRCode 阻塞*/
   while(command[7]!='\0'){}
+  Lift_updown_control(up,1000,200000);
+  HAL_Delay(6000);
+
   /*OLED展示顺序*/
   OLED_Show();
 
@@ -145,12 +152,12 @@ int main(void)
 
 
   /*出发去转盘*/
-   ChassisTransiation(Forward,20,3400);
+   ChassisTransiation(Forward,20,695);
    HAL_Delay(3300);
    /*靠近转盘*/
-   ChassisTransiation(Right,20,80);
+
+   ChassisTransiation(Right,20,90);
    HAL_Delay(1500);
-  
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
    for(int i = 0;i < 3;i++)
    {
@@ -160,34 +167,107 @@ int main(void)
       Lift_Back();
    }
      /*离开转盘*/
-   ChassisTransiation(Left,20,80);
+   ChassisTransiation(Left,20,70);
    HAL_Delay(1500);
 
   /*出发去暂存区*/
-   ChassisTransiation(Forward,20,390);
+   ChassisTransiation(Forward,20,360);
    HAL_Delay(3000);
    ChassisRotate(CounterClockWise_Chassis,10,90);
    HAL_Delay(1000);
-   ChassisTransiation(Forward,20,610);
+   ChassisTransiation(Forward,20,605);
    HAL_Delay(3800);
 
-  /*靠近暂存区 一个颜色区*/
-   ChassisTransiation(Right,20,100);
-   HAL_Delay(1000);
+  for(int i = 0;i < 3;i++)
+  {
+    if(command[i]==0x31)
+    {
+      zone[i]=REDZONE;
+    }else if(command[i]==0x32)
+    {
+      zone[i]=GREENZONE;
+    }else if(command[i]==0x33)
+    {
+      zone[i]=BLUEZONE;
+    }
+  }
+  /*靠近暂存区 第一个颜色区*/
+   ChassisTransiation(Right,20,110);
+   HAL_Delay(1200);
+   ChassisTransiation(Forward,20,zone[0]);
+   HAL_Delay(1200);
   while(!(IsStable())){};
-  Goods_Putdown(element);
+  Goods_Putdown(command[0]);
   /*第二个颜色区*/
-   ChassisTransiation(Forward,20,100);
-   HAL_Delay(1000);
+  //  ChassisTransiation(Forward,20,125);
+  //  HAL_Delay(1200);
+  if((zone[1]-zone[0])>0)
+  {
+    ChassisTransiation(Forward,20,(zone[1]-zone[0]));   
+    HAL_Delay(1200);
+  }else{
+    ChassisTransiation(Back,20,(zone[0]-zone[1]));
+     HAL_Delay(1200);
+  }
     while(!(IsStable())){};
-  Goods_Putdown(element);
+  Goods_Putdown(command[1]);
   Lift_Back();
   /*第三个颜色区*/
-   ChassisTransiation(Forward,20,100);
-   HAL_Delay(1000);
-    while(!(IsStable())){};
-  Goods_Putdown(element);
+  //  ChassisTransiation(Forward,20,125);
+  //  HAL_Delay(1200);
+    if((zone[2]-zone[1])>0)
+  {
+    ChassisTransiation(Forward,20,(zone[2]-zone[1]));
+     HAL_Delay(1200);
+  }else{
+    ChassisTransiation(Back,20,(zone[1]-zone[2]));
+    HAL_Delay(1200);
+  }
+  while(!(IsStable())){};
+  Goods_Putdown(command[2]);
   Lift_Back();
+
+
+
+  // /*靠近暂存区 第一个颜色区*/
+  //  //hassisTransiation(Right,20,110);
+  //  //HAL_Delay(1200);
+  //  ChassisTransiation(Forward,20,zone[0]);
+  //  HAL_Delay(1200);
+  // while(!(IsStable())){}
+  // Lift_Catch_two(element);
+  // HAL_Delay(1000);
+  // Lift_Back();
+  // /*第二个颜色区*/
+  // //  ChassisTransiation(Forward,20,125);
+  // //  HAL_Delay(1200);
+  // if((zone[1]-zone[0])>0)
+  // {
+  //   ChassisTransiation(Forward,20,(zone[1]-zone[0]));   
+  //   HAL_Delay(1200);
+  // }else{
+  //   ChassisTransiation(Back,20,(zone[0]-zone[1]));
+  //    HAL_Delay(1200);
+  // }
+  // while(!(IsStable())){}
+  // Lift_Catch_two(element);
+  // HAL_Delay(1000);
+  // Lift_Back();
+  // /*第三个颜色区*/
+  // //  ChassisTransiation(Forward,20,125);
+  // //  HAL_Delay(1200);
+  //   if((zone[2]-zone[1])>0)
+  // {
+  //   ChassisTransiation(Forward,20,(zone[2]-zone[1]));
+  //    HAL_Delay(1200);
+  // }else{
+  //   ChassisTransiation(Back,20,(zone[1]-zone[2]));
+  //   HAL_Delay(1200);
+  // }
+  // while(!(IsStable())){}
+  // Lift_Catch_two(element);
+  // HAL_Delay(1000);
+  // Lift_Back();
 
    
 }

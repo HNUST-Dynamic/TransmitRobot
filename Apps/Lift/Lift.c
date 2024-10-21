@@ -65,7 +65,7 @@ void pickup()//抓手抓取
 void putdown()//抓手松开
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,800);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,750);
 }
 
 void Lift_Turn()//电梯由
@@ -74,7 +74,7 @@ void Lift_Turn()//电梯由
   //HAL_Delay(20);
   //__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
   //HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,800);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,750);
 
 }
 
@@ -84,7 +84,7 @@ void Lift_Turn_back()//电梯由
   HAL_Delay(20);
   //__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
   //  HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,2100);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,2150);
 }
 void TurnTabble_Turn()//这个不用了
 {
@@ -138,13 +138,13 @@ void Turn_Color_two(uint8_t element)//将视觉识别到的数据传入，物料
 {
   switch (element)
   {
-  case 0x30 : 
+  case 0x31 : 
   Turn_Red();
     break;
-  case 0x31 : 
+  case 0x32 : 
   Turn_Green();
     break;
-  case 0x32 : 
+  case 0x33 : 
   Turn_Bule();
     break;
   default:
@@ -197,11 +197,35 @@ void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t L
      putdown();
      HAL_Delay(1000);
      //Down把电梯放下来
-     //Lift_updown_control(down,800,170000);
+
  }
  //抓取第一区的物料然后放在物料盘，一遍
  void Lift_Catch(uint8_t element)
  {
+    Lift_updown_control(down,1000,60000);
+    HAL_Delay(2000);
+
+    pickup();
+    HAL_Delay(1000);
+
+    Lift_updown_control(up,1000,60000);
+    HAL_Delay(2000);
+
+    Turn_Color(element);
+    HAL_Delay(1000);
+    Lift_Turn_back();
+    HAL_Delay(4000);
+    Lift_updown_control(down,1000,40000);
+    HAL_Delay(2000);    
+    putdown();
+    HAL_Delay(1000);
+    Lift_updown_control(up,1000,40000);
+    HAL_Delay(2000);
+
+ }
+void Lift_Catch_two(uint8_t element)//把物料从地面上抓到物料盘里
+ {
+    Lift_updown_control(down,1000,50000);
     pickup();
     HAL_Delay(20);
     //Lift_updown_control(up,1000,170000);
@@ -210,11 +234,11 @@ void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t L
     HAL_Delay(1000);
     Lift_Turn_back();
     HAL_Delay(4000);
-    Lift_updown_control(down,1000,30000);
+    
     HAL_Delay(2000);    
     putdown();
     HAL_Delay(1000);
-    Lift_updown_control(up,1000,30000);
+    Lift_updown_control(up,1000,50000);
     HAL_Delay(2000);
 
  }
@@ -231,18 +255,19 @@ void Goods_Putdown(uint8_t element)
     Turn_Color_two(element);
     HAL_Delay(1000);
     Lift_Turn_back();
-    Lift_updown_control(down,1000,40000);
+    HAL_Delay(1000);
+    Lift_updown_control(down,1000,60000);
     HAL_Delay(3500);
     pickup();
     HAL_Delay(1000);
-    Lift_updown_control(up,1000,40000);
+    Lift_updown_control(up,1000,60000);
     HAL_Delay(3500);
     Lift_Turn();
-    Lift_updown_control(down,1000,80000);
-    HAL_Delay(6000);
+    Lift_updown_control(down,1000,200000);
+    HAL_Delay(8000);
     putdown();
     HAL_Delay(1000);
-    Lift_updown_control(down,1000,80000);
-    HAL_Delay(6000);
+    Lift_updown_control(up,1000,200000);
+    HAL_Delay(8000);
 
  }

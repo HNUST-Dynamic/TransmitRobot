@@ -47,7 +47,8 @@ void Lift_Catch(uint8_t element);
 void Lift_Back();
 /** 粗加工区发下物料 */
  void Goods_Putdown(uint8_t element);
-
+/*暂存区抓取物料*/
+void Lift_Catch_two(uint8_t element);
 
 #endif // !LIFT_H
 #define LIFT_H
