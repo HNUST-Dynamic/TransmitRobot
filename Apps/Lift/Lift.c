@@ -282,7 +282,7 @@ void Goods_Pickup(uint8_t element)
     Lift_updown_control(up,1000,200000);
     HAL_Delay(8000);
 
-    Turn_Color(element);
+    Turn_Color_two(element);
     HAL_Delay(1000);
     Lift_Turn_back();
     HAL_Delay(2000);

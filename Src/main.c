@@ -57,7 +57,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-  uint16_t zone[3];
+  int zone[3];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -156,7 +156,7 @@ int main(void)
    HAL_Delay(3300);
    /*靠近转盘*/
 
-   ChassisTransiation(Right,20,100);
+   ChassisTransiation(Right,20,98);
    HAL_Delay(1500);
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
    for(int i = 0;i < 3;i++)
@@ -167,7 +167,7 @@ int main(void)
       Lift_Back();
    }
      /*离开转盘*/
-   ChassisTransiation(Left,20,68);
+   ChassisTransiation(Left,20,66);
    HAL_Delay(1500);
 
   /*出发去暂存区*/
@@ -194,7 +194,7 @@ int main(void)
   /*靠近暂存区 第一个颜色区*/
    ChassisTransiation(Right,20,110);
    HAL_Delay(1200);
-   ChassisTransiation(Forward,20,(uint8_t)zone[0]);
+   ChassisTransiation(Forward,20,(uint32_t)zone[0]);
    HAL_Delay(1200);
   while(!(IsStable())){};
   Goods_Putdown(command[0]);
@@ -203,10 +203,10 @@ int main(void)
   //  HAL_Delay(1200);
   if((zone[1]-zone[0])>0)
   {
-    ChassisTransiation(Forward,20,(uint8_t)(zone[1]-zone[0]));   
+    ChassisTransiation(Forward,20,(uint32_t)(zone[1]-zone[0]));   
     HAL_Delay(1200);
   }else{
-    ChassisTransiation(Back,20,(uint8_t)(zone[0]-zone[1]));
+    ChassisTransiation(Back,20,(uint32_t)(zone[0]-zone[1]));
      HAL_Delay(1200);
   }
   while(!(IsStable())){};
@@ -217,10 +217,10 @@ int main(void)
   //  HAL_Delay(1200);
   if((zone[2]-zone[1])>0)
   {
-    ChassisTransiation(Forward,20,(zone[2]-zone[1]));
+    ChassisTransiation(Forward,20,(uint32_t)(zone[2]-zone[1]));
      HAL_Delay(1200);
   }else{
-    ChassisTransiation(Back,20,(zone[1]-zone[2]));
+    ChassisTransiation(Back,20,(uint32_t)(zone[1]-zone[2]));
     HAL_Delay(1200);
   }
   while(!(IsStable())){};
@@ -232,10 +232,10 @@ int main(void)
 //第一区抓取
   if((zone[0]-zone[2])>0)
   {
-    ChassisTransiation(Forward,20,(uint8_t)(zone[0]-zone[2]));   
+    ChassisTransiation(Forward,20,(uint32_t)(zone[0]-zone[2]));   
     HAL_Delay(1200);
   }else{
-    ChassisTransiation(Back,20,(uint8_t)(zone[2]-zone[0]));
+    ChassisTransiation(Back,20,(uint32_t)(zone[2]-zone[0]));
      HAL_Delay(1200);
   }
   while(!(IsStable())){};
@@ -245,10 +245,10 @@ int main(void)
 //第二区抓取
   if((zone[1]-zone[0])>0)
   {
-    ChassisTransiation(Forward,20,(uint8_t)(zone[1]-zone[0]));   
+    ChassisTransiation(Forward,20,(uint32_t)(zone[1]-zone[0]));   
     HAL_Delay(1200);
   }else{
-    ChassisTransiation(Back,20,(uint8_t)(zone[0]-zone[1]));
+    ChassisTransiation(Back,20,(uint32_t)(zone[0]-zone[1]));
      HAL_Delay(1200);
   }
   while(!(IsStable())){};
@@ -258,16 +258,73 @@ int main(void)
 //第三区抓取
   if((zone[2]-zone[1])>0)
   {
-    ChassisTransiation(Forward,20,(uint8_t)(zone[2]-zone[1]));   
+    ChassisTransiation(Forward,20,(uint32_t)(zone[2]-zone[1]));   
     HAL_Delay(1200);
   }else{
-    ChassisTransiation(Back,20,(uint8_t)(zone[1]-zone[2]));
+    ChassisTransiation(Back,20,(uint32_t)(zone[1]-zone[2]));
      HAL_Delay(1200);
   }
   while(!(IsStable())){};
   Goods_Pickup(command[2]);
   Lift_Back();
    
+  /*出发去粗加工区*/
+   ChassisTransiation(Forward,20,(uint32_t)(BLUEZONE-zone[2]));
+   HAL_Delay(3000);
+   ChassisTransiation(Forward,20,635);
+   HAL_Delay(4000);
+   ChassisRotate(CounterClockWise_Chassis,10,90);
+   HAL_Delay(1000);
+   ChassisTransiation(Forward,20,635);
+   HAL_Delay(4000);
+
+    /*靠近粗加工区 第一个颜色区*/
+   ChassisTransiation(Right,20,110);
+   HAL_Delay(1200);
+   ChassisTransiation(Forward,20,(uint32_t)zone[0]);
+   HAL_Delay(1200);
+  while(!(IsStable())){};
+  Goods_Putdown(command[0]);
+  /*第二个颜色区*/
+  if((zone[1]-zone[0])>0)
+  {
+    ChassisTransiation(Forward,20,(uint32_t)(zone[1]-zone[0]));   
+    HAL_Delay(1200);
+  }else{
+    ChassisTransiation(Back,20,(uint32_t)(zone[0]-zone[1]));
+     HAL_Delay(1200);
+  }
+  while(!(IsStable())){};
+  Goods_Putdown(command[1]);
+  Lift_Back();
+  /*第三个颜色区*/
+  if((zone[2]-zone[1])>0)
+  {
+    ChassisTransiation(Forward,20,(uint32_t)(zone[2]-zone[1]));
+     HAL_Delay(1200);
+  }else{
+    ChassisTransiation(Back,20,(uint32_t)(zone[1]-zone[2]));
+    HAL_Delay(1200);
+  }
+  while(!(IsStable())){};
+  Goods_Putdown(command[2]);
+  Lift_Back();
+
+/*出发回到起点 */
+   ChassisTransiation(Forward,20,(uint32_t)(BLUEZONE-zone[2]));
+   HAL_Delay(3000);
+   ChassisTransiation(Forward,20,635);
+   HAL_Delay(4000);
+   ChassisRotate(CounterClockWise_Chassis,10,90);
+   HAL_Delay(1000);
+   ChassisTransiation(Forward,20,1680);
+   HAL_Delay(10000);
+   ChassisRotate(CounterClockWise_Chassis,10,90);
+   HAL_Delay(1000);
+   ChassisTransiation(Forward,20,635);
+   HAL_Delay(4000);
+
+
 }
 
 
