@@ -60,12 +60,12 @@ void Lift_Init()
 void pickup()//抓手抓取
 {
    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 1000);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4, 900);
 }
 void putdown()//抓手松开
 {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);                     /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,710);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,1300);
 }
 
 void Lift_Turn()//电梯由
@@ -74,7 +74,7 @@ void Lift_Turn()//电梯由
   //HAL_Delay(20);
   //__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
   //HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,750);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,2200);
 
 }
 
@@ -84,7 +84,7 @@ void Lift_Turn_back()//电梯由
   HAL_Delay(20);
   //__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1130);
   //  HAL_Delay(20);
-  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,2150);
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,850);
 }
 void TurnTabble_Turn()//这个不用了
 {
@@ -158,7 +158,7 @@ void ElevatorMotor_Init()
     .step_mode = PosMode,
     .ctrl_mode = CloseCircuit,
     .motor_direction = CounterClockWise,
-    .acc = 0,
+    .acc = 0xA0,
     .speed = 50,
     };
 
@@ -202,22 +202,22 @@ void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t L
  //抓取第一区的物料然后放在物料盘，一遍
  void Lift_Catch(uint8_t element)
  {
-    Lift_updown_control(down,3500,65000);
+    Lift_updown_control(down,3500,30000);
     HAL_Delay(600);
     pickup();
     HAL_Delay(200);
-    Lift_updown_control(up,3500,65000);
+    Lift_updown_control(up,3500,30000);
     HAL_Delay(600);
 
     Turn_Color(element);
     //HAL_Delay(800);
     Lift_Turn_back();
     HAL_Delay(1000);
-    Lift_updown_control(down,3500,40000);
+    Lift_updown_control(down,3500,20000);
     HAL_Delay(400);    
     putdown();
     HAL_Delay(400);
-    Lift_updown_control(up,3500,40000);
+    Lift_updown_control(up,3500,20000);
     HAL_Delay(400);
 
  }
@@ -261,12 +261,12 @@ void Goods_Putdown(uint8_t element)
     Lift_updown_control(up,1000,60000);
     HAL_Delay(3500);
     Lift_Turn();
-    Lift_updown_control(down,1000,200000);
-    HAL_Delay(8000);
+    Lift_updown_control(down,1000,100000);
+    HAL_Delay(4000);
     putdown();
     HAL_Delay(1000);
-    Lift_updown_control(up,1000,200000);
-    HAL_Delay(8000);
+    Lift_updown_control(up,1000,100000);
+    HAL_Delay(4000);
 
  }
 

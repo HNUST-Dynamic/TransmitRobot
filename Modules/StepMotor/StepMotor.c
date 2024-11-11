@@ -49,6 +49,7 @@ StepMotorInstance *StepMotorRegister(StepMotor_Init_Config_s *StepMotor_Init_Con
     motor->step_mode = StepMotor_Init_Config->step_mode;
     motor->ctrl_mode = StepMotor_Init_Config->ctrl_mode;
     motor->motor_direction = StepMotor_Init_Config->motor_direction;
+    motor->acc = StepMotor_Init_Config->acc;
     motor->speed = StepMotor_Init_Config->speed;
     motor->usart_handle = StepMotor_Init_Config->usart_handle;
 

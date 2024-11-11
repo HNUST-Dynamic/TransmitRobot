@@ -14,13 +14,14 @@ static float Yaw_current;
 float Yaw_base;
 float Yaw_t = 0;
 static uint8_t flag = 0;
+
+uint8_t tail[4]={0x00, 0x00, 0x80, 0x7f};
+uint8_t ch[8]; //u8是单个字节的数据
 USARTInstance* USARTInstance5;
 void Serial_SendFloat(float data)
 {		
 
 	float x = data;
-    static uint8_t tail[4]={0x00, 0x00, 0x80, 0x7f};
-    static uint8_t ch[8]; //u8是单个字节的数据
     ch[0]=*((uint8_t*)&x);  //取出x的地址，强制转换为u8类型，赋值给ch[0]，就可以取出最低位的数值了
     ch[1]=*((uint8_t*)&x+1);  //x的地址加一就是次低位
     ch[2]=*((uint8_t*)&x+2);  //。。。
@@ -120,6 +121,8 @@ void IMURecive()
     }else if((Yaw_current - Yaw_base) >= 100){
         Yaw_t = (0 - Yaw_base) + (Yaw_current - 360);
     }
-    Serial_SendFloat(fabs(Yaw_t));//todo：完善串口上位机，添加可视化负浮点数的功能
+    //Yaw_base=0;
+    //return Yaw_t;
+    //Serial_SendFloat(fabs(Yaw_t));//todo：完善串口上位机，添加可视化负浮点数的功能
 
 }

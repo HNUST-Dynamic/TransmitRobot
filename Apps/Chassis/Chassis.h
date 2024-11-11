@@ -9,6 +9,9 @@
 #define PI           3.1415926f
 
 #define ROTATION_TIME 800
+#define K                 8.5625
+#define MU                0.876
+#define T                 150
 
 
 typedef enum

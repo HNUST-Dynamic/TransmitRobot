@@ -51,6 +51,5 @@ void Lift_Back();
 void Lift_Catch_two(uint8_t element);
 /*暂存区暂存区抓取物料*/
 void Goods_Pickup(uint8_t element);
-
 #endif // !LIFT_H
 #define LIFT_H

@@ -69,9 +69,10 @@
         "cmd.h": "c",
         "servomotor.h": "c",
         "lift.h": "c",
-        "oled.h": "c"
+        "oled.h": "c",
+        "chassis.h": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": false,
+    "cortex-debug.variableUseNaturalFormat": true,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     // "C_Cpp.default.compilerPath": "D:\\Msys2\\mingw64\\bin\\arm-none-eabi-gcc.exe"
     "makefile.compileCommandsPath": "build/compile_commands.json"

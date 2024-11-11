@@ -26,7 +26,7 @@ void ChassisInit()
         .step_mode = PosMode,
         .ctrl_mode = CloseCircuit,
         .motor_direction = CounterClockWise,
-        .acc = 0,
+        .acc = 0xA0,
         .speed = 0,
     };
 
@@ -87,6 +87,7 @@ void MecanumInverseKinematics(float distance_x,float distance_y)
 
 void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t Length)
 {
+    Length = Length*MU*K;
     float Length_f = (float)((Length * 16) / 100.0);
     //设置四个电机为pos模式
     LeftForwardMotorInstance->step_mode = PosMode;
@@ -204,6 +205,8 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
     StepMotorPosControl(RightBackMotorInstance,false,false);
     StepMotorPosControl(LeftBackMotorInstance,false,false);
 
+    HAL_Delay((uint32_t)(T*Length/Velocity));
+
 }
 void RotationMecanumInverseKinematics(Chassis_Direction_e Direction,float Angle)
 {
@@ -285,11 +288,10 @@ void ChassisRotate(Chassis_Direction_e Direction,uint16_t Velocity,float Angle)
     // StepMotorStop(RightForwardMotorInstance,true);
     // StepMotorStop(RightBackMotorInstance,true);
     // StepMotorStop(LeftBackMotorInstance,true);
-    HAL_Delay(200);
     
 
     #endif // !USE_IMU USE_IMU
-    
+
 }
 
 void ChassisStop()
