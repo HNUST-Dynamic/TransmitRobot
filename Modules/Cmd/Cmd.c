@@ -176,7 +176,7 @@ bool IsStable()
               {
                         difference_x=x_int-last_x_int;
                         difference_y=y_int-last_y_int;
-                        
+                                                
                         if(difference_x*difference_x+difference_y*difference_y<=100000)
                         {
                                 return true;

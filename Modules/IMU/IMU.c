@@ -10,9 +10,9 @@
  */
 #include "IMU.h"
 
-static float Yaw_current;
+float Yaw_current;
 float Yaw_base;
-float Yaw_t = 0;
+volatile float Yaw_t = 0;
 static uint8_t flag = 0;
 
 uint8_t tail[4]={0x00, 0x00, 0x80, 0x7f};
@@ -115,10 +115,10 @@ void IMURecive()
 
     Yaw_current = (((float)((ReciveData[1]<<8)|ReciveData[0])/32768.0)*180.0);
     Yaw_t = Yaw_current - Yaw_base;
-    if((Yaw_current - Yaw_base) <= -100.0)
+    if((Yaw_current - Yaw_base) <= -140.0)
     {
         Yaw_t = 360 - Yaw_base + Yaw_current;
-    }else if((Yaw_current - Yaw_base) >= 100){
+    }else if((Yaw_current - Yaw_base) >= 250.0){
         Yaw_t = (0 - Yaw_base) + (Yaw_current - 360);
     }
     //Yaw_base=0;

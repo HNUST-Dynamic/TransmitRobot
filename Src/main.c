@@ -150,6 +150,7 @@ int main(void)
   IMUInit();
   ElevatorMotor_Init();
   /*出来*/
+  pickup();
   ChassisTransiation(Left,20,(uint32_t)(23));
   ChassisTransiation(Forward,30,(uint32_t)(75));
   CorrectError(0);
@@ -178,7 +179,7 @@ int main(void)
   }
   HAL_UART_Transmit_DMA(&huart6,"0",1);
   Lift_updown_control(up,1000,100000);
-  HAL_Delay(3000);
+  HAL_Delay(1000);
 
   /*出发去转盘*/
   ChassisTransiation(Forward,30,(uint32_t)(90));
@@ -216,12 +217,12 @@ int main(void)
     }
     Lift_Turn_back();
     putdown();
-    HAL_Delay(1000);
+    //HAL_Delay(1000);
 
   /*离开转盘*/
    ChassisTransiation(Left,20,(uint32_t)(9));
   /*出发去粗加工区*/
-   ChassisTransiation(Back,30,(uint32_t)(46));
+   ChassisTransiation(Back,30,(uint32_t)(40));
    ChassisRotate(CounterClockWise_Chassis,10,115);
    HAL_Delay(2000);
    CorrectError(90);
@@ -255,22 +256,24 @@ int main(void)
         {
             if(300-x_int<0)
             {
-              ChassisTransiation(Back,20,(uint32_t)(0.01*(x_int-300)));
+              ChassisTransiation(Back,20,(uint32_t)(0.02*(x_int-300)));
               break;
             }else if(300-x_int>0)
             {
-              ChassisTransiation(Forward,20,(uint32_t)(0.01*(300-x_int)));
+              ChassisTransiation(Forward,20,(uint32_t)(0.02*(300-x_int)));
               break;
             }
             if(200-y_int<0)
             {
-              ChassisTransiation(Left,20,(uint32_t)(0.01*(y_int-200)));
+              ChassisTransiation(Left,20,(uint32_t)(0.02*(y_int-200)));
               break;
             }else if(200-y_int>0)
             {
-              ChassisTransiation(Right,20,(uint32_t)(0.01*(200-y_int)));
+              ChassisTransiation(Right,20,(uint32_t)(0.02*(200-y_int)));
               break;
             }
+        }else{
+          break;
         }
       }
     }
@@ -302,7 +305,7 @@ int main(void)
     //     }
     // }
 
-  // Goods_Putdown(command[0]);
+  Goods_Putdown(command[0]);
   /*第二个颜色区*/
   if((zone[1]-zone[0])>0)
   {
@@ -369,24 +372,24 @@ int main(void)
   }else{
     ChassisTransiation(Forward,20,(uint32_t)(zone[2]-zone[0]));
   }
-    while(!IsStable()){}
-    if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//320 250
-    {
-        if(300-x_int<0)
-        {
-          ChassisTransiation(Back,20,(uint32_t)(x_int-300));
-        }else if(300-x_int>0)
-        {
-          ChassisTransiation(Forward,20,(uint32_t)(300-x_int));
-        }
-        if(200-y_int<0)
-        {
-          ChassisTransiation(Left,20,(uint32_t)(y_int-200));
-        }else if(200-y_int>0)
-        {
-          ChassisTransiation(Right,20,(uint32_t)(200-y_int));
-        }
-    }
+    // while(!IsStable()){}
+    // if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//300 200
+    // {
+    //     if(300-x_int<0)
+    //     {
+    //       ChassisTransiation(Back,20,(uint32_t)(0.02*(x_int-300)));
+    //     }else if(300-x_int>0)
+    //     {
+    //       ChassisTransiation(Forward,20,(uint32_t)(0.02*(300-x_int)));
+    //     }
+    //     if(200-y_int<0)
+    //     {
+    //       ChassisTransiation(Left,20,(uint32_t)(0.02*(y_int-200)));
+    //     }else if(200-y_int>0)
+    //     {
+    //       ChassisTransiation(Right,20,(uint32_t)(0.02*(200-y_int)));
+    //     }
+    // }
 
   Goods_Pickup(command[0]);
   Lift_Back();
@@ -398,24 +401,24 @@ int main(void)
   }else{
     ChassisTransiation(Forward,20,(uint32_t)(zone[0]-zone[1]));
   }
-    while(!IsStable()){}
-    if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//320 250
-    {
-        if(300-x_int<0)
-        {
-          ChassisTransiation(Back,20,(uint32_t)(x_int-300));
-        }else if(300-x_int>0)
-        {
-          ChassisTransiation(Forward,20,(uint32_t)(300-x_int));
-        }
-        if(200-y_int<0)
-        {
-          ChassisTransiation(Left,20,(uint32_t)(y_int-200));
-        }else if(200-y_int>0)
-        {
-          ChassisTransiation(Right,20,(uint32_t)(200-y_int));
-        }
-    }
+    // while(!IsStable()){}
+    // if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//320 250
+    // {
+    //     if(300-x_int<0)
+    //     {
+    //       ChassisTransiation(Back,20,(uint32_t)(x_int-300));
+    //     }else if(300-x_int>0)
+    //     {
+    //       ChassisTransiation(Forward,20,(uint32_t)(300-x_int));
+    //     }
+    //     if(200-y_int<0)
+    //     {
+    //       ChassisTransiation(Left,20,(uint32_t)(y_int-200));
+    //     }else if(200-y_int>0)
+    //     {
+    //       ChassisTransiation(Right,20,(uint32_t)(200-y_int));
+    //     }
+    // }
 
   Goods_Pickup(command[1]);
   Lift_Back();
@@ -427,24 +430,24 @@ int main(void)
   }else{
     ChassisTransiation(Forward,20,(uint32_t)(zone[1]-zone[2]));
   }
-    while(!IsStable()){}
-    if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//320 250
-    {
-        if(300-x_int<0)
-        {
-          ChassisTransiation(Back,20,(uint32_t)(x_int-300));
-        }else if(300-x_int>0)
-        {
-          ChassisTransiation(Forward,20,(uint32_t)(300-x_int));
-        }
-        if(200-y_int<0)
-        {
-          ChassisTransiation(Left,20,(uint32_t)(y_int-200));
-        }else if(200-y_int>0)
-        {
-          ChassisTransiation(Right,20,(uint32_t)(200-y_int));
-        }
-    }
+    // while(!IsStable()){}
+    // if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//320 250
+    // {
+    //     if(300-x_int<0)
+    //     {
+    //       ChassisTransiation(Back,20,(uint32_t)(x_int-300));
+    //     }else if(300-x_int>0)
+    //     {
+    //       ChassisTransiation(Forward,20,(uint32_t)(300-x_int));
+    //     }
+    //     if(200-y_int<0)
+    //     {
+    //       ChassisTransiation(Left,20,(uint32_t)(y_int-200));
+    //     }else if(200-y_int>0)
+    //     {
+    //       ChassisTransiation(Right,20,(uint32_t)(200-y_int));
+    //     }
+    // }
 
   Goods_Pickup(command[2]);
   Lift_Back();
@@ -466,17 +469,17 @@ int main(void)
     {
         if(300-x_int<0)
         {
-          ChassisTransiation(Back,20,(uint32_t)(x_int-300));
+          ChassisTransiation(Back,20,(uint32_t)(0.01*(x_int-300)));
         }else if(300-x_int>0)
         {
-          ChassisTransiation(Forward,20,(uint32_t)(300-x_int));
+          ChassisTransiation(Forward,20,(uint32_t)(0.01*(300-x_int)));
         }
         if(200-y_int<0)
         {
-          ChassisTransiation(Left,20,(uint32_t)(y_int-200));
+          ChassisTransiation(Left,20,(uint32_t)(0.01*(y_int-200)));
         }else if(200-y_int>0)
         {
-          ChassisTransiation(Right,20,(uint32_t)(200-y_int));
+          ChassisTransiation(Right,20,(uint32_t)(0.01*(200-y_int)));
         }
     }
 
@@ -488,30 +491,27 @@ int main(void)
   }else{
     ChassisTransiation(Forward,20,(uint32_t)(zone[0]-zone[1]));
   }
-  while(!(IsStable())){}
-  x = x_error();
-  y = y_error();
-
-  if(!((abs(320-x)<=10)&&(abs(350-y)<=8)))
-  {
-    if(320-x<0)
-    {
-      ChassisTransiation(Back,20,(uint32_t)(MU*K*(x-320)));
-      HAL_Delay((uint32_t)(T*MU*K*(x-320)/20));
-    }else if(320-x>0)
-    {
-      ChassisTransiation(Forward,20,(uint32_t)(MU*K*(320-x)));
-      HAL_Delay((uint32_t)(T*MU*K*(320-x)/20));
-    }else if(350-y<0)
-    {
-      ChassisTransiation(Left,20,(uint32_t)(MU*K*(y-350)));
-      HAL_Delay((uint32_t)(T*MU*K*(y-350)/20));
-    }else if(350-y>0)
-    {
-      ChassisTransiation(Right,20,(uint32_t)(MU*K*(350-y)));
-      HAL_Delay((uint32_t)(T*MU*K*(350-y)/20));
-    }
-  }
+  // while(!(IsStable())){}
+  // if(!((abs(320-x)<=10)&&(abs(350-y)<=8)))
+  // {
+  //   if(320-x<0)
+  //   {
+  //     ChassisTransiation(Back,20,(uint32_t)(MU*K*(x-320)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(x-320)/20));
+  //   }else if(320-x>0)
+  //   {
+  //     ChassisTransiation(Forward,20,(uint32_t)(MU*K*(320-x)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(320-x)/20));
+  //   }else if(350-y<0)
+  //   {
+  //     ChassisTransiation(Left,20,(uint32_t)(MU*K*(y-350)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(y-350)/20));
+  //   }else if(350-y>0)
+  //   {
+  //     ChassisTransiation(Right,20,(uint32_t)(MU*K*(350-y)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(350-y)/20));
+  //   }
+  // }
 
   Goods_Putdown(command[1]);
   Lift_Back();
@@ -522,30 +522,27 @@ int main(void)
   }else{
     ChassisTransiation(Forward,20,(uint32_t)(zone[1]-zone[2]));
   }
-  while(!(IsStable())){}
-  x = x_error();
-  y = y_error();
-
-  if(!((abs(320-x)<=10)&&(abs(350-y)<=8)))
-  {
-    if(320-x<0)
-    {
-      ChassisTransiation(Back,20,(uint32_t)(MU*K*(x-320)));
-      HAL_Delay((uint32_t)(T*MU*K*(x-320)/20));
-    }else if(320-x>0)
-    {
-      ChassisTransiation(Forward,20,(uint32_t)(MU*K*(320-x)));
-      HAL_Delay((uint32_t)(T*MU*K*(320-x)/20));
-    }else if(350-y<0)
-    {
-      ChassisTransiation(Left,20,(uint32_t)(MU*K*(y-350)));
-      HAL_Delay((uint32_t)(T*MU*K*(y-350)/20));
-    }else if(350-y>0)
-    {
-      ChassisTransiation(Right,20,(uint32_t)(MU*K*(350-y)));
-      HAL_Delay((uint32_t)(T*MU*K*(350-y)/20));
-    }
-  }
+  // while(!(IsStable())){}
+  // if(!((abs(320-x)<=10)&&(abs(350-y)<=8)))
+  // {
+  //   if(320-x<0)
+  //   {
+  //     ChassisTransiation(Back,20,(uint32_t)(MU*K*(x-320)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(x-320)/20));
+  //   }else if(320-x>0)
+  //   {
+  //     ChassisTransiation(Forward,20,(uint32_t)(MU*K*(320-x)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(320-x)/20));
+  //   }else if(350-y<0)
+  //   {
+  //     ChassisTransiation(Left,20,(uint32_t)(MU*K*(y-350)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(y-350)/20));
+  //   }else if(350-y>0)
+  //   {
+  //     ChassisTransiation(Right,20,(uint32_t)(MU*K*(350-y)));
+  //     HAL_Delay((uint32_t)(T*MU*K*(350-y)/20));
+  //   }
+  // }
 
   Goods_Putdown(command[2]);
   Lift_Back();
