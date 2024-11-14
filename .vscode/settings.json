@@ -70,7 +70,8 @@
         "servomotor.h": "c",
         "lift.h": "c",
         "oled.h": "c",
-        "chassis.h": "c"
+        "chassis.h": "c",
+        "dma.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true,
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",

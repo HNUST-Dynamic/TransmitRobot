@@ -23,12 +23,10 @@ int last_x_int,last_y_int;
 int d;
 char temp[6];
 uint8_t element;
-
-
 int num=0;
-
-
-
+char line[15];
+const char *delimiter = '\n';
+char input_copy[256];
 void Cmd_Callback(USARTInstance* USARTInstance)
 {       
         if((0x01 == USARTInstance->recv_buff[0]) && (0x03 == USARTInstance->recv_buff[8]))
@@ -187,6 +185,23 @@ bool IsStable()
         __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
         return false;
 }
+bool Ring_IsStable()
+{
+        if(0x2C==wuliao[1]&&0x28==wuliao[2])
+        {
+                difference_x=x_int-last_x_int;
+                difference_y=y_int-last_y_int;
+                                        
+                if(difference_x*difference_x+difference_y*difference_y<=100000)
+                {
+                        return true;
+                }
+        }
+        HAL_Delay(500);
+        __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
+        return false;
+}
+
 bool IsAccurate()
 {       
         now_x=(int)(wuliao[2]-0x30)*10*10+(int)(wuliao[3]-0x30)*10+(int)(wuliao[4]-0x30);//+wuliao[6]/16;

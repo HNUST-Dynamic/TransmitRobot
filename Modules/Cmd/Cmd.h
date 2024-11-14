@@ -31,6 +31,7 @@ extern int d;
 void Cmd_Callback(USARTInstance* USARTInstance);
 void CmdUart_Init();
 bool IsStable();
+bool Ring_IsStable();
 bool IsMatch();
 bool IsAccurate();
 int yuanpan_error();

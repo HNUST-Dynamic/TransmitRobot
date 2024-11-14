@@ -11,45 +11,106 @@ typedef enum
     up,
     down
 } Lift_Direction_e;
-/** 初始化 */
+
+/**
+ * @brief 电梯机构三个舵机初始化
+ * 
+ */
 void Lift_Init();
-/** 抓手抓取 */
+
+/**
+ * @brief 抓手抓取
+ * 
+ */
 void pickup();
-/** 抓手松开 */
+
+/**
+ * @brief 抓手松开
+ * 
+ */
 void putdown();
-/** 电梯由内转外 */
+
+/**
+ * @brief 电梯由内转向外
+ * 
+ */
 void Lift_Turn();
-/** 电梯由外转内 */
+
+/**
+ * @brief 电梯由外转向内
+ * 
+ */
 void Lift_Turn_back();
-/**这个不用了 */
-void TurnTabble_Turn();
-/**不用了 */
-void angle_tset();
-/** 物料盘中将红色存放区转到待取区 */
-void Turn_Red();
-/** 物料盘中将蓝色存放区转到待取区 */
-void Turn_Blue();
-/**物料盘中将绿色存放区转到待取区  */
-void Turn_Green();
-/** 根据视觉传回，将对应的转到待取区 */
+
+/**
+ * @brief 根据传入的颜色将转盘转到对应角度
+ * 
+ * @param element 传入的颜色代号
+ */
 void Turn_Color(uint8_t element);
-/** 当到加工区的物料盘转动 */
+
+/**
+ * @brief 到加工区时根据传入的颜色将转盘转到对应角度，
+ *          实际上可以和Turn_Color函数合并，宋元昊的锅
+ * 
+ * @param element 传入的颜色代号
+ */
 void Turn_Color_two(uint8_t element);
-/** 电梯步进电机初始化 */
+
+/**
+ * @brief 电梯步进电机初始化
+ * 
+ */
 void ElevatorMotor_Init();
-/** 电梯上下控制，方向（up，down），速度，距离 */
+
+/**
+ * @brief 电梯上下控制
+ * 
+ * @param Direction 方向
+ * @param Velocity 速度
+ * @param Length 距离
+ */
 void Lift_updown_control(Lift_Direction_e Direction,uint16_t Velocity,uint32_t Length);
-/** 电机初始展开 */
+
+/**
+ * @brief 电机初始展开
+ * 
+ */
 void Lift_StartFirst();
-/** 抓取物料，电梯升，转向，物料盘动，放下 */
+
+/**
+ * @brief 抓取物料，电梯升，转向，物料盘动，放下
+ * 
+ * @param element 抓取的物料
+ * @note 不用想了，这种离谱的代码肯定是宋元昊写的
+ */
 void Lift_Catch(uint8_t element);
-/** 放完物料后，电梯归位到下一步抓取待机状态 */
+
+/**
+ * @brief 放完物料后，电梯归位到下一步抓取待机状态
+ * 
+ */
 void Lift_Back();
-/** 粗加工区发下物料 */
- void Goods_Putdown(uint8_t element);
-/*暂存区抓取物料*/
+
+/**
+ * @brief 粗加工区发下物料 
+ * 
+ * @param element 物料代码
+ */
+void Goods_Putdown(uint8_t element);
+
+/**
+ * @brief 暂存区抓取物料
+ * 
+ * @param element 物料代码
+ * @note 又是宋元昊写的“好代码”
+ */
 void Lift_Catch_two(uint8_t element);
-/*暂存区暂存区抓取物料*/
+
+/**
+ * @brief 暂存区暂存区抓取物料
+ * 
+ * @param element 物料代码
+ */
 void Goods_Pickup(uint8_t element);
 #endif // !LIFT_H
-#define LIFT_H

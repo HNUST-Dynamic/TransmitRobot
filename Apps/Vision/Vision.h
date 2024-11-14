@@ -5,8 +5,6 @@
 #include "OLED.h"
 
 void Vision_Init();
-void OLED_Show();
-void CmdUart_Init();
 
 #endif //VISION_H
 

@@ -53,6 +53,9 @@ void ChassisTransiation(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t
  */
 void ChassisRotate(Chassis_Direction_e Direction,uint16_t Velocity,float Angle);
 
-
+/**
+ * @brief 底盘停止
+ * 
+ */
 void ChassisStop();
 #endif // !CHASSIS_H

@@ -40,18 +40,6 @@ void ChassisInit()
     ChassisMotor_Init_Config.usart_handle = &huart4;
     LeftBackMotorInstance = StepMotorRegister(&ChassisMotor_Init_Config);
 
-    //电机修改成闭环控制
-    // StepMotorModifyCtrlMode(LeftForwardMotorInstance,true);
-    // StepMotorModifyCtrlMode(RightForwardMotorInstance,true);
-    // StepMotorModifyCtrlMode(RightBackMotorInstance,true);
-    // StepMotorModifyCtrlMode(LeftBackMotorInstance,true);
-    // HAL_Delay(300);
-    //电机使能
-    // StepMotorEnControl(LeftForwardMotorInstance,true,false);
-    // StepMotorEnControl(RightForwardMotorInstance,true,false);
-    // StepMotorEnControl(RightBackMotorInstance,true,false);
-    // StepMotorEnControl(LeftBackMotorInstance,true,false);
-    // HAL_Delay(300);
 }
 
 /**
@@ -280,15 +268,6 @@ void ChassisRotate(Chassis_Direction_e Direction,uint16_t Velocity,float Angle)
     StepMotorPosControl(RightBackMotorInstance,false,false);
     StepMotorPosControl(LeftBackMotorInstance,false,false);
 
-    // //预留执行时间
-    // HAL_Delay(ROTATION_TIME);
-
-    // //到时急停
-    // StepMotorStop(LeftForwardMotorInstance,true);
-    // StepMotorStop(RightForwardMotorInstance,true);
-    // StepMotorStop(RightBackMotorInstance,true);
-    // StepMotorStop(LeftBackMotorInstance,true);
-    
 
     #endif // !USE_IMU USE_IMU
 
