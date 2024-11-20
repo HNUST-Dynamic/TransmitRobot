@@ -25,9 +25,9 @@ int d;
 char temp[6];
 uint8_t element;
 int num=0;
-char line[18];
+char line[16];
 const char *delimiter = '\n';
-char input_copy[256];
+volatile char input_copy[256];
 uint8_t current_ring_correct;
 void Cmd_Callback(USARTInstance* USARTInstance)
 {       
@@ -121,7 +121,7 @@ void CmdUart_Init()
         USARTInstance *Command_instance = USARTRegister(&usart6_config);
  
 }
-bool IsMatch(uint8_t current_ring)
+bool IsMatch(char current_ring)
 {
         char *token = strtok(input_copy,delimiter);
         while(token!=NULL)
@@ -166,9 +166,10 @@ bool IsMatch(uint8_t current_ring)
                 }
                 //获取下一行
                 token = strtok(NULL, delimiter);
+                
         }
 }
-bool IsStable(uint8_t current_ring)
+bool IsStable(char current_ring)
 {
         char *token = strtok(input_copy,delimiter);
         //memset(input_copy,0,sizeof(input_copy));
@@ -261,13 +262,13 @@ bool IsStable(uint8_t current_ring)
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_RXNE); 
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
                         return false;
-                }else{
+                }
                         //获取下一行
                         token = strtok(NULL, delimiter);
-                }
+                
         }
 }
-bool Ring_IsStable(uint8_t current_ring)
+bool Ring_IsStable(char current_ring)
 {
         char *token = strtok(input_copy,delimiter);
         while(token!=NULL)
@@ -352,10 +353,10 @@ bool Ring_IsStable(uint8_t current_ring)
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_RXNE); 
                         return false;
-                }else{
+                }
                         //获取下一行
                         token = strtok(NULL, delimiter);
-                }
+                
         }
 
 }

@@ -26,10 +26,11 @@ extern uint8_t element;
 extern int x_int;
 extern int y_int;
 extern int d;
+extern volatile char input_copy[256];
 
 void Cmd_Callback(USARTInstance* USARTInstance);
 void CmdUart_Init();
-bool IsStable(uint8_t current_ring);
-bool Ring_IsStable(uint8_t current_ring);
-bool IsMatch(uint8_t current_ring);
+bool IsStable(char current_ring);
+bool Ring_IsStable(char current_ring);
+bool IsMatch(char current_ring);
 #endif // ORANGEP_INSTANCE_H

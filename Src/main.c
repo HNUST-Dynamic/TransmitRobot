@@ -100,7 +100,7 @@ void MicroAdapt(uint8_t current_ring)
     watch_dog++;//喂狗
     if (wuliao[0] == current_ring)
     {
-      if (!((abs(300 - x_int) <= 50) && (abs(200 - y_int) <= 7))) // 320 250
+      if (!((abs(300 - x_int) <= 30) && (abs(200 - y_int) <= 7))) // 320 250
       {
         if (300 - x_int < 0)
         {
@@ -114,7 +114,7 @@ void MicroAdapt(uint8_t current_ring)
           watch_dog = 0;
           break;
         }
-        HAL_Delay(100);
+        HAL_Delay(200);
         if (200 - y_int < 0)
         {
           ChassisTransiation(Left, 20, (uint32_t)(0.04 * (y_int - 200)));
@@ -197,7 +197,7 @@ int main(void)
   ElevatorMotor_Init();
 
   /*出来*/
-  ChassisTransiation(Left, 20, (uint32_t)(26));
+  ChassisTransiation(Left, 20, (uint32_t)(21));
   ChassisTransiation(Forward, 30, (uint32_t)(75));
   CorrectError(0);
   Lift_StartFirst();
@@ -267,7 +267,7 @@ int main(void)
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
   for (int i = 0; i < 3; i++)
   {
-    while (!(IsStable(command[i]+0x02) && IsMatch(command[i]+0x02)))
+    while (!(IsStable((char)(command[i])+2) && IsMatch((char)(command[i])+2)))
     {
     }
     Lift_Catch(element);
@@ -281,13 +281,13 @@ int main(void)
   ChassisTransiation(Left, 20, (uint32_t)(9));
 
   /*出发去粗加工区*/
-  ChassisTransiation(Back, 30, (uint32_t)(47));
+  ChassisTransiation(Back, 30, (uint32_t)(44));
   ChassisRotate(CounterClockWise_Chassis, 10, 115);
   HAL_Delay(2000);
   CorrectError(90);
   ChassisTransiation(Forward, 50, (uint32_t)(90));
   CorrectError(90);
-  ChassisTransiation(Forward, 50, (uint32_t)(90));
+  ChassisTransiation(Forward, 50, (uint32_t)(95));
   ChassisRotate(CounterClockWise_Chassis, 10, 115);
   HAL_Delay(2000);
   CorrectError(180);
@@ -311,8 +311,9 @@ int main(void)
 
   /*先校准绿色*/
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(0x31))
+  while (!Ring_IsStable((char)(0x31)))
   {
   }
   MicroAdapt(0x31);
@@ -328,8 +329,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)abs(zone[0]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[0]-0x01))
+  while (!Ring_IsStable((char)(command[0])-1))
   {
   }
   MicroAdapt(command[0]-0x01);
@@ -347,8 +349,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[1]-0x01))
+  while (!Ring_IsStable((char)(command[1])-1))
   {
   }
   MicroAdapt(command[1]-0x01);
@@ -366,10 +369,14 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
-  while (!Ring_IsStable(command[2]-0x01))
+  #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
+
+  while (!Ring_IsStable((char)(command[2])-1))
   {
   }
   MicroAdapt(command[2]-0x01);
+  #endif
   Goods_Putdown(command[2]);
   Lift_Back();
 
@@ -384,8 +391,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[2] - zone[0]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!IsStable(command[0]+0x02))
+  while (!IsStable((char)(command[0])+2))
   {
   }
   MicroAdapt(command[0]+0x02);
@@ -404,8 +412,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!IsStable(command[1]+0x02))
+  while (!IsStable((char)(command[1])+2))
   {
   }
   MicroAdapt(command[1]+0x02);
@@ -424,8 +433,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!IsStable(command[2]+0x02))
+  while (!IsStable((char)(command[2])+2))
   {
   }
   MicroAdapt(command[2]+0x02);
@@ -437,11 +447,11 @@ int main(void)
   /*出发去暂存区*/
   ChassisTransiation(Left, 20, 10);
   CorrectError(180);
-  ChassisTransiation(Back, 40, (uint32_t)(REDZONE - zone[2] + 75));
+  ChassisTransiation(Back, 40, (uint32_t)(REDZONE - zone[2] + 80));
   ChassisRotate(ClockWise_Chassis, 10, 115);
   HAL_Delay(2000);
   CorrectError(90);
-  ChassisTransiation(Back, 40, 100);
+  ChassisTransiation(Back, 40, 95);
 
   /*靠近暂存区 第一个颜色区*/
   CorrectError(90);
@@ -449,12 +459,13 @@ int main(void)
   ChassisTransiation(Back, 20, (uint32_t)zone[0]);
   #if(RING_ADAPT == 1)
   /*先校准绿色*/
-  while (!Ring_IsStable(0x31))
+  while (!Ring_IsStable((char)(0x31)))
   {
   }
   MicroAdapt(0x31);
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[0]-0x01))
+  while (!Ring_IsStable((char)(command[0])-1))
   {
   }
   MicroAdapt(command[0]-0x01);
@@ -472,8 +483,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[1]-0x01))
+  while (!Ring_IsStable((char)(command[1])-1))
   {
   }
   MicroAdapt(command[1]-0x01);
@@ -492,8 +504,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[2]-0x01))
+  while (!Ring_IsStable((char)(command[2])-1))
   {
   }
   MicroAdapt(command[2]-0x01);
@@ -506,11 +519,11 @@ int main(void)
   /*-----------------------------开始第二圈-------------------------------------*/
 
   /*出发到原料区 */
-  ChassisTransiation(Back, 40, (uint32_t)(REDZONE - zone[2] + 75));
+  ChassisTransiation(Back, 40, (uint32_t)(REDZONE - zone[2] + 80));
   ChassisRotate(ClockWise_Chassis, 10, 115);
   HAL_Delay(2000);
   CorrectError(0);
-  ChassisTransiation(Back, 30, 30);
+  ChassisTransiation(Back, 30, 48);
 
   /*靠近转盘*/
   ChassisTransiation(Right, 20, (uint32_t)(7));
@@ -540,7 +553,7 @@ int main(void)
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
   for (int i = 4; i < 7; i++)
   {
-    while (!(IsStable(command[i]+0x02) && IsMatch(command[i]+0x02)))
+    while (!(IsStable((char)(command[i])+2) && IsMatch((char)(command[i])+2)))
     {
     } 
     Lift_Catch(element);
@@ -579,8 +592,9 @@ int main(void)
 
   /*先校准绿色*/
   #if (RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(0x31))
+  while (!Ring_IsStable((char)(0x31)))
   {
   }
   MicroAdapt(0x31);
@@ -596,8 +610,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)abs(zone[0]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[4]-0x01))
+  while (!Ring_IsStable((char)(command[4])-1))
   {
   }
   MicroAdapt(command[4]-0x01);
@@ -615,8 +630,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[5]-0x01))
+  while (!Ring_IsStable((char)(command[5])-1))
   {
   }
   MicroAdapt(command[5]-0x01);
@@ -635,8 +651,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[6]-0x01))
+  while (!Ring_IsStable((char)(command[6])-1))
   {
   }
   MicroAdapt(command[6]-0x01);
@@ -656,8 +673,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[2] - zone[0]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[4]-0x01))
+  while (!Ring_IsStable((char)(command[4])-1))
   {
   }
   MicroAdapt(command[4]-0x01);
@@ -676,8 +694,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[5]-0x01))
+  while (!Ring_IsStable((char)(command[5])-1))
   {
   }
   MicroAdapt(command[5]-0x01);
@@ -696,8 +715,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable(command[6]-0x01))
+  while (!Ring_IsStable((char)(command[6])-1))
   {
   }
   MicroAdapt(command[6]-0x01);
@@ -720,8 +740,9 @@ int main(void)
   ChassisTransiation(Right, 20, 10);
   ChassisTransiation(Back, 20, (uint32_t)zone[0]);
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!IsStable(command[4]+0x02))
+  while (!IsStable((char)(command[4])+2))
   {
   }
   MicroAdapt(command[4]-0x01);
@@ -739,8 +760,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!IsStable(command[5]+0x02))
+  while (!IsStable((char)(command[5])+2))
   {
   }
   MicroAdapt(command[5]-0x01);
@@ -759,8 +781,9 @@ int main(void)
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
   #if(RING_ADAPT == 1)
+  memset(input_copy,0,sizeof(input_copy));
 
-  while (!IsStable(command[6]+0x02))
+  while (!IsStable((char)(command[6])+2))
   {
   }
   MicroAdapt(command[6]-0x01);
