@@ -27,6 +27,7 @@ extern int x_int;
 extern int y_int;
 extern int d;
 extern volatile char input_copy[256];
+extern char line[16];
 
 void Cmd_Callback(USARTInstance* USARTInstance);
 void CmdUart_Init();

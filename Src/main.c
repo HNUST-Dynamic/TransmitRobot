@@ -93,17 +93,17 @@ void CorrectError(float TargetAngle)
     Yaw_t = 0;
   }
 }
-void MicroAdapt(uint8_t current_ring)
+void MicroAdapt(char current_ring)
 {
   while (1)
   {
     watch_dog = 0;
-    while (!Ring_IsStable((char)(current_ring)))
+    while (!Ring_IsStable(current_ring))
     {
     }
-    if (wuliao[0] == current_ring)
+    if (line[0] == current_ring)
     {
-      while (!((abs(300 - x_int) <= 10) && (abs(200 - y_int) <= 10))) // 320 250
+      while (!((abs(300 - x_int) <= 10) && (abs(210 - y_int) <= 10))) // 320 250
       {
         if (300 - x_int < 0)
         {
@@ -115,18 +115,18 @@ void MicroAdapt(uint8_t current_ring)
         }
         if (200 - y_int < 0)
         {
-          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 200)));
+          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 210)));
         }
         else if (200 - y_int >= 0)
         {
-          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (200 - y_int)));
+          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (210 - y_int)));
         }
         watch_dog++;
         if(watch_dog >= 5)
         {
           break;
         }
-        while (!Ring_IsStable((char)(current_ring)))
+        while (!Ring_IsStable(current_ring))
         {
         }
       }
@@ -134,6 +134,48 @@ void MicroAdapt(uint8_t current_ring)
     }
   }
 }
+void MicroAdapt_Goods(char current_goods)
+{
+  while (1)
+  {
+    watch_dog = 0;
+    while (!IsStable(current_goods))
+    {
+    }
+    if (line[0] == current_goods)
+    {
+      while (!((abs(300 - x_int) <= 10) && (abs(210 - y_int) <= 10))) // 320 250
+      {
+        if (300 - x_int < 0)
+        {
+          ChassisTransiation(Back, 15, (uint32_t)(0.03 * (x_int - 300)));
+        }
+        else if (300 - x_int >= 0)
+        {
+          ChassisTransiation(Forward, 15, (uint32_t)(0.03 * (300 - x_int)));
+        }
+        if (200 - y_int < 0)
+        {
+          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 210)));
+        }
+        else if (200 - y_int >= 0)
+        {
+          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (210 - y_int)));
+        }
+        watch_dog++;
+        if(watch_dog >= 5)
+        {
+          break;
+        }
+        while (!IsStable(current_goods))
+        {
+        }
+      }
+      break;
+    }
+  }
+}
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -309,7 +351,7 @@ int main(void)
   while (!Ring_IsStable((char)(0x31)))
   {
   }
-  MicroAdapt(0x31);
+  MicroAdapt((char)0x31);
 
   #endif
   /*第一个颜色区*/
@@ -327,7 +369,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[0])-1))
   {
   }
-  MicroAdapt(command[0]-0x01);
+  MicroAdapt((char)(command[0])-1);
 
   #endif
   Goods_Putdown(command[0]);
@@ -347,7 +389,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[1])-1))
   {
   }
-  MicroAdapt(command[1]-0x01);
+  MicroAdapt((char)(command[1])-1);
 
   #endif
   Goods_Putdown(command[1]);
@@ -368,7 +410,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[2])-1))
   {
   }
-  MicroAdapt(command[2]-0x01);
+  MicroAdapt((char)(command[2])-1);
   #endif
   Goods_Putdown(command[2]);
   Lift_Back();
@@ -389,7 +431,7 @@ int main(void)
   while (!IsStable((char)(command[0])+2))
   {
   }
-  MicroAdapt(command[0]+0x02);
+  MicroAdapt_Goods((char)(command[0])+2);
 
   #endif
   Goods_Pickup(command[0]);
@@ -410,7 +452,7 @@ int main(void)
   while (!IsStable((char)(command[1])+2))
   {
   }
-  MicroAdapt(command[1]+0x02);
+  MicroAdapt_Goods((char)(command[1])+2);
   
   #endif
   Goods_Pickup(command[1]);
@@ -431,7 +473,7 @@ int main(void)
   while (!IsStable((char)(command[2])+2))
   {
   }
-  MicroAdapt(command[2]+0x02);
+  MicroAdapt_Goods((char)(command[2])+2);
   
   #endif
   Goods_Pickup(command[2]);
@@ -455,13 +497,13 @@ int main(void)
   while (!Ring_IsStable((char)(0x31)))
   {
   }
-  MicroAdapt(0x31);
+  MicroAdapt((char)(0x31));
   memset(input_copy,0,sizeof(input_copy));
 
   while (!Ring_IsStable((char)(command[0])-1))
   {
   }
-  MicroAdapt(command[0]-0x01);
+  MicroAdapt((char)(command[0])-1);
 
   #endif
   Goods_Putdown(command[0]);
@@ -481,7 +523,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[1])-1))
   {
   }
-  MicroAdapt(command[1]-0x01);
+  MicroAdapt((char)(command[1])-1);
 
   #endif
   Goods_Putdown(command[1]);
@@ -502,7 +544,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[2])-1))
   {
   }
-  MicroAdapt(command[2]-0x01);
+  MicroAdapt((char)(command[2])-1);
 
   #endif
   Goods_Putdown(command[2]);
@@ -590,7 +632,7 @@ int main(void)
   while (!Ring_IsStable((char)(0x31)))
   {
   }
-  MicroAdapt(0x31);
+  MicroAdapt((char)(0x31));
 
   #endif
   /*靠近粗加工区 第一个颜色区*/
@@ -608,7 +650,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[4])-1))
   {
   }
-  MicroAdapt(command[4]-0x01);
+  MicroAdapt((char)(command[4])-1);
 
   #endif
   Goods_Putdown(command[0]);
@@ -628,7 +670,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[5])-1))
   {
   }
-  MicroAdapt(command[5]-0x01);
+  MicroAdapt((char)(command[5])-1);
 
   #endif
   Goods_Putdown(command[1]);
@@ -649,7 +691,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[6])-1))
   {
   }
-  MicroAdapt(command[6]-0x01);
+  MicroAdapt((char)(command[6])-1);
   
   #endif
   Goods_Putdown(command[2]);
@@ -671,7 +713,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[4])-1))
   {
   }
-  MicroAdapt(command[4]-0x01);
+  MicroAdapt_Goods((char)(command[4])-1);
 
   #endif
   Goods_Pickup(command[0]);
@@ -692,7 +734,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[5])-1))
   {
   }
-  MicroAdapt(command[5]-0x01);
+  MicroAdapt_Goods((char)(command[5])-1);
 
   #endif
   Goods_Pickup(command[1]);
@@ -713,7 +755,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[6])-1))
   {
   }
-  MicroAdapt(command[6]-0x01);
+  MicroAdapt_Goods((char)(command[6])-1);
 
   #endif
   Goods_Pickup(command[2]);
@@ -738,7 +780,7 @@ int main(void)
   while (!IsStable((char)(command[4])+2))
   {
   }
-  MicroAdapt(command[4]-0x01);
+  MicroAdapt((char)(command[4])+2);
 
   #endif
   Goods_Putdown(command[0]);
@@ -758,7 +800,7 @@ int main(void)
   while (!IsStable((char)(command[5])+2))
   {
   }
-  MicroAdapt(command[5]-0x01);
+  MicroAdapt((char)(command[5])+2);
 
   #endif
   Goods_Putdown(command[1]);
@@ -779,7 +821,7 @@ int main(void)
   while (!IsStable((char)(command[6])+2))
   {
   }
-  MicroAdapt(command[6]-0x01);
+  MicroAdapt((char)(command[6])+2);
 
   #endif
   Goods_Putdown(command[2]);
