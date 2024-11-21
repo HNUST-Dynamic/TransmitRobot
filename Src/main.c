@@ -97,46 +97,39 @@ void MicroAdapt(uint8_t current_ring)
 {
   while (1)
   {
-    watch_dog++;//喂狗
+    watch_dog = 0;
+    while (!Ring_IsStable((char)(current_ring)))
+    {
+    }
     if (wuliao[0] == current_ring)
     {
-      if (!((abs(300 - x_int) <= 30) && (abs(200 - y_int) <= 7))) // 320 250
+      while (!((abs(300 - x_int) <= 10) && (abs(200 - y_int) <= 10))) // 320 250
       {
         if (300 - x_int < 0)
         {
-          ChassisTransiation(Back, 20, (uint32_t)(0.04 * (x_int - 300)));
-          watch_dog = 0;
-          break;
+          ChassisTransiation(Back, 15, (uint32_t)(0.03 * (x_int - 300)));
         }
         else if (300 - x_int >= 0)
         {
-          ChassisTransiation(Forward, 20, (uint32_t)(0.04 * (300 - x_int)));
-          watch_dog = 0;
-          break;
+          ChassisTransiation(Forward, 15, (uint32_t)(0.03 * (300 - x_int)));
         }
-        HAL_Delay(200);
         if (200 - y_int < 0)
         {
-          ChassisTransiation(Left, 20, (uint32_t)(0.04 * (y_int - 200)));
-          watch_dog = 0;
-          break;
+          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 200)));
         }
         else if (200 - y_int >= 0)
         {
-          ChassisTransiation(Right, 20, (uint32_t)(0.04 * (200 - y_int)));
-          watch_dog = 0;
+          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (200 - y_int)));
+        }
+        watch_dog++;
+        if(watch_dog >= 5)
+        {
           break;
         }
+        while (!Ring_IsStable((char)(current_ring)))
+        {
+        }
       }
-      else
-      {
-        watch_dog = 0;
-        break;
-      }
-    }
-    if(watch_dog >= 50)//超过五十次就跳出
-    {
-      watch_dog = 0;
       break;
     }
   }
@@ -198,7 +191,7 @@ int main(void)
 
   /*出来*/
   ChassisTransiation(Left, 20, (uint32_t)(21));
-  ChassisTransiation(Forward, 30, (uint32_t)(75));
+  ChassisTransiation(Forward, 30, (uint32_t)(70));
   CorrectError(0);
   Lift_StartFirst();
   Lift_updown_control(down, 3500, 103000);
@@ -235,7 +228,7 @@ int main(void)
   HAL_Delay(1000);
 
   /*出发去转盘*/
-  ChassisTransiation(Forward, 30, (uint32_t)(90));
+  ChassisTransiation(Forward, 30, (uint32_t)(95));
   /*靠近转盘*/
   ChassisTransiation(Right, 20, (uint32_t)(10));
   CorrectError(0);
