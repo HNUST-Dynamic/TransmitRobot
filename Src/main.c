@@ -31,7 +31,7 @@
 #include "Chassis.h"
 #include "Vision.h"
 #include "bsp_usart.h"
-//stepmotor.h
+// stepmotor.h
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,15 +42,15 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 /*-----------------功能模块开关------------------ */
-#define QR_CODE_ADAPT       0         //二维码测距功能开关
-#define RAW_ADAPT           0         //原料区微调功能开关
-#define RING_ADAPT          1         //圆环区微调功能开关
+#define QR_CODE_ADAPT 0 // 二维码测距功能开关
+#define RAW_ADAPT 0     // 原料区微调功能开关
+#define RING_ADAPT 1    // 圆环区微调功能开关
 
 /*----------------快捷调参宏定义-----------------*/
-#define REDZONE 18      //红色圆环距离
-#define GREENZONE 0     //绿色圆环距离
-#define BLUEZONE -18    //蓝色圆环距离
-#define TURN_K 0.8      //转向摩擦系数
+#define REDZONE 18   // 红色圆环距离
+#define GREENZONE 0  // 绿色圆环距离
+#define BLUEZONE -18 // 蓝色圆环距离
+#define TURN_K 0.8   // 转向摩擦系数
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -63,17 +63,23 @@
 /* USER CODE BEGIN PV */
 int zone[3];
 int x, y;
-uint16_t watch_dog = 0;     //微调程序中的看门狗
+uint16_t watch_dog = 0; // 微调程序中的看门狗
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+
+/**
+ * @brief 陀螺仪纠偏
+ * 
+ * @param TargetAngle 目标角度
+ */
 void CorrectError(float TargetAngle)
 {
   IMURecive();
   float error, Last_Yaw_t = 0;
   error = TargetAngle - Yaw_t;
-  if (error >= 1 || error <= -1)
+  if (error >= 0.5 || error <= -0.5)
   {
     if (error > 0)
     {
@@ -93,6 +99,12 @@ void CorrectError(float TargetAngle)
     Yaw_t = 0;
   }
 }
+
+/**
+ * @brief 色环微调
+ * 
+ * @param current_ring 色环代码
+ */
 void MicroAdapt(char current_ring)
 {
   while (1)
@@ -103,7 +115,7 @@ void MicroAdapt(char current_ring)
     }
     if (line[0] == current_ring)
     {
-      while (!((abs(300 - x_int) <= 10) && (abs(210 - y_int) <= 10))) // 320 250
+      while (!((abs(300 - x_int) <= 5) && (abs(215 - y_int) <= 5))) // 320 250
       {
         if (300 - x_int < 0)
         {
@@ -115,14 +127,14 @@ void MicroAdapt(char current_ring)
         }
         if (200 - y_int < 0)
         {
-          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 210)));
+          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 215)));
         }
         else if (200 - y_int >= 0)
         {
-          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (210 - y_int)));
+          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (215 - y_int)));
         }
         watch_dog++;
-        if(watch_dog >= 5)
+        if (watch_dog >= 5)
         {
           break;
         }
@@ -132,8 +144,19 @@ void MicroAdapt(char current_ring)
       }
       break;
     }
+    // watch_dog++;
+    // if (watch_dog >= 5)
+    // {
+    //   break;
+    // }
   }
 }
+
+/**
+ * @brief 物料微调
+ * 
+ * @param current_goods 物料代码
+ */
 void MicroAdapt_Goods(char current_goods)
 {
   while (1)
@@ -144,7 +167,7 @@ void MicroAdapt_Goods(char current_goods)
     }
     if (line[0] == current_goods)
     {
-      while (!((abs(300 - x_int) <= 10) && (abs(210 - y_int) <= 10))) // 320 250
+      while (!((abs(300 - x_int) <= 5) && (abs(215 - y_int) <= 5))) // 320 250
       {
         if (300 - x_int < 0)
         {
@@ -156,14 +179,14 @@ void MicroAdapt_Goods(char current_goods)
         }
         if (200 - y_int < 0)
         {
-          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 210)));
+          ChassisTransiation(Left, 15, (uint32_t)(0.03 * (y_int - 215)));
         }
         else if (200 - y_int >= 0)
         {
-          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (210 - y_int)));
+          ChassisTransiation(Right, 15, (uint32_t)(0.03 * (215 - y_int)));
         }
         watch_dog++;
-        if(watch_dog >= 5)
+        if (watch_dog >= 5)
         {
           break;
         }
@@ -233,11 +256,10 @@ int main(void)
 
   /*出来*/
   ChassisTransiation(Left, 20, (uint32_t)(21));
-  ChassisTransiation(Forward, 30, (uint32_t)(70));
+  ChassisTransiation(Forward, 30, (uint32_t)(60));
   CorrectError(0);
-  Lift_StartFirst();
-  Lift_updown_control(down, 3500, 103000);
-  HAL_Delay(1000);
+  // Lift_updown_control(down, 3500, 103000);
+  // HAL_Delay(1000);
 
   /*问香橙派QRCode 阻塞*/
   while (command[3] != '+')
@@ -245,14 +267,14 @@ int main(void)
   }
 
   /*二维码区微调*/
-  HAL_UART_Transmit_DMA(&huart6, "2", 1);
-  while (rangging[0] == 0x00)
-  {
-    HAL_UART_Transmit_DMA(&huart6, "2", 1);
-    HAL_Delay(1200);
-  }
+  // HAL_UART_Transmit_DMA(&huart6, "2", 1);
+  // while (rangging[0] == 0x00)
+  // {
+  //   HAL_UART_Transmit_DMA(&huart6, "2", 1);
+  //   HAL_Delay(1200);
+  // }
 
-  #if(QR_CODE_ADAPT == 1)
+#if (QR_CODE_ADAPT == 1)
 
   if (13 - d > 0)
   {
@@ -263,52 +285,60 @@ int main(void)
     ChassisTransiation(Right, 20, (uint32_t)(d - 13));
   }
 
-  #endif
-  HAL_Delay(500);
-  HAL_UART_Transmit_DMA(&huart6, "0", 1);
-  Lift_updown_control(up, 1000, 103000);
-  HAL_Delay(1000);
+#endif
+  // HAL_Delay(500);
+  // HAL_UART_Transmit_DMA(&huart6, "0", 1);
+  // Lift_updown_control(up, 1000, 103000);
+  // HAL_Delay(1000);
 
   /*出发去转盘*/
-  ChassisTransiation(Forward, 30, (uint32_t)(95));
+  ChassisTransiation(Forward, 30, (uint32_t)(105));
   /*靠近转盘*/
   ChassisTransiation(Right, 20, (uint32_t)(10));
   CorrectError(0);
+  HAL_Delay(2000);
+  Lift_StartFirst();
 
-  /*原料区微调*/
-  #if(RAW_ADAPT == 1)
+/*原料区微调*/
+#if (RAW_ADAPT == 1)
 
-  while(!(IsStable(0x30)||IsStable(0x31)||IsStable(0x32))){}
-  if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//320 250
+  while (!(IsStable(0x30) || IsStable(0x31) || IsStable(0x32)))
   {
-      if(300-x_int<0)
-      {
-        ChassisTransiation(Back,20,(uint32_t)(0.05*(x_int-300)));
-      }else if(300-x_int>=0)
-      {
-        ChassisTransiation(Forward,20,(uint32_t)(0.05*(300-x_int)));
-      }
-      HAL_Delay(100);
-      if(200-y_int<0)
-      {
-        ChassisTransiation(Left,20,(uint32_t)(0.05*(y_int-200)));
-      }else if(200-y_int>=0)
-      {
-        ChassisTransiation(Right,20,(uint32_t)(0.05*(200-y_int)));
-      }
+  }
+  if (!((abs(300 - x_int) <= 20) && (abs(200 - y_int) <= 15))) // 320 250
+  {
+    if (300 - x_int < 0)
+    {
+      ChassisTransiation(Back, 20, (uint32_t)(0.05 * (x_int - 300)));
+    }
+    else if (300 - x_int >= 0)
+    {
+      ChassisTransiation(Forward, 20, (uint32_t)(0.05 * (300 - x_int)));
+    }
+    HAL_Delay(100);
+    if (200 - y_int < 0)
+    {
+      ChassisTransiation(Left, 20, (uint32_t)(0.05 * (y_int - 200)));
+    }
+    else if (200 - y_int >= 0)
+    {
+      ChassisTransiation(Right, 20, (uint32_t)(0.05 * (200 - y_int)));
+    }
   }
 
-  #endif
+#endif
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
   for (int i = 0; i < 3; i++)
   {
-    while (!(IsStable((char)(command[i])+2) && IsMatch((char)(command[i])+2)))
+    while (!(IsMatch((char)(command[i]) + 2) && (IsStable((char)(command[i]) + 2))))
     {
     }
     Lift_Catch(element);
+    num++;
     HAL_Delay(1000);
     Lift_Back();
   }
+  num++;//跳过指令中的加号
   Lift_Turn_back();
   putdown();
 
@@ -327,6 +357,8 @@ int main(void)
   HAL_Delay(2000);
   CorrectError(180);
   Lift_Turn();
+  
+  //将命令映射到色环区的坐标
   for (int i = 0; i < 3; i++)
   {
     if (command[i] == 0x31)
@@ -342,18 +374,18 @@ int main(void)
       zone[i] = BLUEZONE;
     }
   }
-  ChassisTransiation(Right, 20, 19);//靠近粗加工区
+  ChassisTransiation(Right, 20, 19); // 靠近粗加工区
 
-  /*先校准绿色*/
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+/*先校准绿色*/
+#if (RING_ADAPT == 1)
+  // memset(input_copy,0,sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(0x31)))
-  {
-  }
-  MicroAdapt((char)0x31);
+  // while (!Ring_IsStable((char)(0x31)))
+  // {
+  // }
+  // MicroAdapt((char)0x31);
 
-  #endif
+#endif
   /*第一个颜色区*/
   if (zone[0] > 0)
   {
@@ -363,17 +395,16 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)abs(zone[0]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
-
-  while (!Ring_IsStable((char)(command[0])-1))
+#if (RING_ADAPT == 1)
+  //接收之前先清空拷贝的数组
+  memset(input_copy, 0, sizeof(input_copy));
+  while (!Ring_IsStable((char)(command[0]) - 1))
   {
   }
-  MicroAdapt((char)(command[0])-1);
+  MicroAdapt((char)(command[0]) - 1);
 
-  #endif
+#endif
   Goods_Putdown(command[0]);
-
   /*第二个颜色区*/
   if ((zone[1] - zone[0]) > 0)
   {
@@ -383,15 +414,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[1])-1))
+  while (!Ring_IsStable((char)(command[1]) - 1))
   {
   }
-  MicroAdapt((char)(command[1])-1);
+  MicroAdapt((char)(command[1]) - 1);
 
-  #endif
+#endif
   Goods_Putdown(command[1]);
   Lift_Back();
 
@@ -404,14 +435,14 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[2])-1))
+  while (!Ring_IsStable((char)(command[2]) - 1))
   {
   }
-  MicroAdapt((char)(command[2])-1);
-  #endif
+  MicroAdapt((char)(command[2]) - 1);
+#endif
   Goods_Putdown(command[2]);
   Lift_Back();
 
@@ -425,17 +456,17 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[2] - zone[0]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!IsStable((char)(command[0])+2))
+  while (!IsStable((char)(command[0]) - 1))
   {
   }
-  MicroAdapt_Goods((char)(command[0])+2);
+  MicroAdapt((char)(command[0]) - 1);//+2
 
-  #endif
+#endif
   Goods_Pickup(command[0]);
-  Lift_Back();                    
+  Lift_Back();
 
   // 第二区抓取
   if ((zone[1] - zone[0]) > 0)
@@ -446,15 +477,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!IsStable((char)(command[1])+2))
+  while (!IsStable((char)(command[1]) - 1))
   {
   }
-  MicroAdapt_Goods((char)(command[1])+2);
-  
-  #endif
+  MicroAdapt((char)(command[1]) - 1);
+
+#endif
   Goods_Pickup(command[1]);
   Lift_Back();
 
@@ -467,15 +498,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!IsStable((char)(command[2])+2))
+  while (!IsStable((char)(command[2]) - 1))
   {
   }
-  MicroAdapt_Goods((char)(command[2])+2);
-  
-  #endif
+  MicroAdapt((char)(command[2]) - 1);
+
+#endif
   Goods_Pickup(command[2]);
   Lift_Back();
 
@@ -492,20 +523,20 @@ int main(void)
   CorrectError(90);
   ChassisTransiation(Right, 20, 10);
   ChassisTransiation(Back, 20, (uint32_t)zone[0]);
-  #if(RING_ADAPT == 1)
+#if (RING_ADAPT == 1)
   /*先校准绿色*/
-  while (!Ring_IsStable((char)(0x31)))
+  // while (!Ring_IsStable((char)(0x31)))
+  // {
+  // }
+  // MicroAdapt((char)(0x31));
+  memset(input_copy, 0, sizeof(input_copy));
+
+  while (!Ring_IsStable((char)(command[0]) - 1))
   {
   }
-  MicroAdapt((char)(0x31));
-  memset(input_copy,0,sizeof(input_copy));
+  MicroAdapt((char)(command[0]) - 1);
 
-  while (!Ring_IsStable((char)(command[0])-1))
-  {
-  }
-  MicroAdapt((char)(command[0])-1);
-
-  #endif
+#endif
   Goods_Putdown(command[0]);
 
   /*第二个颜色区*/
@@ -517,15 +548,14 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
-
-  while (!Ring_IsStable((char)(command[1])-1))
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
+  while (!Ring_IsStable((char)(command[1]) - 1))
   {
   }
-  MicroAdapt((char)(command[1])-1);
+  MicroAdapt((char)(command[1]) - 1);
 
-  #endif
+#endif
   Goods_Putdown(command[1]);
   Lift_Back();
 
@@ -538,15 +568,14 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
-
-  while (!Ring_IsStable((char)(command[2])-1))
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
+  while (!Ring_IsStable((char)(command[2]) - 1))
   {
   }
-  MicroAdapt((char)(command[2])-1);
+  MicroAdapt((char)(command[2]) - 1);
 
-  #endif
+#endif
   Goods_Putdown(command[2]);
   Lift_Back();
   ChassisTransiation(Left, 20, 10);
@@ -558,39 +587,43 @@ int main(void)
   ChassisRotate(ClockWise_Chassis, 10, 115);
   HAL_Delay(2000);
   CorrectError(0);
-  ChassisTransiation(Back, 30, 48);
+  ChassisTransiation(Back, 30, 52);
 
   /*靠近转盘*/
   ChassisTransiation(Right, 20, (uint32_t)(7));
-  /*原料区微调*/
-  #if(RAW_ADAPT == 1)
+/*原料区微调*/
+#if (RAW_ADAPT == 1)
 
-  while(!(IsStable(0x30)||IsStable(0x31)||IsStable(0x32))){}
-  if(!((abs(300-x_int)<=20)&&(abs(200-y_int)<=15)))//320 250
+  while (!(IsStable(0x30) || IsStable(0x31) || IsStable(0x32)))
   {
-      if(300-x_int<0)
-      {
-        ChassisTransiation(Back,20,(uint32_t)(x_int-300));
-      }else if(300-x_int>0)
-      {
-        ChassisTransiation(Forward,20,(uint32_t)(300-x_int));
-      }
-      if(200-y_int<0)
-      {
-        ChassisTransiation(Left,20,(uint32_t)(y_int-200));
-      }else if(200-y_int>0)
-      {
-        ChassisTransiation(Right,20,(uint32_t)(200-y_int));
-      }
+  }
+  if (!((abs(300 - x_int) <= 20) && (abs(200 - y_int) <= 15))) // 320 250
+  {
+    if (300 - x_int < 0)
+    {
+      ChassisTransiation(Back, 20, (uint32_t)(x_int - 300));
+    }
+    else if (300 - x_int > 0)
+    {
+      ChassisTransiation(Forward, 20, (uint32_t)(300 - x_int));
+    }
+    if (200 - y_int < 0)
+    {
+      ChassisTransiation(Left, 20, (uint32_t)(y_int - 200));
+    }
+    else if (200 - y_int > 0)
+    {
+      ChassisTransiation(Right, 20, (uint32_t)(200 - y_int));
+    }
   }
 
-  #endif
+#endif
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
   for (int i = 4; i < 7; i++)
   {
-    while (!(IsStable((char)(command[i])+2) && IsMatch((char)(command[i])+2)))
+    while (!(IsMatch((char)(command[i]) + 2) && IsStable((char)(command[i]) + 2)))
     {
-    } 
+    }
     Lift_Catch(element);
     HAL_Delay(1000);
     Lift_Back();
@@ -625,16 +658,16 @@ int main(void)
     }
   }
 
-  /*先校准绿色*/
-  #if (RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+/*先校准绿色*/
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
   while (!Ring_IsStable((char)(0x31)))
   {
   }
   MicroAdapt((char)(0x31));
 
-  #endif
+#endif
   /*靠近粗加工区 第一个颜色区*/
   if (zone[0] > 0)
   {
@@ -644,15 +677,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)abs(zone[0]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[4])-1))
+  while (!Ring_IsStable((char)(command[4]) - 1))
   {
   }
-  MicroAdapt((char)(command[4])-1);
+  MicroAdapt((char)(command[4]) - 1);
 
-  #endif
+#endif
   Goods_Putdown(command[0]);
 
   /*第二个颜色区*/
@@ -664,15 +697,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[5])-1))
+  while (!Ring_IsStable((char)(command[5]) - 1))
   {
   }
-  MicroAdapt((char)(command[5])-1);
+  MicroAdapt((char)(command[5]) - 1);
 
-  #endif
+#endif
   Goods_Putdown(command[1]);
   Lift_Back();
 
@@ -685,15 +718,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[6])-1))
+  while (!Ring_IsStable((char)(command[6]) - 1))
   {
   }
-  MicroAdapt((char)(command[6])-1);
-  
-  #endif
+  MicroAdapt((char)(command[6]) - 1);
+
+#endif
   Goods_Putdown(command[2]);
   Lift_Back();
 
@@ -707,15 +740,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[2] - zone[0]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[4])-1))
+  while (!Ring_IsStable((char)(command[4]) - 1))
   {
   }
-  MicroAdapt_Goods((char)(command[4])-1);
+  MicroAdapt((char)(command[4]) - 1);
 
-  #endif
+#endif
   Goods_Pickup(command[0]);
   Lift_Back();
 
@@ -728,15 +761,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[5])-1))
+  while (!Ring_IsStable((char)(command[5]) - 1))
   {
   }
-  MicroAdapt_Goods((char)(command[5])-1);
+  MicroAdapt((char)(command[5]) - 1);
 
-  #endif
+#endif
   Goods_Pickup(command[1]);
   Lift_Back();
 
@@ -749,15 +782,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!Ring_IsStable((char)(command[6])-1))
+  while (!Ring_IsStable((char)(command[6]) - 1))
   {
   }
-  MicroAdapt_Goods((char)(command[6])-1);
+  MicroAdapt((char)(command[6]) - 1);
 
-  #endif
+#endif
   Goods_Pickup(command[2]);
   Lift_Back();
 
@@ -774,15 +807,15 @@ int main(void)
    第一个颜色区*/
   ChassisTransiation(Right, 20, 10);
   ChassisTransiation(Back, 20, (uint32_t)zone[0]);
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!IsStable((char)(command[4])+2))
+  while (!IsStable((char)(command[4]) + 2))
   {
   }
-  MicroAdapt((char)(command[4])+2);
+  MicroAdapt((char)(command[4]) + 2);
 
-  #endif
+#endif
   Goods_Putdown(command[0]);
 
   /*第二个颜色区*/
@@ -794,15 +827,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[0] - zone[1]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!IsStable((char)(command[5])+2))
+  while (!IsStable((char)(command[5]) + 2))
   {
   }
-  MicroAdapt((char)(command[5])+2);
+  MicroAdapt((char)(command[5]) + 2);
 
-  #endif
+#endif
   Goods_Putdown(command[1]);
   Lift_Back();
 
@@ -815,15 +848,15 @@ int main(void)
   {
     ChassisTransiation(Forward, 20, (uint32_t)(zone[1] - zone[2]));
   }
-  #if(RING_ADAPT == 1)
-  memset(input_copy,0,sizeof(input_copy));
+#if (RING_ADAPT == 1)
+  memset(input_copy, 0, sizeof(input_copy));
 
-  while (!IsStable((char)(command[6])+2))
+  while (!IsStable((char)(command[6]) + 2))
   {
   }
-  MicroAdapt((char)(command[6])+2);
+  MicroAdapt((char)(command[6]) + 2);
 
-  #endif
+#endif
   Goods_Putdown(command[2]);
   Lift_Back();
 

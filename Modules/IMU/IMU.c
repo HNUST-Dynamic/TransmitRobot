@@ -15,9 +15,10 @@ float Yaw_base;
 volatile float Yaw_t = 0;
 static uint8_t flag = 0;
 
-uint8_t tail[4]={0x00, 0x00, 0x80, 0x7f};
-uint8_t ch[8]; //u8是单个字节的数据
-USARTInstance* USARTInstance5;
+uint8_t tail[4]={0x00, 0x00, 0x80, 0x7f};   //vofa+ 调试所用帧尾
+uint8_t ch[8];                              //u8是单个字节的数据
+USARTInstance* USARTInstance5;              //串口5实例
+
 void Serial_SendFloat(float data)
 {		
 
@@ -95,6 +96,7 @@ void IMUInit()
     Yaw_base = (((float)((ReciveData[1]<<8)|ReciveData[0])/32768.0)*180.0);
 
 }
+
 void IMURecive()
 {
     uint8_t ReciveData[2];
