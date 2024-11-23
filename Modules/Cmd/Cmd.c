@@ -230,8 +230,6 @@ bool IsStable(char current_ring)
                         temp[j] = '\0';
                         y = atof(temp);
 
-                        last_x_int = x_int;
-                        last_y_int = y_int;
 
                         // 将浮点数转换为整数
                         x_int = (int)x;
@@ -251,6 +249,10 @@ bool IsStable(char current_ring)
                                         return true;
                                 }
                         }
+                        last_x_int = x_int;
+                        last_y_int = y_int;
+                          memset(input_copy, 0, sizeof(input_copy));
+
                         // HAL_Delay(200);
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_RXNE);
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
@@ -327,8 +329,6 @@ bool Ring_IsStable(char current_ring)
                         temp[j] = '\0';
                         y = atof(temp);
 
-                        last_x_int = x_int;
-                        last_y_int = y_int;
 
                         // 将浮点数转换为整数
                         x_int = (int)x;
@@ -337,13 +337,17 @@ bool Ring_IsStable(char current_ring)
                         difference_x = x_int - last_x_int;
                         difference_y = y_int - last_y_int;
 
-                        if (difference_x * difference_x + difference_y * difference_y <= 100000)
+                        if (difference_x * difference_x + difference_y * difference_y <= 50)
                         {
                                 __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
                                 __HAL_UART_ENABLE_IT(&huart6, UART_IT_RXNE);
                                 return true;
                         }
                         // HAL_Delay(200);
+                        last_x_int = x_int;
+                        last_y_int = y_int;
+                          memset(input_copy, 0, sizeof(input_copy));
+
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
                         __HAL_UART_ENABLE_IT(&huart6, UART_IT_RXNE);
                         return false;

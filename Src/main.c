@@ -115,23 +115,23 @@ void MicroAdapt(char current_ring)
     }
     if (line[0] == current_ring)
     {
-      while (!((abs(300 - x_int) <= 5) && (abs(205 - y_int) <= 5))) // 320 250
+      while (!((abs(330 - x_int) <= 5) && (abs(235 - y_int) <= 5))) // 320 250
       {
-        if (300 - x_int < 0)
+        if (330 - x_int < 0)
         {
-          ChassisTransiation(Back, 45, (uint32_t)(0.03 * (x_int - 300)));
+          ChassisTransiation(Back, 45, (uint32_t)(0.03 * (x_int - 330)));
         }
-        else if (300 - x_int >= 0)
+        else if (330 - x_int >= 0)
         {
-          ChassisTransiation(Forward, 45, (uint32_t)(0.03 * (300 - x_int)));
+          ChassisTransiation(Forward, 45, (uint32_t)(0.03 * (330 - x_int)));
         }
-        if (205 - y_int < 0)
+        if (235 - y_int < 0)
         {
-          ChassisTransiation(Left, 45, (uint32_t)(0.03 * (y_int - 205)));
+          ChassisTransiation(Left, 45, (uint32_t)(0.03 * (y_int - 235)));
         }
-        else if (205 - y_int >= 0)
+        else if (235 - y_int >= 0)
         {
-          ChassisTransiation(Right, 45, (uint32_t)(0.03 * (205 - y_int)));
+          ChassisTransiation(Right, 45, (uint32_t)(0.03 * (235 - y_int)));
         }
         watch_dog++;
         if (watch_dog >= 5)

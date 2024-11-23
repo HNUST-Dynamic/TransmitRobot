@@ -208,18 +208,18 @@ void Lift_Catch(uint8_t element)
   // HAL_Delay(800);
   Lift_Turn_back();
   HAL_Delay(800);
-  Lift_updown_control(down, 10000, 40000);
+  Lift_updown_control(down, 10000, 35000);
   HAL_Delay(1000);
   putdown();
   HAL_Delay(400);
-  Lift_updown_control(up, 10000, 40000);
+  Lift_updown_control(up, 10000, 35000);
   HAL_Delay(1000);
 }
 
 void Lift_Catch_two(uint8_t element) // 把物料从地面上抓到物料盘里
 {
   Turn_Color(element);
-  Lift_updown_control(down, 10000, 46000);
+  Lift_updown_control(down, 10000, 35000);
   pickup();
   HAL_Delay(200);
   // Lift_updown_control(up,1000,170000);
@@ -228,7 +228,7 @@ void Lift_Catch_two(uint8_t element) // 把物料从地面上抓到物料盘里
   HAL_Delay(800);
   putdown();
   HAL_Delay(400);
-  Lift_updown_control(up, 10000, 46000);
+  Lift_updown_control(up, 10000, 35000);
   HAL_Delay(1000);
 }
 
