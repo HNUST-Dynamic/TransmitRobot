@@ -25,7 +25,7 @@ void ChassisInit()
         .step_mode = PosMode,
         .ctrl_mode = CloseCircuit,
         .motor_direction = CounterClockWise,
-        .acc = 0x0F,
+        .acc = 0x0E,
         .speed = 0,
     };
 

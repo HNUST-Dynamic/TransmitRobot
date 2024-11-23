@@ -11,7 +11,7 @@
 #define ROTATION_TIME       800         // 底盘旋转时间系数
 #define K                   8.5625      // 平移长度系数
 #define MU                  0.876       // 场地摩擦系数 越大走的越远
-#define T                   150         // 命令等待时间系数
+#define T                   200         // 命令等待时间系数
 
 
 typedef enum
