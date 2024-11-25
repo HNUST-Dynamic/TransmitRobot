@@ -182,7 +182,7 @@ void ChassisTransiation(Chassis_Direction_e Direction, uint16_t Velocity, uint32
     StepMotorEnControl(RightForwardMotorInstance, true, false);
     StepMotorEnControl(RightBackMotorInstance, true, false);
     StepMotorEnControl(LeftBackMotorInstance, true, false);
-    HAL_Delay(300);
+    HAL_Delay(300);//300
     // 电机位置模式运行
     StepMotorPosControl(LeftForwardMotorInstance, false, false);
     StepMotorPosControl(RightForwardMotorInstance, false, false);

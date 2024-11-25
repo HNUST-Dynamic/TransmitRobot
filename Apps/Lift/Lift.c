@@ -58,14 +58,14 @@ void Lift_Init()
 void pickup()
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4); /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 750);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 630);
 }
 
 // 抓手松开
 void putdown()
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4); /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 1130);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 980);
 }
 
 // 电梯由内转向外
@@ -133,17 +133,17 @@ void Turn_Color_two(uint8_t element)
 {
   switch (element)
   {
-  case 0x31:
-    Turn_Red();
-    break;
-  case 0x32:
-    Turn_Green();
-    break;
-  case 0x33:
-    Turn_Bule();
-    break;
-  default:
-    break;
+    case 0x31:
+      Turn_Red();
+      break;
+    case 0x32:
+      Turn_Green();
+      break;
+    case 0x33:
+      Turn_Bule();
+      break;
+    default:
+      break;
   }
 }
 
@@ -154,7 +154,7 @@ void ElevatorMotor_Init()
       .step_mode = PosMode,
       .ctrl_mode = CloseCircuit,
       .motor_direction = CounterClockWise,
-      .acc = 0xA0,
+      .acc = 0x00,
       .speed = 150,
   };
 
@@ -198,28 +198,28 @@ void Lift_StartFirst()
 void Lift_Catch(uint8_t element)
 {
   Turn_Color(element);
-  Lift_updown_control(down, 10000, 46000);
-  HAL_Delay(1000);
+  Lift_updown_control(down, 2000, 46000);
+  HAL_Delay(500);
   pickup();
   HAL_Delay(200);
-  Lift_updown_control(up, 10000, 46000);
-  HAL_Delay(1000);
-
+  Lift_updown_control(up, 2000, 46000);
   // HAL_Delay(800);
+
+  HAL_Delay(500);
   Lift_Turn_back();
   HAL_Delay(800);
-  Lift_updown_control(down, 10000, 35000);
-  HAL_Delay(1000);
+  Lift_updown_control(down, 2000, 35000);
+  HAL_Delay(500);
   putdown();
-  HAL_Delay(400);
-  Lift_updown_control(up, 10000, 35000);
-  HAL_Delay(1000);
+  HAL_Delay(200);
+  Lift_updown_control(up, 2000, 35000);
+  HAL_Delay(500);
 }
 
 void Lift_Catch_two(uint8_t element) // 把物料从地面上抓到物料盘里
 {
   Turn_Color(element);
-  Lift_updown_control(down, 10000, 35000);
+  Lift_updown_control(down, 2000, 35000);
   pickup();
   HAL_Delay(200);
   // Lift_updown_control(up,1000,170000);
@@ -228,7 +228,7 @@ void Lift_Catch_two(uint8_t element) // 把物料从地面上抓到物料盘里
   HAL_Delay(800);
   putdown();
   HAL_Delay(400);
-  Lift_updown_control(up, 10000, 35000);
+  Lift_updown_control(up, 2000, 35000);
   HAL_Delay(1000);
 }
 
@@ -247,41 +247,41 @@ void Goods_Putdown(uint8_t element)
   // HAL_Delay(1000);
   Lift_Turn_back();
   HAL_Delay(800);
-  Lift_updown_control(down, 10000, 35000);
+  Lift_updown_control(down, 2500, 35000);
   HAL_Delay(1000);
   pickup();
-  HAL_Delay(200);
-  Lift_updown_control(up, 10000, 35000);
+  HAL_Delay(500);
+  Lift_updown_control(up, 2500, 35000);
   HAL_Delay(1000);
   Lift_Turn();
-  Lift_updown_control(down, 10000, 98000);
+  Lift_updown_control(down, 600, 99000);
   HAL_Delay(2500);
   putdown();
   HAL_Delay(200);
-  Lift_updown_control(up, 10000, 98000);
+  Lift_updown_control(up, 2500, 99000);
   HAL_Delay(2500);
 }
 
-// 在粗加工、存储区把物料盘上的物料取下的操作
+// 在粗加工、存储区把物料盘上的物料拿上的操作
 void Goods_Pickup(uint8_t element)
 {
   Turn_Color_two(element);
   // HAL_Delay(1000);
-  Lift_updown_control(down, 10000, 98000);
+  Lift_updown_control(down, 2500, 99000);
   HAL_Delay(2500);
   pickup();
   HAL_Delay(200);
-  Lift_updown_control(up, 10000, 98000);
+  Lift_updown_control(up, 2500, 99000);
   HAL_Delay(2500);
 
   Turn_Color_two(element);
   // HAL_Delay(1000);
   Lift_Turn_back();
   HAL_Delay(800);
-  Lift_updown_control(down, 10000, 35000);
+  Lift_updown_control(down, 2500, 35000);
   HAL_Delay(1000);
   putdown();
   HAL_Delay(200);
-  Lift_updown_control(up, 10000, 35000);
+  Lift_updown_control(up, 2500, 35000);
   HAL_Delay(1000);
 }
