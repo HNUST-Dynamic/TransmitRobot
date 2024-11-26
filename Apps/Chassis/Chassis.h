@@ -58,4 +58,7 @@ void ChassisRotate(Chassis_Direction_e Direction,uint16_t Velocity,float Angle);
  * 
  */
 void ChassisStop();
+
+void ChassisTransiation_Adapt(Chassis_Direction_e Direction, uint16_t Velocity, uint32_t clk);
+
 #endif // !CHASSIS_H

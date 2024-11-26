@@ -16,7 +16,6 @@
 
 #define WHEEL_RADIUS 0.01f // 轮子半径（米）
 #define PI 3.1415926f
-extern int X;
 // UART_HandleTypeDef  huart6;
 TIM_OC_InitTypeDef sConfigOC;
 
@@ -58,14 +57,14 @@ void Lift_Init()
 void pickup()
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4); /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 630);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 530);
 }
 
 // 抓手松开
 void putdown()
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4); /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 980);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 880);
 }
 
 // 电梯由内转向外
@@ -114,17 +113,17 @@ void Turn_Color(uint8_t element)
 {
   switch (element)
   {
-  case 0x33:
-    Turn_Red();
-    break;
-  case 0x34:
-    Turn_Green();
-    break;
-  case 0x35:
-    Turn_Bule();
-    break;
-  default:
-    break;
+    case 0x33:
+      Turn_Red();
+      break;
+    case 0x34:
+      Turn_Green();
+      break;
+    case 0x35:
+      Turn_Bule();
+      break;
+    default:
+      break;
   }
 }
 
@@ -179,8 +178,8 @@ void Lift_updown_control(Lift_Direction_e Direction, uint16_t Velocity, uint32_t
   ElevatorMotorInstance->speed = Velocity;
   ElevatorMotorInstance->clk = Length;
 
-  StepMotorEnControl(ElevatorMotorInstance, true, false);
-  HAL_Delay(200);
+  // StepMotorEnControl(ElevatorMotorInstance, true, false);
+  // HAL_Delay(200);
   StepMotorPosControl(ElevatorMotorInstance, false, false);
 }
 
@@ -247,19 +246,19 @@ void Goods_Putdown(uint8_t element)
   // HAL_Delay(1000);
   Lift_Turn_back();
   HAL_Delay(800);
-  Lift_updown_control(down, 2500, 35000);
+  Lift_updown_control(down, 2500, 36000);
   HAL_Delay(1000);
   pickup();
   HAL_Delay(500);
-  Lift_updown_control(up, 2500, 35000);
+  Lift_updown_control(up, 2500, 36000);
   HAL_Delay(1000);
   Lift_Turn();
   Lift_updown_control(down, 600, 99000);
-  HAL_Delay(2500);
+  HAL_Delay(2000);
   putdown();
   HAL_Delay(200);
   Lift_updown_control(up, 2500, 99000);
-  HAL_Delay(2500);
+  HAL_Delay(2000);
 }
 
 // 在粗加工、存储区把物料盘上的物料拿上的操作
@@ -268,20 +267,20 @@ void Goods_Pickup(uint8_t element)
   Turn_Color_two(element);
   // HAL_Delay(1000);
   Lift_updown_control(down, 2500, 99000);
-  HAL_Delay(2500);
+  HAL_Delay(2000);
   pickup();
   HAL_Delay(200);
   Lift_updown_control(up, 2500, 99000);
-  HAL_Delay(2500);
+  HAL_Delay(2000);
 
   Turn_Color_two(element);
   // HAL_Delay(1000);
   Lift_Turn_back();
   HAL_Delay(800);
   Lift_updown_control(down, 2500, 35000);
-  HAL_Delay(1000);
+  HAL_Delay(800);
   putdown();
   HAL_Delay(200);
   Lift_updown_control(up, 2500, 35000);
-  HAL_Delay(1000);
+  HAL_Delay(800);
 }

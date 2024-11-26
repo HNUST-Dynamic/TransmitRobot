@@ -177,12 +177,12 @@ void ChassisTransiation(Chassis_Direction_e Direction, uint16_t Velocity, uint32
         break;
     }
 
-    // 确保电机使能
-    StepMotorEnControl(LeftForwardMotorInstance, true, false);
-    StepMotorEnControl(RightForwardMotorInstance, true, false);
-    StepMotorEnControl(RightBackMotorInstance, true, false);
-    StepMotorEnControl(LeftBackMotorInstance, true, false);
-    HAL_Delay(300);//300
+    // // 确保电机使能
+    // StepMotorEnControl(LeftForwardMotorInstance, true, false);
+    // StepMotorEnControl(RightForwardMotorInstance, true, false);
+    // StepMotorEnControl(RightBackMotorInstance, true, false);
+    // StepMotorEnControl(LeftBackMotorInstance, true, false);
+    // HAL_Delay(300);//300
     // 电机位置模式运行
     StepMotorPosControl(LeftForwardMotorInstance, false, false);
     StepMotorPosControl(RightForwardMotorInstance, false, false);
@@ -274,3 +274,91 @@ void ChassisStop()
     StepMotorStop(RightBackMotorInstance, false);
     StepMotorStop(LeftBackMotorInstance, false);
 }
+
+void ChassisTransiation_Adapt(Chassis_Direction_e Direction,uint16_t Velocity,uint32_t clk)
+{
+    //设置四个电机为pos模式
+    LeftForwardMotorInstance->step_mode = PosMode;
+    RightForwardMotorInstance->step_mode = PosMode;
+    RightBackMotorInstance->step_mode = PosMode;
+    LeftBackMotorInstance->step_mode = PosMode;
+
+    switch(Direction)
+    {
+        case Forward:
+            //设置四个电机的方向
+            LeftForwardMotorInstance->motor_direction = CounterClockWise;
+            RightForwardMotorInstance->motor_direction = ClockWise;
+            RightBackMotorInstance->motor_direction = ClockWise;
+            LeftBackMotorInstance->motor_direction = CounterClockWise;
+            //设置四个电机的速度
+            MecanumKinematics(0,Velocity,0);
+            //设置四个电机转动角度
+            MecanumInverseKinematics_Adapt(0,clk);
+
+            break;
+        case Back:
+            //设置四个电机的方向
+            LeftForwardMotorInstance->motor_direction = ClockWise;
+            RightForwardMotorInstance->motor_direction = CounterClockWise;
+            RightBackMotorInstance->motor_direction = CounterClockWise;
+            LeftBackMotorInstance->motor_direction = ClockWise;
+            //设置四个电机的速度
+            MecanumKinematics(Velocity,0,0);
+            //设置四个电机转动角度
+            MecanumInverseKinematics_Adapt(clk,0);
+            break;
+        case Right:
+            //设置四个电机的方向
+            LeftForwardMotorInstance->motor_direction = CounterClockWise;
+            RightForwardMotorInstance->motor_direction = CounterClockWise;
+            RightBackMotorInstance->motor_direction = ClockWise;
+            LeftBackMotorInstance->motor_direction = ClockWise;
+            //设置四个电机的速度
+            MecanumKinematics(Velocity,0,0);
+            //设置四个电机转动角度
+            MecanumInverseKinematics_Adapt(clk,0);
+            break;
+        case Left:
+            //设置四个电机的方向
+            LeftForwardMotorInstance->motor_direction = ClockWise;
+            RightForwardMotorInstance->motor_direction = ClockWise;
+            RightBackMotorInstance->motor_direction = CounterClockWise;
+            LeftBackMotorInstance->motor_direction = CounterClockWise;
+            //设置四个电机的速度
+            MecanumKinematics(-Velocity,0,0);
+            //设置四个电机转动角度
+            MecanumInverseKinematics_Adapt(clk,0);
+            break;
+        default:
+            //设置四个电机的速度
+            MecanumKinematics(0,0,0);
+            //设置四个电机转动角度
+            MecanumInverseKinematics(0,0);
+            break;
+    }
+
+    // //确保电机使能
+    // StepMotorEnControl(LeftForwardMotorInstance,true,false);
+    // StepMotorEnControl(RightForwardMotorInstance,true,false);
+    // StepMotorEnControl(RightBackMotorInstance,true,false);
+    // StepMotorEnControl(LeftBackMotorInstance,true,false);
+    // HAL_Delay(300);
+    //电机位置模式运行
+    StepMotorPosControl(LeftForwardMotorInstance,false,false);
+    StepMotorPosControl(RightForwardMotorInstance,false,false);
+    StepMotorPosControl(RightBackMotorInstance,false,false);
+    StepMotorPosControl(LeftBackMotorInstance,false,false);
+
+    HAL_Delay(1000);
+
+}
+void MecanumInverseKinematics_Adapt(uint32_t distance_x,uint32_t distance_y)
+{
+    LeftForwardMotorInstance->clk = abs((-distance_x + distance_y));  // 左前轮 单位rad/s
+    RightForwardMotorInstance->clk = abs((distance_x + distance_y));  // 右前轮
+    RightBackMotorInstance->clk = abs((-distance_x + distance_y));  // 右后轮
+    LeftBackMotorInstance->clk = abs((distance_x + distance_y));  // 左后轮
+
+}
+
