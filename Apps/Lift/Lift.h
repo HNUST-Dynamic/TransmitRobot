@@ -113,4 +113,6 @@ void Lift_Catch_two(uint8_t element);
  * @param element 物料代码
  */
 void Goods_Pickup(uint8_t element);
+
+
 #endif // !LIFT_H

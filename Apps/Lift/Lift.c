@@ -57,7 +57,7 @@ void Lift_Init()
 void pickup()
 {
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4); /* 开启对应PWM通道 */
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 530);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 500);
 }
 
 // 抓手松开
@@ -284,3 +284,25 @@ void Goods_Pickup(uint8_t element)
   Lift_updown_control(up, 2500, 35000);
   HAL_Delay(800);
 }
+// 码垛
+void Modes_Putdown(uint8_t element)
+{
+  Turn_Color_two(element);
+  // HAL_Delay(1000);
+  Lift_Turn_back();
+  HAL_Delay(800);
+  Lift_updown_control(down, 2500, 36000);
+  HAL_Delay(1000);
+  pickup();
+  HAL_Delay(500);
+  Lift_updown_control(up, 2500, 36000);
+  HAL_Delay(1000);
+  Lift_Turn();
+  Lift_updown_control(down, 600, 26000);
+  HAL_Delay(2000);
+  putdown();
+  HAL_Delay(200);
+  Lift_updown_control(up, 2500, 26000);
+  HAL_Delay(2000);
+}
+
