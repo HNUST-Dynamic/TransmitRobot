@@ -253,11 +253,11 @@ void Goods_Putdown(uint8_t element)
   Lift_updown_control(up, 2500, 36000);
   HAL_Delay(1000);
   Lift_Turn();
-  Lift_updown_control(down, 600, 99000);
+  Lift_updown_control(down, 600, 97000);
   HAL_Delay(2000);
   putdown();
   HAL_Delay(200);
-  Lift_updown_control(up, 2500, 99000);
+  Lift_updown_control(up, 2500, 97000);
   HAL_Delay(2000);
 }
 
@@ -266,11 +266,11 @@ void Goods_Pickup(uint8_t element)
 {
   Turn_Color_two(element);
   // HAL_Delay(1000);
-  Lift_updown_control(down, 2500, 99000);
+  Lift_updown_control(down, 2500, 97000);
   HAL_Delay(2000);
   pickup();
   HAL_Delay(200);
-  Lift_updown_control(up, 2500, 99000);
+  Lift_updown_control(up, 2500, 97000);
   HAL_Delay(2000);
 
   Turn_Color_two(element);
@@ -298,11 +298,11 @@ void Modes_Putdown(uint8_t element)
   Lift_updown_control(up, 2500, 36000);
   HAL_Delay(1000);
   Lift_Turn();
-  Lift_updown_control(down, 600, 26000);
+  Lift_updown_control(down, 600, 30000);
   HAL_Delay(2000);
   putdown();
   HAL_Delay(200);
-  Lift_updown_control(up, 2500, 26000);
+  Lift_updown_control(up, 2500, 30000);
   HAL_Delay(2000);
 }
 

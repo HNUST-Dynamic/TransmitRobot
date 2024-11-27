@@ -46,9 +46,9 @@
  * @note 如需开启跑图模式则需要关闭所有开关
  */
 #define QR_CODE_ADAPT   0     // 二维码测距功能开关
-#define RAW_ADAPT       0     // 原料区微调功能开关
-#define RING_ADAPT      0     // 圆环区微调功能开关
-#define LIFT            0     // Lift应用的开关 
+#define RAW_ADAPT       1     // 原料区微调功能开关
+#define RING_ADAPT      1     // 圆环区微调功能开关
+#define LIFT            1     // Lift应用的开关 
 
 /*----------------快捷调参宏定义-----------------*/
 #define REDZONE 18   // 红色圆环距离
@@ -307,7 +307,7 @@ int main(void)
   /*靠近转盘*/
   ChassisTransiation(Right, 30, (uint32_t)(8));
   CorrectError(0);
-  HAL_Delay(4000);
+  //HAL_Delay(4000);
   Lift_StartFirst();
 
 /*原料区微调*/
@@ -317,13 +317,13 @@ int main(void)
   {
     if(IsStable(0x33))
     {
-      MicroAdapt_Goods(0x33,2,12);
+      MicroAdapt_Goods(0x33,1,7);
       break;
     }else if(IsStable(0x34)){
-      MicroAdapt_Goods(0x34,2,12);
+      MicroAdapt_Goods(0x34,1,7);
       break;
     }else if(IsStable(0x35)){
-      MicroAdapt_Goods(0x35,2,12);
+      MicroAdapt_Goods(0x35,1,7);
       break;
     }
   }
@@ -414,7 +414,7 @@ int main(void)
   {
   }
     MicroAdapt((char)(command[0]) - 1,4,9);
-    MicroAdapt((char)(command[0]) - 1,4,4);
+    MicroAdapt((char)(command[0]) - 1,4,2);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[0]);
@@ -436,7 +436,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[1]) - 1))
   {
   }
-    MicroAdapt((char)(command[1]) - 1,5,4);
+    MicroAdapt((char)(command[1]) - 1,5,2);
 
 #endif
 #if(LIFT == 1)
@@ -460,7 +460,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[2]) - 1))
   {
   }
-    MicroAdapt((char)(command[2]) - 1,5,4);
+    MicroAdapt((char)(command[2]) - 1,5,2);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[2]);
@@ -532,7 +532,6 @@ int main(void)
   }
 #if (RING_ADAPT == 1)
   // memset(input_copy, 0, sizeof(input_copy));
-
   // while (!IsStable((char)(command[2]) - 1))
   // {
   // }
@@ -571,7 +570,7 @@ int main(void)
   {
   }
   MicroAdapt((char)(command[0]) - 1,4,9);
-  MicroAdapt((char)(command[0]) - 1,4,4);
+  MicroAdapt((char)(command[0]) - 1,4,2);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[0]);
@@ -593,7 +592,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[1]) - 1))
   {
   }
-  MicroAdapt((char)(command[1]) - 1,5,4);
+  MicroAdapt((char)(command[1]) - 1,5,2);
 
 #endif
 #if(LIFT == 1)
@@ -617,7 +616,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[2]) - 1))
   {
   }
-  MicroAdapt((char)(command[2]) - 1,5,4);
+  MicroAdapt((char)(command[2]) - 1,5,2);
 
 #endif
 #if(LIFT == 1)
@@ -647,13 +646,13 @@ int main(void)
   {
     if(IsStable(0x33))
     {
-      MicroAdapt_Goods(0x33,2,12);
+      MicroAdapt_Goods(0x33,4,7);
       break;
     }else if(IsStable(0x34)){
-      MicroAdapt_Goods(0x34,2,12);
+      MicroAdapt_Goods(0x34,4,7);
       break;
     }else if(IsStable(0x35)){
-      MicroAdapt_Goods(0x35,2,12);
+      MicroAdapt_Goods(0x35,4,7);
       break;
     }
   }
@@ -712,7 +711,7 @@ int main(void)
       zone[i] = BLUEZONE;
     }
   }
-  ChassisTransiation(Right, 30, 19); // 靠近粗加工区
+  ChassisTransiation(Right, 30, 12); // 靠近粗加工区
 
 /*先校准绿色*/
 #if (RING_ADAPT == 1)
@@ -740,7 +739,7 @@ int main(void)
   {
   }
   MicroAdapt((char)(command[4]) - 1,4,9);
-  MicroAdapt((char)(command[4]) - 1,4,4);
+  MicroAdapt((char)(command[4]) - 1,4,2);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[4]);
@@ -759,11 +758,10 @@ int main(void)
   }
 #if (RING_ADAPT == 1)
   memset(input_copy, 0, sizeof(input_copy));
-
   while (!Ring_IsStable((char)(command[5]) - 1))
   {
   }
-  MicroAdapt((char)(command[5]) - 1,5,4);
+  MicroAdapt((char)(command[5]) - 1,5,2);
 
 #endif
 #if(LIFT == 1)
@@ -787,7 +785,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[6]) - 1))
   {
   }
-  MicroAdapt((char)(command[6]) - 1,5,4);
+  MicroAdapt((char)(command[6]) - 1,5,2);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[6]);
@@ -880,12 +878,12 @@ int main(void)
   ChassisRotate(ClockWise_Chassis, 10, 115);
   HAL_Delay(2000);
   CorrectError(90);
-  ChassisTransiation(Back, 50, 72);
+  ChassisTransiation(Back, 50, 95);
 
   /*靠近暂存区 第一个颜色区*/
   CorrectError(90);
   ChassisTransiation(Right, 30, 10);
-  ChassisTransiation(Back, 30, (uint32_t)zone[0]);
+  ChassisTransiation(Back, 30, (uint32_t)zone[4]);
 #if (RING_ADAPT == 1)
   /*先校准绿色*/
   // while (!Ring_IsStable((char)(0x31)))
@@ -898,7 +896,7 @@ int main(void)
   {
   }
   MicroAdapt((char)(command[4]) - 1,4,9);
-  MicroAdapt((char)(command[4]) - 1,4,4);
+  MicroAdapt((char)(command[4]) - 1,4,2);
 #endif
 #if(LIFT == 1)
   Modes_Putdown(command[4]);
@@ -920,7 +918,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[5]) - 1))
   {
   }
-  MicroAdapt((char)(command[5]) - 1,5,4);
+  MicroAdapt((char)(command[5]) - 1,5,2);
 
 #endif
 #if(LIFT == 1)
@@ -944,7 +942,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[6]) - 1))
   {
   }
-  MicroAdapt((char)(command[6]) - 1,5,4);
+  MicroAdapt((char)(command[6]) - 1,5,2);
 
 #endif
 #if(LIFT == 1)
