@@ -174,7 +174,7 @@ void MicroAdapt_Goods(char current_goods,uint16_t num,uint32_t steps)
     }
     if (line[0] == current_goods)
     {
-      while (!((abs(330 - x_int) <= 10) && (abs(235 - y_int) <= 10))) // 320 250
+      while (!((abs(330 - x_int) <= 5) && (abs(235 - y_int) <= 5))) // 320 250
       {
         if (330 - x_int < 0)
         {
@@ -317,17 +317,17 @@ int main(void)
   {
     if(IsStable(0x33))
     {
-      MicroAdapt_Goods(0x33,1,7);
+      MicroAdapt_Goods(0x33,0,7);
       break;
     }else if(IsStable(0x34)){
-      MicroAdapt_Goods(0x34,1,7);
+      MicroAdapt_Goods(0x34,0,7);
       break;
     }else if(IsStable(0x35)){
-      MicroAdapt_Goods(0x35,1,7);
+      MicroAdapt_Goods(0x35,0,7);
       break;
     }
   }
-
+                   
 #endif
 #if(LIFT == 1)
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
@@ -626,7 +626,7 @@ int main(void)
 #if(LIFT == 0)
   HAL_Delay(1000);
 #endif
-  ChassisTransiation(Left, 30, 10);
+  ChassisTransiation(Left, 30, 20);
 
   /*-----------------------------开始第二圈-------------------------------------*/
 
@@ -646,13 +646,13 @@ int main(void)
   {
     if(IsStable(0x33))
     {
-      MicroAdapt_Goods(0x33,4,7);
+      MicroAdapt_Goods(0x33,0,7);
       break;
     }else if(IsStable(0x34)){
-      MicroAdapt_Goods(0x34,4,7);
+      MicroAdapt_Goods(0x34,0,7);
       break;
     }else if(IsStable(0x35)){
-      MicroAdapt_Goods(0x35,4,7);
+      MicroAdapt_Goods(0x35,0,7);
       break;
     }
   }
@@ -711,7 +711,7 @@ int main(void)
       zone[i] = BLUEZONE;
     }
   }
-  ChassisTransiation(Right, 30, 12); // 靠近粗加工区
+  ChassisTransiation(Right, 30, 15); // 靠近粗加工区
 
 /*先校准绿色*/
 #if (RING_ADAPT == 1)

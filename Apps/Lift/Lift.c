@@ -246,19 +246,19 @@ void Goods_Putdown(uint8_t element)
   // HAL_Delay(1000);
   Lift_Turn_back();
   HAL_Delay(800);
-  Lift_updown_control(down, 2500, 36000);
+  Lift_updown_control(down, 2400, 36000);
   HAL_Delay(1000);
   pickup();
-  HAL_Delay(500);
+  HAL_Delay(300);
   Lift_updown_control(up, 2500, 36000);
   HAL_Delay(1000);
   Lift_Turn();
-  Lift_updown_control(down, 600, 97000);
-  HAL_Delay(2000);
+  Lift_updown_control(down, 600, 98000);
+  HAL_Delay(1800);
   putdown();
   HAL_Delay(200);
-  Lift_updown_control(up, 2500, 97000);
-  HAL_Delay(2000);
+  Lift_updown_control(up, 2500, 98000);
+  HAL_Delay(1800);
 }
 
 // 在粗加工、存储区把物料盘上的物料拿上的操作
@@ -266,12 +266,12 @@ void Goods_Pickup(uint8_t element)
 {
   Turn_Color_two(element);
   // HAL_Delay(1000);
-  Lift_updown_control(down, 2500, 97000);
-  HAL_Delay(2000);
+  Lift_updown_control(down, 2500, 98000);
+  HAL_Delay(1800);
   pickup();
   HAL_Delay(200);
-  Lift_updown_control(up, 2500, 97000);
-  HAL_Delay(2000);
+  Lift_updown_control(up, 2500, 98000);
+  HAL_Delay(1800);
 
   Turn_Color_two(element);
   // HAL_Delay(1000);
@@ -298,11 +298,11 @@ void Modes_Putdown(uint8_t element)
   Lift_updown_control(up, 2500, 36000);
   HAL_Delay(1000);
   Lift_Turn();
-  Lift_updown_control(down, 600, 30000);
-  HAL_Delay(2000);
+  Lift_updown_control(down, 600, 32000);
+  HAL_Delay(1800);
   putdown();
   HAL_Delay(200);
-  Lift_updown_control(up, 2500, 30000);
-  HAL_Delay(2000);
+  Lift_updown_control(up, 2500, 32000);
+  HAL_Delay(1800);
 }
 
