@@ -254,7 +254,7 @@ void Goods_Putdown(uint8_t element)
   HAL_Delay(1000);
   Lift_Turn();
   Lift_updown_control(down, 600, 98000);
-  HAL_Delay(1800);
+  HAL_Delay(2300);
   putdown();
   HAL_Delay(200);
   Lift_updown_control(up, 2500, 98000);
@@ -267,7 +267,7 @@ void Goods_Pickup(uint8_t element)
   Turn_Color_two(element);
   // HAL_Delay(1000);
   Lift_updown_control(down, 2500, 98000);
-  HAL_Delay(1800);
+  HAL_Delay(2300);
   pickup();
   HAL_Delay(200);
   Lift_updown_control(up, 2500, 98000);

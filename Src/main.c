@@ -109,7 +109,7 @@ void CorrectError(float TargetAngle)
  * 
  * @param current_ring 色环代码
  */
-void MicroAdapt(char current_ring,uint16_t num,uint32_t steps)
+void MicroAdapt(char current_ring,uint16_t num)
 {
   while (1)
   {
@@ -120,27 +120,56 @@ void MicroAdapt(char current_ring,uint16_t num,uint32_t steps)
     }
     if (line[0] == current_ring)
     {
-      while (!((abs(330 - x_int) <= 5) && (abs(235 - y_int) <= 5))) // 320 250
+      while (!((abs(330 - x_int) <= 3) && (abs(235 - y_int) <= 3))) // 320 250
       {
         if (330 - x_int < 0)
         {
           //ChassisTransiation(Back, 45, (uint32_t)(0.07 * (x_int - 330 + 0.5f)));
-          ChassisTransiation_Adapt(Back,45,256*steps);
+          if(x_int - 330 > 100){
+            ChassisTransiation_Adapt(Back,10,256*20);
+          }else if((x_int - 330 <= 100) && (x_int - 330 > 50)){
+            ChassisTransiation_Adapt(Back,10,256*8);
+          }else if((x_int - 330 <= 50) && (x_int - 330 > 10)){
+            ChassisTransiation_Adapt(Back,10,256*4);
+          }else if((x_int - 330 <= 10) && (x_int - 330 > 5)){
+            ChassisTransiation_Adapt(Back,10,256*1);
+          }
         }
         else if (330 - x_int >= 0)
         {
-          //ChassisTransiation(Forward, 45, (uint32_t)(0.07 * (330 - x_int + 0.5f)));
-          ChassisTransiation_Adapt(Forward,45,256*steps);
+          if(330 - x_int > 100){
+            ChassisTransiation_Adapt(Forward,10,256*20);
+          }else if((330 - x_int <= 100) && (330 - x_int > 50)){
+            ChassisTransiation_Adapt(Forward,10,256*8);
+          }else if((330 - x_int <= 50) && (330 - x_int > 10)){
+            ChassisTransiation_Adapt(Forward,10,256*4);
+          }else if((330 - x_int <= 10) && (330 - x_int > 5)){
+            ChassisTransiation_Adapt(Forward,10,256*1);
+          }
         }
         if (235 - y_int < 0)
         {
-          //ChassisTransiation(Left, 45, (uint32_t)(0.07 * (y_int - 235 + 0.5f)));
-          ChassisTransiation_Adapt(Left,45,256*steps);
+          if(y_int - 235 > 100){
+            ChassisTransiation_Adapt(Left,10,256*20);
+          }else if((y_int - 235 <= 100) && (y_int - 235 > 50)){
+            ChassisTransiation_Adapt(Left,10,256*8);
+          }else if((y_int - 235 <= 50) && (y_int - 235 > 15)){
+            ChassisTransiation_Adapt(Left,10,256*4);
+          }else if((y_int - 235 <= 10) && (y_int - 235 > 5)){
+            ChassisTransiation_Adapt(Left,10,256*1);
+          }
         }
         else if (235 - y_int >= 0)
         {
-          //ChassisTransiation(Right, 45, (uint32_t)(0.07 * (235 - y_int + 0.5f)));
-          ChassisTransiation_Adapt(Right,45,256*steps);
+          if(235 - y_int > 100){
+            ChassisTransiation_Adapt(Right,10,256*30);
+          }else if((235 - y_int <= 100) && (235 - y_int > 50)){
+            ChassisTransiation_Adapt(Right,10,256*8);
+          }else if((235 - y_int <= 50) && (235 - y_int > 15)){
+            ChassisTransiation_Adapt(Right,10,256*4);
+          }else if((235 - y_int <= 10) && (235 - y_int > 5)){
+            ChassisTransiation_Adapt(Right,10,256*1);
+          }
         }
         watch_dog++;
         if (watch_dog >= num)
@@ -174,7 +203,7 @@ void MicroAdapt_Goods(char current_goods,uint16_t num,uint32_t steps)
     }
     if (line[0] == current_goods)
     {
-      while (!((abs(330 - x_int) <= 5) && (abs(235 - y_int) <= 5))) // 320 250
+      while (!((abs(330 - x_int) <= 5) && (abs(230 - y_int) <= 5))) // 320 250
       {
         if (330 - x_int < 0)
         {
@@ -186,12 +215,12 @@ void MicroAdapt_Goods(char current_goods,uint16_t num,uint32_t steps)
           //ChassisTransiation(Forward, 45, (uint32_t)(0.07 * (330 - x_int + 0.5f)));
           ChassisTransiation_Adapt(Forward,45,256*steps);
         }
-        if (235 - y_int < 0)
+        if (230 - y_int < 0)
         {
           //ChassisTransiation(Left, 45, (uint32_t)(0.07 * (y_int - 235 + 0.5f)));
           ChassisTransiation_Adapt(Left,45,256*steps);
         }
-        else if (235 - y_int >= 0)
+        else if (230 - y_int >= 0)
         {
           //ChassisTransiation(Right, 45, (uint32_t)(0.07 * (235 - y_int + 0.5f)));
           ChassisTransiation_Adapt(Right,45,256*steps);
@@ -413,8 +442,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[0]) - 1))
   {
   }
-    MicroAdapt((char)(command[0]) - 1,4,9);
-    MicroAdapt((char)(command[0]) - 1,4,2);
+    MicroAdapt((char)(command[0]) - 1,8);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[0]);
@@ -436,7 +464,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[1]) - 1))
   {
   }
-    MicroAdapt((char)(command[1]) - 1,5,2);
+    MicroAdapt((char)(command[1]) - 1,4);
 
 #endif
 #if(LIFT == 1)
@@ -460,7 +488,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[2]) - 1))
   {
   }
-    MicroAdapt((char)(command[2]) - 1,5,2);
+    MicroAdapt((char)(command[2]) - 1,4);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[2]);
@@ -569,8 +597,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[0]) - 1))
   {
   }
-  MicroAdapt((char)(command[0]) - 1,4,9);
-  MicroAdapt((char)(command[0]) - 1,4,2);
+  MicroAdapt((char)(command[0]) - 1,8);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[0]);
@@ -592,7 +619,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[1]) - 1))
   {
   }
-  MicroAdapt((char)(command[1]) - 1,5,2);
+  MicroAdapt((char)(command[1]) - 1,4);
 
 #endif
 #if(LIFT == 1)
@@ -616,7 +643,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[2]) - 1))
   {
   }
-  MicroAdapt((char)(command[2]) - 1,5,2);
+  MicroAdapt((char)(command[2]) - 1,4);
 
 #endif
 #if(LIFT == 1)
@@ -635,7 +662,7 @@ int main(void)
   ChassisRotate(ClockWise_Chassis, 10, 115);
   HAL_Delay(2000);
   CorrectError(0);
-  ChassisTransiation(Back, 40, 50);
+  ChassisTransiation(Back, 40, 45);
 
   /*靠近转盘*/
   ChassisTransiation(Right, 30, (uint32_t)(12));
@@ -660,16 +687,23 @@ int main(void)
 #endif
 #if(LIFT == 1)
   /*在 物料稳定 并且 与当前要抓的匹配 时 抓取x3*/
-  for (int i = 4; i < 7; i++)
-  {
-    while (!(IsMatch((char)(command[i]) + 2) &&IsStable((char)(command[i]) + 2)))
+  // for (int i = 4; i < 7; i++)
+  // {
+  //   while (!(IsMatch((char)(command[i]) + 2) &&IsStable((char)(command[i]) + 2)))
+  //   {
+  //   }
+  //   Lift_Catch(element);
+  //   num++;
+  //   HAL_Delay(400);
+  //   Lift_Back();
+  // }
+    while (!(IsMatch((char)(command[4]) + 2) &&IsStable((char)(command[4]) + 2)))
     {
     }
     Lift_Catch(element);
     num++;
     HAL_Delay(400);
     Lift_Back();
-  }
 
   Lift_Turn_back();
   putdown();
@@ -738,8 +772,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[4]) - 1))
   {
   }
-  MicroAdapt((char)(command[4]) - 1,4,9);
-  MicroAdapt((char)(command[4]) - 1,4,2);
+  MicroAdapt((char)(command[4]) - 1,8);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[4]);
@@ -761,7 +794,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[5]) - 1))
   {
   }
-  MicroAdapt((char)(command[5]) - 1,5,2);
+  MicroAdapt((char)(command[5]) - 1,4);
 
 #endif
 #if(LIFT == 1)
@@ -785,7 +818,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[6]) - 1))
   {
   }
-  MicroAdapt((char)(command[6]) - 1,5,2);
+  MicroAdapt((char)(command[6]) - 1,4);
 #endif
 #if(LIFT == 1)
   Goods_Putdown(command[6]);
@@ -895,8 +928,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[4]) - 1))
   {
   }
-  MicroAdapt((char)(command[4]) - 1,4,9);
-  MicroAdapt((char)(command[4]) - 1,4,2);
+  MicroAdapt((char)(command[4]) - 1,8);
 #endif
 #if(LIFT == 1)
   Modes_Putdown(command[4]);
@@ -918,7 +950,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[5]) - 1))
   {
   }
-  MicroAdapt((char)(command[5]) - 1,5,2);
+  MicroAdapt((char)(command[5]) - 1,4);
 
 #endif
 #if(LIFT == 1)
@@ -942,7 +974,7 @@ int main(void)
   while (!Ring_IsStable((char)(command[6]) - 1))
   {
   }
-  MicroAdapt((char)(command[6]) - 1,5,2);
+  MicroAdapt((char)(command[6]) - 1,4);
 
 #endif
 #if(LIFT == 1)
